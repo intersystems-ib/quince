@@ -1,0 +1,282 @@
+[
+  {
+    "clubId": "c1",
+    "officialTeamId": 188,
+    "name": "Complutense Cisneros",
+    "file": "/crests/c1.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/9/square_6d6662357173746c7130.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "ff7f67bdb609358f9f4e91b04db25477e6aabde1809833ce3a1dcad476c95a61"
+  },
+  {
+    "clubId": "c2",
+    "officialTeamId": 251,
+    "name": "VRAC Quesos Entrepinares",
+    "file": "/crests/c2.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/23/square_323530623173766c706f.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "d712997837bd9f2251b2639bc9be4c0a93aeabd1bcd349125544ea9d3aa93c74"
+  },
+  {
+    "clubId": "c3",
+    "officialTeamId": 2060,
+    "name": "Recoletas Salud Caja Rural Burgos Aparejadores",
+    "file": "/crests/c3.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/14/square_75386c65796e356c756b.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "c79b4033011aea9beba67971d43cec2fd0e5ce7b0ca844c6d9b22bef99bffc78"
+  },
+  {
+    "clubId": "c4",
+    "officialTeamId": 245,
+    "name": "Unio Esportiva Santboiana",
+    "file": "/crests/c4.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/39/square_62397833623562636372.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "5f1ffac71b981860cae02cc0ffa29082221c53bcaa3b5d21bf9da0829e45fd47"
+  },
+  {
+    "clubId": "c5",
+    "officialTeamId": 1405,
+    "name": "Huesitos La Vila Rugby Club",
+    "file": "/crests/c5.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/80/square_366b6c7131766c643763.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      1237,
+      1237
+    ],
+    "sha256": "bac16c33ae205861114f929137cd0a81a06f34d489e16d393aac5713189b379b"
+  },
+  {
+    "clubId": "c6",
+    "officialTeamId": 1710,
+    "name": "Inversus Liceo Frances",
+    "file": "/crests/c6.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/28/square_7972786233646a373068.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      1072,
+      1072
+    ],
+    "sha256": "8c81fafedadf3c564cd337c6631cc6c95be9d3e6d3a5572985bd13b52a6439b0"
+  },
+  {
+    "clubId": "c7",
+    "officialTeamId": 208,
+    "name": "Silicius Alcobendas Rugby",
+    "file": "/crests/c7.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/27/square_643638336c63366d3766.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "f7fb52f9d59eb7d299a4266a2dca414e2ac01f9d5774b01ebd43b1248694c8e3"
+  },
+  {
+    "clubId": "c8",
+    "officialTeamId": 253,
+    "name": "Vulcanizados Alvarez El Salvador",
+    "file": "/crests/c8.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/21/square_726b7461656e75357439.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "457e146aea09f7ba6a3d1421ad54a9db6fdf4f627604bb068c28201b8ddcffd6"
+  },
+  {
+    "clubId": "c9",
+    "officialTeamId": 196,
+    "name": "CRC Pozuelo Rugby",
+    "file": "/crests/c9.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/54/square_6e7677343030676c6b30.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "97f8c3a66a1425b531dd8c01305ed7eb45e0ca4ae073a8ee357146eb80cb60d7"
+  },
+  {
+    "clubId": "c10",
+    "officialTeamId": 344,
+    "name": "AMPO Ordizia",
+    "file": "/crests/c10.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/96/square_796431373766786b3674.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "8f2a991e68a9e9515d7178fd09b2fce7d7667516f55bcf1c570eda60db633266"
+  },
+  {
+    "clubId": "c11",
+    "officialTeamId": 1722,
+    "name": "C.P. Les Abelles",
+    "file": "/crests/c11.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/36/square_6f75337230696d327239.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=417&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "5d9c3c227502a18ee831acc9f27d77f3caea562ddf4ba47790a5b7ca661b0a6e"
+  },
+  {
+    "clubId": "c12",
+    "officialTeamId": 2048,
+    "name": "Cajasol Real Ciencias Sevilla",
+    "file": "/crests/c12.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/25/square_62763231767836756f32.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=417&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "8832639958628927d525bbe3ba8a48b26ab28b24ea72243352ba6778983b8e92"
+  },
+  {
+    "clubId": "c13",
+    "officialTeamId": 1709,
+    "name": "Valencia RC",
+    "file": "/crests/c13.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/30/square_75756b6a723669773864.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=417&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "d5298e7c8b72fc7fccb8ce5ea9cfdb0615a6b935a3015eb47c1090850711cc48"
+  },
+  {
+    "clubId": "c14",
+    "officialTeamId": 1717,
+    "name": "A.D. Ingenieros Industriales Las Rozas Rugby",
+    "file": "/crests/c14.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/8/square_783274646b71726a3131.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=417&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "2b1160343f4d40bf44502f5d1aaa1ea39c576dc8898c4686346e7e5e46e9a9ed"
+  },
+  {
+    "clubId": "c15",
+    "officialTeamId": 2064,
+    "name": "Steelphalt Getxo Rugby",
+    "file": "/crests/c15.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/63/square_396e3565726975667168.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=417&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "b3c016adf1aa9988114264df904fe57fd6289ae9f1ad1218f4ea3e2d43c10601"
+  },
+  {
+    "clubId": "c16",
+    "officialTeamId": 1736,
+    "name": "Recoletas Salud Fenix",
+    "file": "/crests/c16.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/86/square_656b3338723073396f74.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=417&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "060889fd4bf8f26993fe41bb9f1412cc6942b1f27c8efab97b5b9255d164dfa2"
+  },
+  {
+    "clubId": "c17",
+    "officialTeamId": 1719,
+    "name": "Hernani CRE",
+    "file": "/crests/c17.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/92/square_3730336270766b786e71.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=417&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "a6243756cfb5948095f221acf29f3170812bfee13d66d3d4da359508971aac46"
+  },
+  {
+    "clubId": "c18",
+    "officialTeamId": 2057,
+    "name": "Barça Rugbi",
+    "file": "/crests/c18.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/37/square_34393938793774647062.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=417&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "f63563033aa7967b8974dac5f4ccfe018b2465739b363c97970d7176f3db5b01"
+  },
+  {
+    "clubId": "c19",
+    "officialTeamId": 1721,
+    "name": "Club de Rugby Sant Cugat",
+    "file": "/crests/c19.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/48/square_666e3068736979736476.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=417&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "eefe14670fc8587a30aa849ec0d7f24ea4db94a6f011ba127e42f7e1c0333833"
+  },
+  {
+    "clubId": "c20",
+    "officialTeamId": 1724,
+    "name": "Torrealday Gernika Rugby Taldea",
+    "file": "/crests/c20.jpg",
+    "sourceUrl": "https://rugby.isquad.es/images/afiliacion_clubs/75/square_35383067317163666665.jpg",
+    "sourcePage": "https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=417&id_temp=2627&id_ambito=1&id_territorial=9999",
+    "retrievedOn": "2026-11-07",
+    "dimensions": [
+      800,
+      800
+    ],
+    "sha256": "17f239b0a745da597832f6380272d32ac04a9efc1a23a5a443d592b0ed0c3dac"
+  }
+]

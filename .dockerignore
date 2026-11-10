@@ -1,0 +1,10 @@
+**/node_modules
+**/dist
+**/__pycache__
+**/*.pyc
+**/*.tsbuildinfo
+.git
+.env
+test-results
+playwright-report
+tmp

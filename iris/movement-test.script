@@ -1,0 +1,3 @@
+do ##class(Rugby.Test.Suite).Run()
+do ##class(Rugby.Test.Movement).Export("/tmp/rugby-motion-frames.json")
+halt

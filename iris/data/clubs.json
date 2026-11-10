@@ -1,0 +1,514 @@
+{
+  "season": "2026/2027",
+  "verifiedOn": "2026-11-07",
+  "notice": "Clubes de las competiciones FER 416 y 417. Identidades del primer equipo de las actas de la jornada 1 facilitadas por el usuario. Canteras, agentes libres, edades, atributos, salarios, presupuestos y resultados son simulados.",
+  "clubs": [
+    {
+      "id": "c1",
+      "name": "Complutense Cisneros",
+      "officialName": "COMPLUTENSE CISNEROS",
+      "shortName": "Cisneros",
+      "city": "Madrid",
+      "color": "#163d70",
+      "competitionId": 416,
+      "competition": "División de Honor",
+      "officialTeamId": 188,
+      "kits": {
+        "primary": {
+          "color": "#163d70",
+          "accentColor": "#58b4df",
+          "pattern": "hoops",
+          "description": "Azul oscuro y azul claro a franjas"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#163d70",
+          "pattern": "trim",
+          "description": "Blanco con ribetes azules"
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "name": "VRAC Quesos Entrepinares",
+      "officialName": "VRAC QUESOS ENTREPINARES",
+      "shortName": "VRAC",
+      "city": "Valladolid",
+      "color": "#164ba1",
+      "competitionId": 416,
+      "competition": "División de Honor",
+      "officialTeamId": 251,
+      "kits": {
+        "primary": {
+          "color": "#164ba1",
+          "accentColor": "#f6f5ef",
+          "pattern": "hoops",
+          "description": "Azul y blanco a franjas horizontales"
+        },
+        "secondary": {
+          "color": "#e76aa6",
+          "accentColor": "#b43c78",
+          "pattern": "trim",
+          "description": "Rosa"
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "name": "Recoletas Salud Caja Rural Burgos Aparejadores",
+      "officialName": "RECOLETAS SALUD CAJA RURAL BURGOS APAREJADORES",
+      "shortName": "Burgos Aparejadores",
+      "city": "Burgos",
+      "color": "#edc329",
+      "competitionId": 416,
+      "competition": "División de Honor",
+      "officialTeamId": 2060,
+      "kits": {
+        "primary": {
+          "color": "#edc329",
+          "accentColor": "#171b20",
+          "pattern": "stripes",
+          "description": "Amarillo y negro a rayas"
+        },
+        "secondary": {
+          "color": "#168052",
+          "accentColor": "#f6f5ef",
+          "pattern": "trim",
+          "description": "Verde con detalles blancos"
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "name": "Unio Esportiva Santboiana",
+      "officialName": "UNIO ESPORTIVA SANTBOIANA",
+      "shortName": "UE Santboiana",
+      "city": "Sant Boi de Llobregat",
+      "color": "#48a8d4",
+      "competitionId": 416,
+      "competition": "División de Honor",
+      "officialTeamId": 245,
+      "kits": {
+        "primary": {
+          "color": "#48a8d4",
+          "accentColor": "#1e4d92",
+          "pattern": "halves",
+          "description": "Azul celeste y azul"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#277cb5",
+          "pattern": "trim",
+          "description": "Blanco con detalles azules"
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "name": "Huesitos La Vila Rugby Club",
+      "officialName": "HUESITOS LA VILA RUGBY CLUB",
+      "shortName": "La Vila",
+      "city": "La Vila Joiosa",
+      "color": "#172e58",
+      "competitionId": 416,
+      "competition": "División de Honor",
+      "officialTeamId": 1405,
+      "kits": {
+        "primary": {
+          "color": "#172e58",
+          "accentColor": "#f6f5ef",
+          "pattern": "hoops",
+          "description": "Azul marino y blanco a rayas"
+        },
+        "secondary": {
+          "color": "#ef7d23",
+          "accentColor": "#12345c",
+          "pattern": "trim",
+          "description": "Naranja de contraste"
+        }
+      }
+    },
+    {
+      "id": "c6",
+      "name": "Inversus Liceo Frances",
+      "officialName": "INVERSUS LICEO FRANCES",
+      "shortName": "Liceo Francés",
+      "city": "Madrid",
+      "color": "#204da0",
+      "competitionId": 416,
+      "competition": "División de Honor",
+      "officialTeamId": 1710,
+      "kits": {
+        "primary": {
+          "color": "#204da0",
+          "accentColor": "#f6f5ef",
+          "pattern": "hoops",
+          "description": "Azul, blanco y rojo",
+          "thirdColor": "#d82b3d"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#204da0",
+          "pattern": "trim",
+          "description": "Blanco predominante"
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "name": "Silicius Alcobendas Rugby",
+      "officialName": "SILICIUS ALCOBENDAS RUGBY",
+      "shortName": "Alcobendas",
+      "city": "Alcobendas",
+      "color": "#7b2445",
+      "competitionId": 416,
+      "competition": "División de Honor",
+      "officialTeamId": 208,
+      "kits": {
+        "primary": {
+          "color": "#7b2445",
+          "accentColor": "#22633f",
+          "pattern": "halves",
+          "description": "Granate y verde"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#7b2445",
+          "pattern": "trim",
+          "description": "Blanco con detalles granates"
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "name": "Vulcanizados Alvarez El Salvador",
+      "officialName": "VULCANIZADOS ALVAREZ EL SALVADOR",
+      "shortName": "El Salvador",
+      "city": "Valladolid",
+      "color": "#f6f5ef",
+      "competitionId": 416,
+      "competition": "División de Honor",
+      "officialTeamId": 253,
+      "kits": {
+        "primary": {
+          "color": "#f6f5ef",
+          "accentColor": "#171b20",
+          "pattern": "hoops",
+          "description": "Blanco y negro"
+        },
+        "secondary": {
+          "color": "#171b20",
+          "accentColor": "#666a70",
+          "pattern": "trim",
+          "description": "Negro con detalles grises"
+        }
+      }
+    },
+    {
+      "id": "c9",
+      "name": "CRC Pozuelo Rugby",
+      "officialName": "CRC POZUELO RUGBY",
+      "shortName": "CRC Pozuelo",
+      "city": "Pozuelo de Alarcón",
+      "color": "#efd12e",
+      "competitionId": 416,
+      "competition": "División de Honor",
+      "officialTeamId": 196,
+      "kits": {
+        "primary": {
+          "color": "#efd12e",
+          "accentColor": "#204b91",
+          "pattern": "halves",
+          "description": "Amarillo y azul"
+        },
+        "secondary": {
+          "color": "#142e58",
+          "accentColor": "#f6f5ef",
+          "pattern": "trim",
+          "description": "Azul marino"
+        }
+      }
+    },
+    {
+      "id": "c10",
+      "name": "AMPO Ordizia",
+      "officialName": "AMPO ORDIZIA",
+      "shortName": "Ordizia",
+      "city": "Ordizia",
+      "color": "#c82b40",
+      "competitionId": 416,
+      "competition": "División de Honor",
+      "officialTeamId": 344,
+      "kits": {
+        "primary": {
+          "color": "#c82b40",
+          "accentColor": "#234d99",
+          "pattern": "halves",
+          "description": "Rojo y azul"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#234d99",
+          "pattern": "trim",
+          "description": "Blanco con detalles azules"
+        }
+      }
+    },
+    {
+      "id": "c11",
+      "name": "C.P. Les Abelles",
+      "officialName": "C.P. LES ABELLES",
+      "shortName": "Les Abelles",
+      "city": "Valencia",
+      "color": "#ed7b25",
+      "competitionId": 417,
+      "competition": "División de Honor Élite",
+      "officialTeamId": 1722,
+      "kits": {
+        "primary": {
+          "color": "#ed7b25",
+          "accentColor": "#171b20",
+          "pattern": "stripes",
+          "description": "Naranja y negro"
+        },
+        "secondary": {
+          "color": "#235ca5",
+          "accentColor": "#f6f5ef",
+          "pattern": "trim",
+          "description": "Azul con detalles blancos"
+        }
+      }
+    },
+    {
+      "id": "c12",
+      "name": "Cajasol Real Ciencias Sevilla",
+      "officialName": "CAJASOL REAL CIENCIAS SEVILLA",
+      "shortName": "Real Ciencias",
+      "city": "Sevilla",
+      "color": "#2465ab",
+      "competitionId": 417,
+      "competition": "División de Honor Élite",
+      "officialTeamId": 2048,
+      "kits": {
+        "primary": {
+          "color": "#2465ab",
+          "accentColor": "#171b20",
+          "pattern": "halves",
+          "description": "Azul y negro"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#2465ab",
+          "pattern": "trim",
+          "description": "Blanco con vivos azules"
+        }
+      }
+    },
+    {
+      "id": "c13",
+      "name": "Valencia RC",
+      "officialName": "VALENCIA RC",
+      "shortName": "Valencia RC",
+      "city": "Valencia",
+      "color": "#16824e",
+      "competitionId": 417,
+      "competition": "División de Honor Élite",
+      "officialTeamId": 1709,
+      "kits": {
+        "primary": {
+          "color": "#16824e",
+          "accentColor": "#f6f5ef",
+          "pattern": "hoops",
+          "description": "Verde y blanco"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#16824e",
+          "pattern": "trim",
+          "description": "Blanco con detalles verdes"
+        }
+      }
+    },
+    {
+      "id": "c14",
+      "name": "A.D. Ingenieros Industriales Las Rozas Rugby",
+      "officialName": "A.D. INGENIEROS INDUSTRIALES LAS ROZAS RUGBY",
+      "shortName": "Industriales Las Rozas",
+      "city": "Las Rozas de Madrid",
+      "color": "#171b20",
+      "competitionId": 417,
+      "competition": "División de Honor Élite",
+      "officialTeamId": 1717,
+      "kits": {
+        "primary": {
+          "color": "#171b20",
+          "accentColor": "#2876b9",
+          "pattern": "halves",
+          "description": "Negro y azul"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#2876b9",
+          "pattern": "trim",
+          "description": "Blanco"
+        }
+      }
+    },
+    {
+      "id": "c15",
+      "name": "Steelphalt Getxo Rugby",
+      "officialName": "STEELPHALT GETXO RUGBY",
+      "shortName": "Getxo Rugby",
+      "city": "Getxo",
+      "color": "#171b20",
+      "competitionId": 417,
+      "competition": "División de Honor Élite",
+      "officialTeamId": 2064,
+      "kits": {
+        "primary": {
+          "color": "#171b20",
+          "accentColor": "#efcd27",
+          "pattern": "stripes",
+          "description": "Negro y amarillo"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#efcd27",
+          "pattern": "trim",
+          "description": "Blanco con detalles amarillos"
+        }
+      }
+    },
+    {
+      "id": "c16",
+      "name": "Recoletas Salud Fenix",
+      "officialName": "RECOLETAS SALUD FENIX",
+      "shortName": "Fénix Zaragoza",
+      "city": "Zaragoza",
+      "color": "#f6f5ef",
+      "competitionId": 417,
+      "competition": "División de Honor Élite",
+      "officialTeamId": 1736,
+      "kits": {
+        "primary": {
+          "color": "#f6f5ef",
+          "accentColor": "#171b20",
+          "pattern": "hoops",
+          "description": "Blanco y negro"
+        },
+        "secondary": {
+          "color": "#cd293b",
+          "accentColor": "#171b20",
+          "pattern": "trim",
+          "description": "Rojo"
+        }
+      }
+    },
+    {
+      "id": "c17",
+      "name": "Hernani CRE",
+      "officialName": "HERNANI CRE",
+      "shortName": "Hernani CRE",
+      "city": "Hernani",
+      "color": "#f6f5ef",
+      "competitionId": 417,
+      "competition": "División de Honor Élite",
+      "officialTeamId": 1719,
+      "kits": {
+        "primary": {
+          "color": "#f6f5ef",
+          "accentColor": "#25824a",
+          "pattern": "hoops",
+          "description": "Blanco, verde y rojo",
+          "thirdColor": "#cb2d3b"
+        },
+        "secondary": {
+          "color": "#c62d3b",
+          "accentColor": "#25824a",
+          "pattern": "trim",
+          "description": "Rojo con detalles verdes"
+        }
+      }
+    },
+    {
+      "id": "c18",
+      "name": "Barça Rugbi",
+      "officialName": "BARÇA RUGBI",
+      "shortName": "Barça Rugbi",
+      "city": "Barcelona",
+      "color": "#17488b",
+      "competitionId": 417,
+      "competition": "División de Honor Élite",
+      "officialTeamId": 2057,
+      "kits": {
+        "primary": {
+          "color": "#17488b",
+          "accentColor": "#9c234a",
+          "pattern": "stripes",
+          "description": "Azulgrana"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#9c234a",
+          "pattern": "trim",
+          "description": "Blanco con detalles azulgranas"
+        }
+      }
+    },
+    {
+      "id": "c19",
+      "name": "Club de Rugby Sant Cugat",
+      "officialName": "CLUB DE RUGBY SANT CUGAT",
+      "shortName": "CR Sant Cugat",
+      "city": "Sant Cugat del Vallès",
+      "color": "#23549a",
+      "competitionId": 417,
+      "competition": "División de Honor Élite",
+      "officialTeamId": 1721,
+      "kits": {
+        "primary": {
+          "color": "#23549a",
+          "accentColor": "#c53045",
+          "pattern": "hoops",
+          "description": "Azul y rojo a rayas horizontales"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#23549a",
+          "pattern": "trim",
+          "description": "Blanco"
+        }
+      }
+    },
+    {
+      "id": "c20",
+      "name": "Torrealday Gernika Rugby Taldea",
+      "officialName": "TORREALDAY GERNIKA RUGBY TALDEA",
+      "shortName": "Gernika RT",
+      "city": "Gernika-Lumo",
+      "color": "#171b20",
+      "competitionId": 417,
+      "competition": "División de Honor Élite",
+      "officialTeamId": 1724,
+      "kits": {
+        "primary": {
+          "color": "#171b20",
+          "accentColor": "#23854e",
+          "pattern": "halves",
+          "description": "Negro y verde"
+        },
+        "secondary": {
+          "color": "#f6f5ef",
+          "accentColor": "#23854e",
+          "pattern": "trim",
+          "description": "Blanco con detalles verdes"
+        }
+      }
+    }
+  ],
+  "kitNotice": "Paletas de representación para la simulación; no constituyen una verificación de las equipaciones oficiales de la temporada.",
+  "kitReference": {
+    "type": "user-supplied",
+    "date": "2026-11-10"
+  }
+}

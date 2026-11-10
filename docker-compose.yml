@@ -1,0 +1,44 @@
+services:
+  iris:
+    init: true
+    build:
+      context: .
+      dockerfile: iris/Dockerfile
+      args:
+        IMAGE: ${IRIS_IMAGE:-containers.intersystems.com/intersystems/iris-community:latest-preview}
+    environment:
+      ISC_DATA_DIRECTORY: /iris-shared/durable
+      ISC_CPF_MERGE_FILE: /opt/rugby/iris.cpf
+    volumes:
+      - iris-data:/iris-shared
+    command: --check-caps false --ISCAgent false --after '/bin/sh /opt/rugby/start.sh'
+    restart: unless-stopped
+  webgateway:
+    build:
+      context: .
+      dockerfile: webgateway/Dockerfile
+      args:
+        IMAGE: ${WEBGATEWAY_IMAGE:-containers.intersystems.com/intersystems/webgateway:latest-em}
+    environment:
+      ISC_CSP_CONF_FILE: /config/CSP.conf
+      ISC_CSP_INI_FILE: /config/CSP.ini
+    ports:
+      - '127.0.0.1:8085:80'
+    depends_on:
+      - iris
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+  frontend:
+    build: ./rugby-frontend
+    ports:
+      - '127.0.0.1:${APP_PORT:-5175}:80'
+    depends_on:
+      - webgateway
+    restart: unless-stopped
+volumes:
+  iris-data:

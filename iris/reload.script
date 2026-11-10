@@ -1,0 +1,4 @@
+set sc=$SYSTEM.OBJ.LoadDir("/opt/rugby/src","ck",,1)
+if $SYSTEM.Status.IsError(sc) do $SYSTEM.Status.DisplayError(sc) halt
+do ##class(Rugby.Seed.Initial).Run()
+halt

@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+iris/shared/
+webgateway/shared/durable/
+test-results/
+playwright-report/
+*.log
+*.tsbuildinfo
+
+__pycache__/
+*.pyc
+tmp/

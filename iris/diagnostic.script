@@ -1,0 +1,6 @@
+write "IRIS=",$zversion,!
+write "UTC=",$ztimestamp,!
+write "H=",$horolog,!
+write "NOW=",##class(Rugby.Job.Worker).Now(),!
+write "HEARTBEAT=",$get(^RugbyWorkerHeartbeat),!
+halt

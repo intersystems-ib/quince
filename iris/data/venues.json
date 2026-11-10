@@ -1,0 +1,210 @@
+{
+  "version": "venues-2026-27-v1",
+  "verifiedOn": "2026-11-10",
+  "sources": [
+    "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+    "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27"
+  ],
+  "clubs": [
+    {
+      "clubId": "c1",
+      "stadium": {
+        "name": "Estadio Nacional Complutense",
+        "capacity": 12400,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c2",
+      "stadium": {
+        "name": "Campos de Pepe Rojo",
+        "capacity": 5000,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c3",
+      "stadium": {
+        "name": "C. D. San Amaro",
+        "capacity": 1000,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c4",
+      "stadium": {
+        "name": "Baldiri Aleu",
+        "capacity": 3500,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c5",
+      "stadium": {
+        "name": "Estadio de Rugby de Villajoyosa",
+        "capacity": 1550,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c6",
+      "stadium": {
+        "name": "Estadio Ramon Urtubi",
+        "capacity": 500,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c7",
+      "stadium": {
+        "name": "Las Terrazas",
+        "capacity": 2000,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c8",
+      "stadium": {
+        "name": "Campos de Pepe Rojo",
+        "capacity": 5000,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c9",
+      "stadium": {
+        "name": "Valle de las Cañas",
+        "capacity": 500,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c10",
+      "stadium": {
+        "name": "Estadio Municipal de Altamira",
+        "capacity": 1000,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c11",
+      "stadium": {
+        "name": "Polideportivo Quatre Carreres",
+        "capacity": 500,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c12",
+      "stadium": {
+        "name": "I. D. La Cartuja",
+        "capacity": 3000,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c13",
+      "stadium": {
+        "name": "Campos de Rugby Jorge Diego Pantera, Polideportivo de Quatre Carreres",
+        "capacity": 1296,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c14",
+      "stadium": {
+        "name": "Campo de rugby El Cantizal",
+        "capacity": 800,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c15",
+      "stadium": {
+        "name": "Ciudad Deportiva de Fadura",
+        "capacity": 1000,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c16",
+      "stadium": {
+        "name": "C. D. M. David Cañada",
+        "capacity": 1000,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c17",
+      "stadium": {
+        "name": "Landare Toki",
+        "capacity": 1600,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c18",
+      "stadium": {
+        "name": "La Teixonera",
+        "capacity": 500,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c19",
+      "stadium": {
+        "name": "ZEM La Guinardera",
+        "capacity": 500,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    },
+    {
+      "clubId": "c20",
+      "stadium": {
+        "name": "Complejo deportivo Urbieta",
+        "capacity": 1500,
+        "sourceUrl": "https://es.wikipedia.org/wiki/Divisi%C3%B3n_de_Honor_%C3%89lite_de_rugby_2026-27",
+        "verifiedOn": "2026-11-10",
+        "referenceSeason": "2026/2027"
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Quince · Rugby Club Manager",
+  "short_name": "Quince",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111b20",
+  "theme_color": "#111b20",
+  "icons": [
+    {
+      "src": "/app-icon.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
