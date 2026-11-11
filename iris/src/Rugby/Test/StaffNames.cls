@@ -27,7 +27,7 @@ ClassMethod Run()
     set all=##class(Rugby.Service.Store).All("Coach").%ToJSON(),again=##class(Rugby.Seed.StaffNames).Initialize()
     do ..Assert((again.changes.%Size()=0)&&(##class(Rugby.Service.Store).All("Coach").%ToJSON()=all),"Repair is idempotent")
     set oldQuery=$get(%RugbyQuery),%RugbyQuery={"role":"academy","offset":0,"limit":5},page=##class(Rugby.Service.Router).Resolve("GET","staff-market","","","",{},""),%RugbyQuery=oldQuery,previous=101
-    do ..Assert((page.items.%Size()=5)&&(page.total>=22),"Speciality is filtered before pagination and retains every candidate")
+    do ..Assert((page.items.%Size()=3)&&(page.total=3),"Speciality is filtered before pagination and offers three candidates")
     for i=0:1:page.items.%Size()-1 { set p=page.items.%Get(i) do ..Assert((p.role="academy")&&(p.quality<=previous),"Market is ordered by quality within the requested speciality") set previous=p.quality }
     set name=##class(Rugby.Seed.StaffNames).Generate("ai-coach-name-test"),repeat=##class(Rugby.Seed.StaffNames).Generate("ai-coach-name-test")
     do ..Assert(name=repeat,"New automatic coach names are deterministic")

@@ -1,6 +1,7 @@
 Class Rugby.Service.Payroll Extends %RegisteredObject
 {
 Parameter VERSION = "3.0.0";
+Parameter MARKETLIMIT = 3;
 ClassMethod Active() As %Boolean { quit $get(^RugbyWorld(##class(Rugby.Service.Store).Game(),"payrollVersion"))=..#VERSION }
 ClassMethod Budget(club As %String) As %Integer { quit ##class(Rugby.Service.Finance).Funding(##class(Rugby.Service.Store).Get("Club",club)) }
 ClassMethod AnnualCap(club As %String) As %Integer
@@ -82,7 +83,24 @@ ClassMethod Market(role As %String = "") As %DynamicArray
     }
     set quality=""
     for { set quality=$order(ordered(quality)) quit:quality=""  set name="" for { set name=$order(ordered(quality,name)) quit:name=""  set id="" for { set id=$order(ordered(quality,name,id)) quit:id=""  do items.%Push(ordered(quality,name,id)) } } }
-    quit items
+    quit ..Shortlist(items)
+}
+ClassMethod Shortlist(all As %DynamicArray) As %DynamicArray
+{
+    set selected={},tiers={},counts={},result=[]
+    // Keep one candidate per quality band before filling any remaining places.
+    for i=0:1:all.%Size()-1 {
+        set p=all.%Get(i),tier=p.role_"-"_$select(p.quality<55:1,p.quality<75:2,1:3)
+        if selected.%IsDefined(p.id)||(tiers.%Get(tier,0)>=1) continue
+        do selected.%Set(p.id,1),tiers.%Set(tier,tiers.%Get(tier,0)+1),counts.%Set(p.role,counts.%Get(p.role,0)+1)
+    }
+    for i=0:1:all.%Size()-1 {
+        set p=all.%Get(i)
+        if selected.%IsDefined(p.id)||(counts.%Get(p.role,0)>=..#MARKETLIMIT) continue
+        do selected.%Set(p.id,1),counts.%Set(p.role,counts.%Get(p.role,0)+1)
+    }
+    for i=0:1:all.%Size()-1 { set p=all.%Get(i) if selected.%IsDefined(p.id) { do result.%Push(p),selected.%Remove(p.id) } }
+    quit result
 }
 ClassMethod Summary(club As %String) As %DynamicObject
 {

@@ -55,11 +55,11 @@ ClassMethod Assign(club As %String, coachId As %String, key As %String) As %Dyna
     if candidate.clubId'="" do ##class(Rugby.Service.Store).Fail(409,"COACH_UNAVAILABLE","Este entrenador ya tiene contrato. Actualiza los candidatos.")
     set candidate.monthlyWage=##class(Rugby.Service.MonthlyPayroll).StaffMonthly(candidate.role,candidate.quality,club),candidate.weeklyWage=##class(Rugby.Service.MonthlyPayroll).Weekly(candidate.monthlyWage)
     set candidate.payrollStartDay=##class(Rugby.Service.Store).Get("Club",club).day,candidate.staffPayVersion=##class(Rugby.Service.StaffPay).#VERSION,candidate.salaryEffectiveDay=candidate.payrollStartDay,candidate.salaryBeforeAdjustment=0
-    set ids=[],replaced=""
+    set ids=[],replaced="",replacedName=""
     for i=0:1:staff.coachIds.%Size()-1 {
         set coach=##class(Rugby.Service.Store).Get("Coach",staff.coachIds.%Get(i))
         if coach.role=candidate.role {
-            set replaced=coach.id,coach.clubId="",coach.status="available"
+            set replaced=coach.id,replacedName=coach.name,coach.clubId="",coach.status="dismissed"
             do ##class(Rugby.Service.Store).Put("Coach",coach)
         } else { do ids.%Push(coach.id) }
     }
@@ -71,8 +71,10 @@ ClassMethod Assign(club As %String, coachId As %String, key As %String) As %Dyna
     do ##class(Rugby.Service.Store).Put("TechnicalStaff",staff)
     set c=##class(Rugby.Service.Store).Get("Club",club)
     set contract={"id":(club_"-"_key),"clubId":(club),"coachId":(candidate.id),"replacedCoachId":(replaced),"role":(candidate.role),"quality":(candidate.quality),"weeklyWage":(candidate.weeklyWage),"monthlyWage":(candidate.monthlyWage),"payPeriod":"monthly","day":(c.day),"idempotencyKey":(key)}
-    set contract.kind="hire",contract.employeeName=candidate.name
+    set contract.kind="hire",contract.employeeName=candidate.name,contract.replacedEmployeeName=replacedName
     do ##class(Rugby.Service.Store).Put("StaffContract",contract)
+    if replaced'="" { set former=##class(Rugby.Service.Store).Get("Coach",replaced,0) if $isobject(former) set removed=##class(Rugby.Service.StaffMarket).Remove(former) }
+    set replenished=##class(Rugby.Service.StaffMarket).Ensure(candidate.role)
     set result=..View(club),^RugbyWorld(##class(Rugby.Service.Store).Game(),"retry","staff",club,key)=result.%ToJSON()
     quit result
 }

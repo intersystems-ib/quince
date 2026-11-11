@@ -2,7 +2,7 @@
 
 `./scripts/test.ps1` ejecuta los grupos de IRIS y compila el frontend. Los casos se revierten al terminar; las integraciones que avanzan partidas requieren una instancia desechable.
 
-Verificados 55 grupos, integración HTTP y revisión visual. La actualización de la partida existente ajusta 920 jugadores y conserva sus datos deportivos y económicos.
+La suite reúne 57 grupos e incluye integración HTTP y revisión visual. La actualización de la partida existente ajusta 920 jugadores y conserva sus datos deportivos y económicos.
 
 La suite cubre competición, temporadas, alineación, entrenamiento, moral, lesiones, tarjetas, partidos, salarios, finanzas, mercado, seguridad e idempotencia. TalentScale verifica reducción proporcional, conservación de datos y futuras generaciones. FriendlyRequests verifica fines de semana, límite mensual, aceptación, rechazo, caducidad y reintentos.
 
@@ -19,3 +19,5 @@ Copa: grupos y fechas FER, localías, bonus, eliminatorias, doblete, plazas de l
 AttributeProgress verifica ganancias, descenso por edad, reintentos, reconstrucción histórica, cambios de club y separación por temporadas.
 
 MatchStatistics comprueba atribución individual, conciliación con marcador y totales, minutos, reintentos, historial tras traspasos y registros antiguos parciales.
+
+StaffMarket comprueba tres candidatos por especialidad, reposición tras contratar, eliminación de despedidos y conservación de contratos y empleados activos.

@@ -4,10 +4,17 @@ export type LineupTarget={kind:'starter'|'bench';index:number};
 
 export function availableBench(lineup:Lineup,players:Player[]):Lineup{
  const byId=new Map(players.map(p=>[p.id,p]));
- const bench=lineup.bench.filter(id=>!byId.has(id)||byId.get(id)!.available);
+ const bench=Array.from({length:8},(_,index)=>{
+  const id=lineup.bench[index]??'';
+  return byId.has(id)&&!byId.get(id)!.available?'':id;
+ });
  const removedCaptain=lineup.bench.includes(lineup.captainId)&&!bench.includes(lineup.captainId);
  const captainId=removedCaptain?(lineup.slots.map(s=>s.playerId).find(id=>byId.get(id)?.available)??bench.find(id=>byId.get(id)?.available)??''):lineup.captainId;
- return bench.length===lineup.bench.length&&captainId===lineup.captainId?lineup:{...lineup,bench,captainId};
+ return bench.length===lineup.bench.length&&bench.every((id,index)=>id===lineup.bench[index])&&captainId===lineup.captainId?lineup:{...lineup,bench,captainId};
+}
+
+export function lineupForSave(lineup:Lineup):Lineup{
+ return {...lineup,bench:lineup.bench.filter(Boolean)};
 }
 
 export function selectLineupPlayer(lineup:Lineup,players:Player[],target:LineupTarget,playerId:string):Lineup{

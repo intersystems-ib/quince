@@ -130,7 +130,7 @@ route('/negotiations/{negotiationId}','get','Estado actual de la negociación y 
 route('/negotiations/{negotiationId}/offer','post','Negociar salario y contrato de 1 a 5 temporadas; hasta cinco ofertas y contraofertas','Negotiation','SalaryOffer',key=True)
 route('/negotiations/{negotiationId}/sign','post','Confirmar salario acordado, pagar prima una sola vez e incorporar al primer equipo','Negotiation','Version',key=True)
 route('/negotiations/{negotiationId}/withdraw','post','Retirar una negociación sin contratar','Negotiation','Version',key=True)
-route('/staff-market','get','Entrenadores disponibles para contratar','CoachPage',paged=True)
+route('/staff-market','get','Tres candidatos por especialidad, renovados al contratar','CoachPage',paged=True)
 route('/clubs/{clubId}/staff','get','Cuerpo técnico contratado, roles y gasto semanal','Staff')
 route('/clubs/{clubId}/staff','post','Contratar candidato y sustituir al titular del mismo puesto','Staff','HireCoach',key=True)
 route('/clubs/{clubId}/training-executions','get','Historial de sesiones aplicado una vez por día','TrainingExecutionPage',paged=True)

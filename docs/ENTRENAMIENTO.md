@@ -23,3 +23,5 @@ Hay ocho puestos: principal, delanteros, tres cuartos, defensa, ataque, destreza
 La ficha muestra promedio y potencial al final de temporada, calculado con el plan vigente. Véase [Salarios](SALARIOS-PRESUPUESTO.md).
 
 La ficha muestra junto a cada atributo el cambio acumulado de la temporada: verde al subir y rojo al bajar. El indicador usa enteros; las fracciones se conservan internamente. Se recupera el historial de sesiones existentes y cada temporada lleva su propio acumulado.
+
+El mercado mantiene tres candidatos por especialidad. Al contratar se genera un sustituto y el empleado despedido se elimina del mercado; sus contratos conservan el historial. Consultar candidatos no genera nuevas personas.

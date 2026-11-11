@@ -99,7 +99,7 @@ ClassMethod Coach(c As %DynamicObject, day As %Integer) As %DynamicObject
         if priority>score set worst=coach,score=priority
     }
     if (worst.quality>=75)||(c.balance<(staff.weeklyWage*8)) quit {"hired":false}
-    set market=##class(Rugby.Service.Store).All("Coach","clubId",""),candidate="",best=-1
+    set market=##class(Rugby.Service.Store).All("Coach","clubId",""),candidate="",best=-1,generated=0
     for i=0:1:market.%Size()-1 {
         set coach=market.%Get(i)
         if (coach.role'=worst.role)||(coach.quality<(worst.quality+2))||(coach.quality>(worst.quality+8)) continue
@@ -108,10 +108,10 @@ ClassMethod Coach(c As %DynamicObject, day As %Integer) As %DynamicObject
     }
     if '$isobject(candidate) {
         set quality=worst.quality+2+(..Hash(c.id_"-"_day,..Seed())#4),id="ai-coach-"_c.id_"-"_day
-        set candidate={"id":(id),"clubId":"","name":(##class(Rugby.Seed.StaffNames).Generate(id)),"generatedNameVersion":"1.0.0","role":(worst.role),"quality":(quality),"weeklyWage":(##class(Rugby.Service.Staff).Salary(worst.role,quality)),"effectiveness":(##class(Rugby.Service.Staff).Multiplier(quality)),"status":"available"}
-        do ##class(Rugby.Service.Store).Put("Coach",candidate)
+        set candidate={"id":(id),"clubId":"","name":"","generatedNameVersion":"1.0.0","role":(worst.role),"quality":(quality),"weeklyWage":(##class(Rugby.Service.Staff).Salary(worst.role,quality)),"effectiveness":(##class(Rugby.Service.Staff).Multiplier(quality)),"status":"available"},generated=1
     }
     if '##class(Rugby.Service.MonthlyPayroll).CanHire(c.id,candidate.role,##class(Rugby.Service.MonthlyPayroll).StaffMonthly(candidate.role,candidate.quality,c.id)) quit {"hired":false,"reason":"payrollLimit"}
+    if generated { set candidate.name=##class(Rugby.Seed.StaffNames).Generate(candidate.id) do ##class(Rugby.Service.Store).Put("Coach",candidate) }
     set assigned=##class(Rugby.Service.Staff).Assign(c.id,candidate.id,"ai-staff-"_day)
     quit {"hired":true,"coachId":(candidate.id),"role":(candidate.role),"beforeQuality":(worst.quality),"quality":(candidate.quality),"weeklyWage":(candidate.weeklyWage)}
 }
