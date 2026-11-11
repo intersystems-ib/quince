@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import {requestId} from '../src/requestId';
 
 test('gestión, partido real, sustitución, recarga y resultado',async({page,request})=>{
   const health=await request.get('/api/v1/health');
@@ -13,7 +14,7 @@ test('gestión, partido real, sustitución, recarga y resultado',async({page,req
   expect(next,'Queda al menos un amistoso disponible').toBeTruthy();
   let current=club;
   while(current.day<next.day){
-    const response=await request.post('/api/v1/clubs/c1/advance-day',{headers:{'Idempotency-Key':crypto.randomUUID()},data:{version:current.version}});
+    const response=await request.post('/api/v1/clubs/c1/advance-day',{headers:{'Idempotency-Key':requestId()},data:{version:current.version}});
     expect(response.ok()).toBeTruthy();current=await response.json();
   }
   await page.goto('/');

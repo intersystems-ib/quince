@@ -1,3 +1,4 @@
+import {requestId} from './requestId';
 import {useEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {useMutation,useQuery} from '@tanstack/react-query';
@@ -8,8 +9,8 @@ import {NegotiationPanel} from './TransfersView';
 import type {Club,Negotiation,Page,Player} from './types';
 
 export default function PlayerPromotion({player,renewal=false}:{player:Player;renewal?:boolean}){
- const [open,setOpen]=useState(false),[initial,setInitial]=useState<Negotiation>(),dialog=useRef<HTMLDialogElement>(null),key=useRef(crypto.randomUUID());
- const start=useMutation({mutationFn:()=>api<Negotiation>(renewal?`/players/${player.id}/renew`:`/my-club/academy/${player.id}/promote`,'POST',{version:player.version},key.current),onSuccess:n=>{key.current=crypto.randomUUID();setInitial(n);setOpen(true);}});
+ const [open,setOpen]=useState(false),[initial,setInitial]=useState<Negotiation>(),dialog=useRef<HTMLDialogElement>(null),key=useRef(requestId());
+ const start=useMutation({mutationFn:()=>api<Negotiation>(renewal?`/players/${player.id}/renew`:`/my-club/academy/${player.id}/promote`,'POST',{version:player.version},key.current),onSuccess:n=>{key.current=requestId();setInitial(n);setOpen(true);}});
  useEffect(()=>{if(open)dialog.current?.showModal();else dialog.current?.close();},[open]);
  const current=useQuery({queryKey:['negotiation',initial?.id],queryFn:()=>api<Negotiation>(`/negotiations/${initial!.id}`),enabled:open&&!!initial,refetchInterval:open?15000:false});
  const club=useQuery({queryKey:['club'],queryFn:()=>api<Club>('/my-club'),enabled:open});

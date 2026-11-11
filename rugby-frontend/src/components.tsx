@@ -1,3 +1,4 @@
+import {requestId} from './requestId';
 import {useEffect,useRef,useState} from 'react';
 import {useMutation,useQueryClient} from '@tanstack/react-query';
 import {ArrowRight,Check,LoaderCircle,TriangleAlert,X} from 'lucide-react';
@@ -24,7 +25,7 @@ export function AttributeDelta({value,year}:{value:number;year?:number}){
  return <small className={`attribute-delta ${value>0?'growth':'decline'}`} aria-label={label} title={label}>{sign}{formatted}</small>;
 }
 export function Action({path,method='POST',body,children,onSuccess,className='',disabled=false,confirmMessage,confirmLabel='Rescindir contrato',errorResetKey}:{path:string;method?:string;body?:unknown;children:React.ReactNode;onSuccess?:(data:unknown)=>void;className?:string;disabled?:boolean;confirmMessage?:string;confirmLabel?:string;errorResetKey?:string}){
- const qc=useQueryClient(),key=useRef(crypto.randomUUID()),dialog=useRef<HTMLDialogElement>(null),[confirmOpen,setConfirmOpen]=useState(false);
+ const qc=useQueryClient(),key=useRef(requestId()),dialog=useRef<HTMLDialogElement>(null),[confirmOpen,setConfirmOpen]=useState(false);
  useEffect(()=>{if(confirmOpen)dialog.current?.showModal();else dialog.current?.close();},[confirmOpen]);
  const errorContext=useRef(errorResetKey);
  const mutation=useMutation({mutationFn:()=>{
@@ -36,7 +37,7 @@ export function Action({path,method='POST',body,children,onSuccess,className='',
    });
   }
   return api(path,method,body,key.current);
- },onSuccess:(data)=>{key.current=crypto.randomUUID();void qc.invalidateQueries();onSuccess?.(data);}});
+ },onSuccess:(data)=>{key.current=requestId();void qc.invalidateQueries();onSuccess?.(data);}});
  useEffect(()=>{if(errorContext.current===errorResetKey)return;errorContext.current=errorResetKey;if(mutation.isError)mutation.reset();},[errorResetKey,mutation.isError,mutation.reset]);
  return <div className="action-wrap"><button className={`button ${className}`} disabled={disabled||mutation.isPending} onClick={()=>{if(confirmMessage){setConfirmOpen(true);return;}mutation.mutate();}}>{mutation.isPending?<LoaderCircle className="spin" size={16}/>:mutation.isSuccess?<Check size={16}/>:null}{children}</button>{confirmMessage&&<dialog ref={dialog} className="action-confirm" aria-labelledby={`confirm-${key.current}`} onCancel={e=>{e.preventDefault();setConfirmOpen(false);}}><h3 id={`confirm-${key.current}`}>{confirmLabel}</h3><p>{confirmMessage}</p><div className="confirm-buttons"><button className="button" autoFocus onClick={()=>setConfirmOpen(false)}>Cancelar</button><button className="button danger" onClick={()=>{setConfirmOpen(false);mutation.mutate();}}>{confirmLabel}</button></div></dialog>}{mutation.error&&<ErrorBox error={mutation.error} onDismiss={()=>mutation.reset()}/>}</div>
 }

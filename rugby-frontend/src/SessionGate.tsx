@@ -1,3 +1,4 @@
+import {requestId} from './requestId';
 import {useEffect,useRef,useState} from 'react';
 import {useQuery,useQueryClient} from '@tanstack/react-query';
 import {useNavigate} from 'react-router-dom';
@@ -29,8 +30,8 @@ function Lobby({user,onLoad,onLogout}:{user:User;onLoad:(g:Game)=>Promise<void>;
  const games=useQuery({queryKey:['saved-games'],queryFn:()=>api<{items:Game[]}>('/games')}),catalog=useQuery({queryKey:['game-catalog'],queryFn:()=>api<{items:Club[]}>('/game-catalog')});
  const qc=useQueryClient(),[deleted,setDeleted]=useState(''),[deleting,setDeleting]=useState<Game|null>(null),deleteDialog=useRef<HTMLDialogElement>(null),[deleteError,setDeleteError]=useState<unknown>();
  useEffect(()=>{if(deleting)deleteDialog.current?.showModal();else deleteDialog.current?.close();},[deleting]);
- const [create,setCreate]=useState(false),[division,setDivision]=useState(416),[clubId,setClubId]=useState(''),[name,setName]=useState('Mi temporada'),[pending,setPending]=useState(false),[error,setError]=useState<unknown>(),key=useRef(crypto.randomUUID());
- async function start(g?:Game){setPending(true);setError(undefined);try{const game=g??await api<Game>('/games','POST',{name,clubId,divisionId:division},key.current);key.current=crypto.randomUUID();await onLoad(game);}catch(e){setError(e);}finally{setPending(false);}}
+ const [create,setCreate]=useState(false),[division,setDivision]=useState(416),[clubId,setClubId]=useState(''),[name,setName]=useState('Mi temporada'),[pending,setPending]=useState(false),[error,setError]=useState<unknown>(),key=useRef(requestId());
+ async function start(g?:Game){setPending(true);setError(undefined);try{const game=g??await api<Game>('/games','POST',{name,clubId,divisionId:division},key.current);key.current=requestId();await onLoad(game);}catch(e){setError(e);}finally{setPending(false);}}
  async function remove(g:Game){
   setPending(true);setDeleteError(undefined);setDeleted('');
   try{
