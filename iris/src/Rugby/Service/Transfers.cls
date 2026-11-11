@@ -84,6 +84,8 @@ ClassMethod Public(n As %DynamicObject) As %DynamicObject
         elseif p.version'=out.playerVersion { set out.status="changed" }
         elseif (c.day>out.expiresDay)&&$listfind($listbuild("open","counteroffer","agreed"),out.status) { set out.status="expired" }
     }
+    set age=(c.day-p.birthDay)\365,out.preferredMinYears=$select(age>=33:1,age<=24:2,1:5),out.preferredMaxYears=$select(age>=33:1,age<=24:3,1:5)
+    set out.contractYears=out.%Get("contractYears",1)
     set p.age=(c.day-p.birthDay)\365,p.nationality=p.%Get("nationality","España"),p.nationalityCode=p.%Get("nationalityCode","ES"),out.player=##class(Rugby.Service.Development).FreeProfile(p)
     quit out
 }
@@ -152,7 +154,7 @@ ClassMethod Open(pid As %String, b As %DynamicObject, key As %String, kind As %S
         if term>year set year=term
         set year=year+1
     }
-    set n.contractEndDate=##class(Rugby.Service.Seasons).EndDate(year)
+    set years=##class(Rugby.Service.ContractTerms).Preferred((c.day-p.birthDay)\365,p.id),n.contractStartYear=year,n.contractYears=years,n.counterContractYears=years,n.contractEndDate=##class(Rugby.Service.Seasons).EndDate(year+years-1)
     do ##class(Rugby.Service.Store).Put("Negotiation",n)
     set ^RugbyWorld(game,"negotiations",club,pid)=id,^RugbyWorld(game,"retry","negotiate",club,key)=id
     quit ..Public(n)
@@ -180,11 +182,15 @@ ClassMethod Offer(id As %String, b As %DynamicObject, key As %String) As %Dynami
     }
     if '$listfind($listbuild("open","counteroffer"),n.status) do ##class(Rugby.Service.Store).Fail(409,"NEGOTIATION_STATE","Esta negociación no admite más ofertas.")
     if 'monthly { if (b.%GetTypeOf("weeklyWage")'="number")||('##class(Rugby.Service.Store).Integer(wage,100,5000000))||(wage#100) do ##class(Rugby.Service.Store).Fail(422,"WAGE","Indica un salario semanal entre 1 y 50.000 €, en euros enteros.") }
-    set c=##class(Rugby.Service.Store).Get("Club",club),n.round=n.round+1,n.updatedDay=c.day
-    if wage>=n.reservationWage { set n.status="agreed",n.agreedWeeklyWage=wage,n.agreedMonthlyWage=$select(monthly:amount,1:##class(Rugby.Service.Payroll).Monthly(wage)),n.counterWeeklyWage=0 }
-    elseif n.round>=n.maxRounds { set n.status="rejected",n.counterWeeklyWage=0 }
-    else { set n.status="counteroffer",n.counterWeeklyWage=n.askingWeeklyWage-(((((n.askingWeeklyWage-n.reservationWage)\100)*n.round)\5)*100) }
-    do n.offers.%Push({"round":(n.round),"day":(c.day),"offeredWeeklyWage":(wage),"status":(n.status),"counterWeeklyWage":(n.counterWeeklyWage)})
+    set years=b.%Get("contractYears",n.%Get("contractYears",1))
+    if b.%IsDefined("contractYears") { if (b.%GetTypeOf("contractYears")'="number")||('##class(Rugby.Service.Store).Integer(years,1,5)) do ##class(Rugby.Service.Store).Fail(422,"CONTRACT_YEARS","La duración del contrato debe ser de 1 a 5 años enteros.") }
+    set c=##class(Rugby.Service.Store).Get("Club",club),p=..Candidate(n.playerId,n.%Get("kind","signing")),age=(c.day-p.birthDay)\365,preferred=##class(Rugby.Service.ContractTerms).Preferred(age,p.id),minimum=(((n.reservationWage*##class(Rugby.Service.ContractTerms).Premium(age,years))+99)\100)*100
+    if 'n.%IsDefined("contractStartYear") set n.contractStartYear=##class(Rugby.Service.Competition).Year(n.contractEndDate)-(n.%Get("contractYears",1)-1)
+    set n.round=n.round+1,n.updatedDay=c.day
+    if wage>=minimum { set n.status="agreed",n.agreedWeeklyWage=wage,n.agreedMonthlyWage=$select(monthly:amount,1:##class(Rugby.Service.Payroll).Monthly(wage)),n.counterWeeklyWage=0,n.agreedContractYears=years,n.contractYears=years,n.counterContractYears=0,n.contractEndDate=##class(Rugby.Service.ContractTerms).EndDate(n,years) }
+    elseif n.round>=n.maxRounds { set n.status="rejected",n.counterWeeklyWage=0,n.counterContractYears=0 }
+    else { set n.status="counteroffer",n.contractYears=preferred,n.counterContractYears=preferred,n.contractEndDate=##class(Rugby.Service.ContractTerms).EndDate(n,preferred),n.counterWeeklyWage=n.askingWeeklyWage-(((((n.askingWeeklyWage-n.reservationWage)\100)*n.round)\5)*100) }
+    do n.offers.%Push({"round":(n.round),"day":(c.day),"offeredWeeklyWage":(wage),"offeredContractYears":(years),"status":(n.status),"counterWeeklyWage":(n.counterWeeklyWage),"counterContractYears":(n.%Get("counterContractYears",0)),"agreedContractYears":(n.%Get("agreedContractYears",0))})
     do ##class(Rugby.Service.Store).Put("Negotiation",n)
     set out=..Public(n),^RugbyWorld(game,"retry","offer",club,key)=out.%ToJSON()
     quit out
@@ -202,13 +208,13 @@ ClassMethod Sign(id As %String, b As %DynamicObject, key As %String) As %Dynamic
     set cover=##class(Rugby.Service.Rivals).InjuryNeed(c,c.day),medical=(n.%Get("kind","signing")="signing")&&(cover.position>0)&&((cover.position<=8)=(p.position<=8)),useMedical=medical&&##class(Rugby.Service.Payroll).CanPayMedical(club,p.id,n.agreedWeeklyWage)
     if 'useMedical do ##class(Rugby.Service.Payroll).Check(club,p.id,n.agreedWeeklyWage)
     if n.%Get("kind")'="renewal" set p.clubId=club,p.category="senior",p.signedDay=c.day
-    set p.weeklyWage=n.agreedWeeklyWage,p.monthlyWage=n.%Get("agreedMonthlyWage",##class(Rugby.Service.Payroll).Monthly(n.agreedWeeklyWage)),p.payrollStartDay=c.day,p.contractStatus="employed",p.contractEndDate=n.%Get("contractEndDate",##class(Rugby.Service.Seasons).EndDate(##class(Rugby.Service.Seasons).Year(club))),p.age=(c.day-p.birthDay)\365
+    set p.weeklyWage=n.agreedWeeklyWage,p.monthlyWage=n.%Get("agreedMonthlyWage",##class(Rugby.Service.Payroll).Monthly(n.agreedWeeklyWage)),p.payrollStartDay=c.day,p.contractStatus="employed",p.contractYears=n.%Get("agreedContractYears",1),p.contractEndDate=n.%Get("contractEndDate",##class(Rugby.Service.Seasons).EndDate(##class(Rugby.Service.Seasons).Year(club))),p.age=(c.day-p.birthDay)\365
     if useMedical set p.injuryCoverForPlayerId=cover.playerId
     if n.%Get("kind")="renewal" set p.renewedDay=c.day
     if n.%Get("kind")="promotion" set p.seniorWeeklyWage=n.agreedWeeklyWage,p.promotedDay=c.day
     do ##class(Rugby.Service.Store).Put("Player",p)
     if n.signingFee do ##class(Rugby.Service.Management).Money(c,-n.signingFee,"transfer","Prima de incorporación de "_p.name,"sign-"_n.id)
-    set contract={"id":(n.id_"-contract"),"clubId":(club),"playerId":(p.id),"negotiationId":(n.id),"kind":(n.%Get("kind","signing")),"day":(c.day),"weeklyWage":(p.weeklyWage),"monthlyWage":(p.monthlyWage),"payPeriod":"monthly","contractEndDate":(p.contractEndDate),"fee":(n.signingFee),"idempotencyKey":(key)}
+    set contract={"id":(n.id_"-contract"),"clubId":(club),"playerId":(p.id),"negotiationId":(n.id),"kind":(n.%Get("kind","signing")),"day":(c.day),"weeklyWage":(p.weeklyWage),"monthlyWage":(p.monthlyWage),"payPeriod":"monthly","contractEndDate":(p.contractEndDate),"contractYears":(p.contractYears),"fee":(n.signingFee),"idempotencyKey":(key)}
     if useMedical set contract.reason="injuryCover",contract.replacementForPlayerId=cover.playerId
     do ##class(Rugby.Service.Store).Put("PlayerContract",contract)
     set n.status="signed",n.updatedDay=c.day,n.contractId=contract.id

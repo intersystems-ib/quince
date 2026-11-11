@@ -8,12 +8,14 @@ ClassMethod Schedule(comp As %DynamicObject)
 {
     set fixtures=##class(Rugby.Service.Competition).Fixtures(comp.id)
     do ..Assert(fixtures.%Size()=90,"Ten teams produce ninety regular fixtures")
+    do ..Assert($isobject(##class(Rugby.Service.Store).Get("Competition","cup-"_comp.year,0)),"Cup is generated before a league draw")
     kill pair,round,venue,home,away
     set last=0
     for i=0:1:fixtures.%Size()-1 {
         set f=fixtures.%Get(i),h=$zdateh(f.date,3),dow=(h+4)#7
         do ..Assert((dow=0)||(dow=6),"All fixtures fall on Saturday or Sunday")
         do ..Assert((h>=$zdateh(comp.startDate,3))&&(h<=$zdateh(comp.endDate,3)),"Dates are within the requested season window")
+        do ..Assert('##class(Rugby.Service.Cup).Reserved(comp.year,f.date),"A league draw excludes all Cup weekends immediately")
         do ..Assert(f.homeId'=f.awayId,"Teams never play themselves")
         do ..Assert('$data(pair(f.homeId,f.awayId)),"Each ordered home-away pairing occurs once")
         set pair(f.homeId,f.awayId)=1,home(f.homeId)=$get(home(f.homeId))+1,away(f.awayId)=$get(away(f.awayId))+1

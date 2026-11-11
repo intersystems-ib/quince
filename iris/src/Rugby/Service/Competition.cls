@@ -10,7 +10,7 @@ ClassMethod Points(score As %Integer, against As %Integer, tries As %Integer, co
 ClassMethod Classification(f As %DynamicObject) As %DynamicObject
 {
     set result={"eligible":false,"rule":(..#POINTSRULE)}
-    if (f.status'="finished")||(f.%Get("stage")'="regular")||(f.%Get("competitionKey")="") quit result
+    if (f.status'="finished")||('$listfind($listbuild("regular","cup-group"),f.%Get("stage")))||(f.%Get("competitionKey")="") quit result
     do result.%Set("eligible",1,"boolean")
     for side="home","away" {
         set other=$select(side="home":"away",1:"home")
@@ -38,6 +38,7 @@ ClassMethod Draw(division As %Integer, year As %Integer, seed As %Integer) As %D
 {
     set id="league-"_division_"-"_year,old=##class(Rugby.Service.Store).Get("Competition",id,0)
     if $isobject(old) quit old
+    do ##class(Rugby.Service.Cup).Ensure(year)
     set clubs=##class(Rugby.Service.Store).All("Club","competitionId",division),teams=[],rng={"rng":(seed)}
     if clubs.%Size()'=10 do ##class(Rugby.Service.Store).Fail(422,"LEAGUE_TEAMS","La liga necesita exactamente diez equipos.")
     for i=0:1:9 { do teams.%Push(clubs.%Get(i).id) }
@@ -46,9 +47,11 @@ ClassMethod Draw(division As %Integer, year As %Integer, seed As %Integer) As %D
         do teams.%Set(i,teams.%Get(j)),teams.%Set(j,temp)
     }
     set first=..Nearest(year_"-09-27",6),last=..Nearest((year+1)_"-06-07",0),weeks=(last-1-first)\7
+    set days=##class(Rugby.Service.Cup).LeagueWeekends(year,first,last-21)
+    if days.%Size()<18 do ##class(Rugby.Service.Store).Fail(409,"LEAGUE_CALENDAR","No quedan dieciocho fines de semana libres para la Liga.")
     set semis=[],base=$zdateh("2026-11-07",3)
     for i=1:1:2 { do semis.%Push($zdate(last-8+((##class(Rugby.Simulation.Engine).Random(rng)*2)\1),3)) }
-    set comp={"id":(id),"divisionId":(division),"name":($select(division=416:"División de Honor",1:"División de Honor Élite")),"season":(year_"/"_(year+1)),"year":(year),"drawSeed":(seed),"teamIds":(teams),"seasonStartDate":(year_"-09-01"),"startDate":($zdate(first,3)),"endDate":($zdate(last,3)),"semifinalDates":(semis),"finalDate":($zdate(last,3)),"phase":"regular","regularOrder":[],"championId":"","runnerUpId":"","maxVenueStreak":2,"modelVersion":(..#VERSION)}
+    set comp={"id":(id),"divisionId":(division),"name":($select(division=416:"División de Honor",1:"División de Honor Élite")),"season":(year_"/"_(year+1)),"year":(year),"drawSeed":(seed),"teamIds":(teams),"seasonStartDate":(year_"-09-01"),"startDate":($zdate(first,3)),"endDate":($zdate(last,3)),"semifinalDates":(semis),"finalDate":($zdate(last,3)),"phase":"regular","regularOrder":[],"championId":"","runnerUpId":"","maxVenueStreak":2,"modelVersion":(..#VERSION),"calendarVersion":(##class(Rugby.Service.Cup).#CALENDARVERSION)}
     do ##class(Rugby.Service.Store).Put("Competition",comp)
     set circle=##class(%DynamicArray).%FromJSON(teams.%ToJSON()),patterns=[]
     // Circle draw: each pair occurs once. Orientations limit all venue streaks to two.
@@ -66,10 +69,10 @@ ClassMethod Draw(division As %Integer, year As %Integer, seed As %Integer) As %D
     }
     // Rotate return rounds by one; mirroring in the same order would create a third venue repetition.
     for r=0:1:17 {
-        set returnLeg=r>=9,index=$select(returnLeg:(r-8)#9,1:r),row=patterns.%Get(index),week=+ $justify((weeks-2)*r/17,0,0)
+        set returnLeg=r>=9,index=$select(returnLeg:(r-8)#9,1:r),row=patterns.%Get(index),week=+ $justify((days.%Size()-1)*r/17,0,0)
         for i=0:1:4 {
             set pair=row.%Get(i),home=$select(returnLeg:pair.away,1:pair.home),away=$select(returnLeg:pair.home,1:pair.away)
-            set date=$zdate(first+(week*7)+((##class(Rugby.Simulation.Engine).Random(rng)*2)\1),3)
+            set date=$zdate(days.%Get(week)+((##class(Rugby.Simulation.Engine).Random(rng)*2)\1),3)
             set f={"id":(id_"-r"_(r+1)_"-"_(i+1)),"clubId":($select((home=##class(Rugby.Service.Store).ManagedClub())||(away=##class(Rugby.Service.Store).ManagedClub()):##class(Rugby.Service.Store).ManagedClub(),1:home)),"competitionKey":(id),"divisionId":(division),"season":(comp.season),"stage":"regular","round":(r+1),"homeId":(home),"awayId":(away),"date":(date),"day":($zdateh(date,3)-base),"status":"scheduled","matchId":"","seed":(1+((seed+(r*997)+(i*43))#2147483646))}
             do ##class(Rugby.Service.Store).Put("Fixture",f)
         }
@@ -78,6 +81,7 @@ ClassMethod Draw(division As %Integer, year As %Integer, seed As %Integer) As %D
 }
 ClassMethod Ensure(year As %Integer)
 {
+    do ##class(Rugby.Service.Cup).Ensure(year)
     for division=416,417 {
         set stored=$get(^RugbyWorld(##class(Rugby.Service.Store).Game(),"rivalsSeed")),seed=$select(stored:1+(##class(Rugby.Service.Rivals).Hash(division_"-"_year,stored)#2147483646),1:1+$random(2147483646)),comp=..Draw(division,year,seed)
     }
@@ -94,13 +98,14 @@ ClassMethod Fixtures(id As %String) As %DynamicArray
 ClassMethod Table(comp As %DynamicObject) As %DynamicArray
 {
     set rows={},fixtures=..Fixtures(comp.id),result=[]
-    for i=0:1:9 {
+    for i=0:1:comp.teamIds.%Size()-1 {
         set cid=comp.teamIds.%Get(i),club=##class(Rugby.Service.Store).Get("Club",cid)
         do rows.%Set(cid,{"clubId":(cid),"name":(club.name),"shortName":(club.shortName),"played":0,"wins":0,"draws":0,"losses":0,"pointsFor":0,"pointsAgainst":0,"difference":0,"triesFor":0,"triesAgainst":0,"bonusOffensive":0,"bonusDefensive":0,"points":0,"drawOrder":(i)})
     }
     for i=0:1:fixtures.%Size()-1 {
         set f=fixtures.%Get(i)
-        if (f.stage'="regular")||(f.status'="finished") continue
+        if ('$listfind($listbuild("regular","cup-group"),f.stage))||(f.status'="finished") continue
+        if (comp.%Get("groupId")'="")&&(f.%Get("groupId")'=comp.groupId) continue
         for side="home","away" {
             set other=$select(side="home":"away",1:"home"),row=rows.%Get(f.%Get(side_"Id")),score=f.%Get(side_"Score"),against=f.%Get(other_"Score"),tries=f.%Get(side_"Tries",0),conceded=f.%Get(other_"Tries",0)
             set row.played=row.played+1,row.pointsFor=row.pointsFor+score,row.pointsAgainst=row.pointsAgainst+against,row.triesFor=row.triesFor+tries,row.triesAgainst=row.triesAgainst+conceded
@@ -112,7 +117,7 @@ ClassMethod Table(comp As %DynamicObject) As %DynamicArray
         }
     }
     kill order
-    for i=0:1:9 {
+    for i=0:1:comp.teamIds.%Size()-1 {
         set row=rows.%Get(comp.teamIds.%Get(i)),order(-row.points,-row.difference,-row.wins,-row.triesFor,row.drawOrder)=row
     }
     set a=""
@@ -131,6 +136,7 @@ ClassMethod Playoff(comp As %DynamicObject, stage As %String, slot As %Integer, 
 ClassMethod Progress(id As %String)
 {
     set comp=##class(Rugby.Service.Store).Get("Competition",id)
+    if comp.%Get("type")="cup" { do ##class(Rugby.Service.Cup).Progress(id) quit }
     if comp.phase="finished" quit
     if comp.phase="regular" {
         set fixtures=..Fixtures(id),finished=0
@@ -184,7 +190,7 @@ ClassMethod Simulate(f As %DynamicObject)
         do f.%Set(side_"Score",(tries*5)+(conversions*2)+(kicks*3)),f.%Set(side_"Tries",tries)
     }
     set f.winnerId=$select(f.homeScore>f.awayScore:f.homeId,f.awayScore>f.homeScore:f.awayId,1:"")
-    if (f.stage'="regular")&&(f.winnerId="") {
+    if $listfind($listbuild("quarterfinal","semifinal","final"),f.stage)&&(f.winnerId="") {
         set f.homeShootout=3,f.awayShootout=3
         if ##class(Rugby.Simulation.Engine).Random(rng)<.5 { set f.homeShootout=4,f.winnerId=f.homeId }
         else  { set f.awayShootout=4,f.winnerId=f.awayId }
@@ -203,7 +209,7 @@ ClassMethod Sync(day As %Integer)
         set comp=all.%Get(i)
         if comp.phase="finished" continue
         // Regular results, then semis, then final. Never simulate the managed club.
-        for pass=1:1:3 {
+        for pass=1:1:4 {
             set fixtures=..Fixtures(comp.id)
             for j=0:1:fixtures.%Size()-1 {
                 set f=fixtures.%Get(j)
@@ -215,6 +221,7 @@ ClassMethod Sync(day As %Integer)
 }
 ClassMethod View(id As %String) As %DynamicObject
 {
+    if ##class(Rugby.Service.Store).Get("Competition",id).%Get("type")="cup" quit ##class(Rugby.Service.Cup).View(id)
     set comp=##class(Rugby.Service.Store).Get("Competition",id),fixtures=..Fixtures(id),regular=[],semis=[],final="",finished=0
     for i=0:1:fixtures.%Size()-1 {
         set f=fixtures.%Get(i)
@@ -236,7 +243,7 @@ ClassMethod ClubFixtures(club As %String) As %DynamicArray
         set f=all.%Get(i)
         if (f.homeId'=club)&&(f.awayId'=club) continue
         if f.%Get("archived",0) continue
-        if (f.%Get("competitionKey")'="")&&(f.%Get("competitionKey")'=current)&&(f.status'="live") continue
+        if (f.%Get("competitionKey")'="")&&(f.%Get("competitionKey")'=current)&&(f.%Get("competitionKey")'=("cup-"_##class(Rugby.Service.Seasons).Year(club)))&&(f.status'="live") continue
         set f.classification=..Classification(f),sorted(f.day,f.id)=f
     }
     set day=""

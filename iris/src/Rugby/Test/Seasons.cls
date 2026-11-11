@@ -13,6 +13,7 @@ ClassMethod Complete(year As %Integer)
             do ##class(Rugby.Service.Competition).Progress(id)
         }
     }
+    do ##class(Rugby.Test.Cup).Complete(year)
 }
 ClassMethod Run()
 {
@@ -21,7 +22,7 @@ ClassMethod Run()
     set raw=p.attributes.%ToJSON(),energy=p.energy,n=##class(Rugby.Service.Transfers).Open(p.id,{"version":(p.version)},"renew-open","renewal")
     do ..Assert((n.kind="renewal")&&(n.signingFee=0),"Renewal opens a salary negotiation without a signing fee")
     set n=##class(Rugby.Service.Transfers).Offer(n.id,{"version":(n.version),"weeklyWage":(n.askingWeeklyWage)},"renew-offer"),version=n.version,n=##class(Rugby.Service.Transfers).Sign(n.id,{"version":(version)},"renew-sign"),again=##class(Rugby.Service.Transfers).Sign(n.id,{"version":(version)},"renew-sign"),p=##class(Rugby.Service.Store).Get("Player","c1-p1")
-    do ..Assert((p.contractEndDate=##class(Rugby.Service.Seasons).EndDate(year+1))&&(p.attributes.%ToJSON()=raw)&&(p.energy=energy)&&(again.id=n.id),"Renewal extends exactly one season, preserving skills and energy and retrying once")
+    do ..Assert((p.contractEndDate=##class(Rugby.Service.Seasons).EndDate(year+n.agreedContractYears))&&(p.attributes.%ToJSON()=raw)&&(p.energy=energy)&&(again.id=n.id),"Renewal extends the negotiated duration, preserving skills and energy and retrying once")
     set p=##class(Rugby.Service.Store).Get("Player","c1-p24"),n=##class(Rugby.Service.Transfers).Open(p.id,{"version":(p.version)},"renew-youth","renewal")
     do ..Assert(n.askingWeeklyWage=p.weeklyWage,"Academy renewal uses academy salary, not senior promotion salary")
     set conflict=0
@@ -48,7 +49,7 @@ ClassMethod Run()
         if c.id'="c1" set renewals=##class(Rugby.Service.Seasons).RenewRival(c,final-1)
     }
     set rival=##class(Rugby.Service.Store).Get("Player","c2-p1")
-    do ..Assert(rival.contractEndDate=##class(Rugby.Service.Seasons).EndDate(year+1),"Rivals renew their players before the season closes")
+    do ..Assert(rival.contractEndDate=##class(Rugby.Service.Seasons).EndDate(year+rival.contractYears),"Rivals renew their players for the preferred duration before the season closes")
     set before=##class(Rugby.Service.Seasons).Tick(close)
     do ..Assert('before.closed,"An unfinished championship prevents closure")
     do ..Complete(year)
@@ -64,6 +65,9 @@ ClassMethod Run()
     set newHonor=##class(Rugby.Service.Store).Get("Competition","league-416-"_(year+1)),newElite=##class(Rugby.Service.Store).Get("Competition","league-417-"_(year+1)),seen={}
     for i=0:1:9 { do seen.%Set(newHonor.teamIds.%Get(i),416),seen.%Set(newElite.teamIds.%Get(i),417) }
     do ..Assert((seen.%Get(up)=416)&&(seen.%Get(down)=417),"New calendars include the promoted and relegated clubs in their new league")
+    set cupNext=##class(Rugby.Service.Store).Get("Competition","cup-"_(year+1))
+    do ..Assert(cupNext.groupDates.%Size()=3,"Next season reserves all Cup dates before generating leagues")
+    for division=416,417 { set generated=##class(Rugby.Service.Competition).Fixtures("league-"_division_"-"_(year+1)) for i=0:1:generated.%Size()-1 { do ..Assert('##class(Rugby.Service.Cup).Reserved(year+1,generated.%Get(i).date),"Season closure creates league schedules without Cup collisions") } }
     set p=##class(Rugby.Service.Store).Get("Player","c1-p2"),retired=##class(Rugby.Service.Store).Get("Player","c1-p4"),kept=##class(Rugby.Service.Store).Get("Player","c1-p1")
     do ..Assert((p.clubId="")&&(p.contractStatus="expired")&&(p.attributes.%ToJSON()=raw)&&(p.energy=energy),"Unrenewed player becomes a free agent with unchanged sporting data")
     do ..Assert((retired.contractStatus="retired")&&('retired.available)&&(kept.clubId="c1"),"Retirees leave permanently while renewed players stay")

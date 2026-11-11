@@ -9,7 +9,7 @@ ClassMethod Run(only As %String = "")
     lock +^RugbyWrite:15
     if '$test { write "TESTS FAILED: busy",! quit }
     set failures=0
-    for name="Catalog","Lineups","Management","Development","Academy","Competition","Movement","Commands","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","Morale","Seasons","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","TransferAuction","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
+    for name="Catalog","Lineups","Management","Development","Academy","Competition","Cup","Movement","Commands","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","Morale","Seasons","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
         if (only'="")&&(name'=only) continue
         try {
             if name'="Concurrency" tstart
@@ -35,6 +35,7 @@ ClassMethod TransferAuction() { do ##class(Rugby.Test.TransferAuction).Run() }
 ClassMethod WeeklyTraining() { do ##class(Rugby.Test.WeeklyTraining).Run() }
 ClassMethod TalentScale() { do ##class(Rugby.Test.TalentScale).Run() }
 ClassMethod FriendlyRequests() { do ##class(Rugby.Test.FriendlyRequests).Run() }
+ClassMethod ContractTerms() { do ##class(Rugby.Test.ContractTerms).Run() }
 ClassMethod StaffPay() { do ##class(Rugby.Test.StaffPay).Run() }
 ClassMethod FinancialPlanning() { do ##class(Rugby.Test.FinancialPlanning).Run() }
 ClassMethod Healthy()
@@ -58,6 +59,7 @@ ClassMethod Development()
 {
     do ##class(Rugby.Test.Development).Run()
 }
+ClassMethod Cup() { do ##class(Rugby.Test.Cup).Run() }
 ClassMethod Competition()
 {
     do ##class(Rugby.Test.Competition).Run()

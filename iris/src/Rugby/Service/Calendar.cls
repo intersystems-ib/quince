@@ -11,7 +11,7 @@ ClassMethod Date(club As %String, date As %String) As %Integer
 }
 ClassMethod Busy(club As %String, date As %String) As %Boolean
 {
-    set all=##class(Rugby.Service.Store).All("Fixture"),busy=0
+    set all=##class(Rugby.Service.Store).All("Fixture"),busy=##class(Rugby.Service.Cup).Reserved(##class(Rugby.Service.Competition).Year(date),date)
     set c=##class(Rugby.Service.Store).Get("Club",club),league=##class(Rugby.Service.Store).Get("Competition","league-"_c.competitionId_"-"_##class(Rugby.Service.Competition).Year(date),0)
     if $isobject(league) {
         if date=league.finalDate set busy=1

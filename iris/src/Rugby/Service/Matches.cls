@@ -20,7 +20,7 @@ ClassMethod Create(b As %DynamicObject, key As %String) As %DynamicObject
     set id="m"_$increment(^RugbyWorld(##class(Rugby.Service.Store).Game(),"ids","Match")),home=##class(Rugby.Service.Store).Get("Club",f.homeId),away=##class(Rugby.Service.Store).Get("Club",f.awayId)
     set m={"id":(id),"clubId":(##class(Rugby.Service.Store).ManagedClub()),"fixtureId":(f.id),"homeId":(f.homeId),"awayId":(f.awayId),"homeName":(home.name),"awayName":(away.name),"homeColor":(home.color),"awayColor":(away.color),"lineupId":(lineup.id),"status":"scheduled","period":1,"clock":0,"speed":20,"credit":0,"homeScore":0,"awayScore":0,"possession":"home","x":50,"y":35,"phase":"restart","seed":(seed),"rng":(seed),"engineVersion":(##class(Rugby.Simulation.Engine).#VERSION),"sequence":0,"commandSequence":0,"settled":false,"homeSubs":0,"awaySubs":0,"homePlayers":[],"awayPlayers":[],"homeStats":{},"awayStats":{},"homeTactic":{},"awayTactic":{}}
     do ##class(Rugby.Service.Kits).Apply(m,home,away)
-    set m.competitionKey=f.%Get("competitionKey"),m.stage=f.%Get("stage","friendly"),m.round=f.%Get("round",0),m.date=f.%Get("date",club.date)
+    set m.groupId=f.%Get("groupId"),m.competitionType=f.%Get("competitionType"),m.competitionKey=f.%Get("competitionKey"),m.stage=f.%Get("stage","friendly"),m.round=f.%Get("round",0),m.date=f.%Get("date",club.date)
     do ##class(Rugby.Service.Store).Put("Match",m)
     set f.matchId=id
     do ##class(Rugby.Service.Store).Put("Fixture",f)
@@ -190,7 +190,7 @@ ClassMethod Settle(m As %DynamicObject)
 }
 ClassMethod PlayoffWinner(m As %DynamicObject)
 {
-    if ((m.%Get("stage")'="semifinal")&&(m.%Get("stage")'="final"))||(m.homeScore'=m.awayScore) quit
+    if ('$listfind($listbuild("quarterfinal","semifinal","final"),m.%Get("stage")))||(m.homeScore'=m.awayScore) quit
     set home=0,away=0
     for n=1:1:5 {
         if ##class(Rugby.Simulation.Engine).Random(m)<##class(Rugby.Simulation.Engine).Clamp(.45+(##class(Rugby.Simulation.Engine).Strength(m.homePlayers,"kicking")/200)) set home=home+1

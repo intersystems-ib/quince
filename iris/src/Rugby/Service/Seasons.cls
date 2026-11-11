@@ -63,8 +63,9 @@ ClassMethod RenewRival(c As %DynamicObject, day As %Integer) As %DynamicArray
         set keep=$select(p.category="academy":(age<=22)&&(quality>=(40*##class(Rugby.Service.TalentScale).Factor())),p.position<=3:1,seniors<=23:1,1:(age<34)&&(quality>=(50*##class(Rugby.Service.TalentScale).Factor())))
         if keep {
             set wage=(((p.weeklyWage*(102+(quality\20)))+9999)\10000)*100,p.weeklyWage=$select(##class(Rugby.Service.Payroll).CanPay(c.id,p.id,wage):wage,1:p.weeklyWage),wage=p.weeklyWage
-            do ..Contract(p,year+1)
-            set id=c.id_"-renew-"_year_"-"_p.id,contract={"id":(id),"clubId":(c.id),"playerId":(p.id),"kind":"renewal","day":(day),"weeklyWage":(wage),"contractEndDate":(p.contractEndDate),"fee":0}
+            set p.contractYears=##class(Rugby.Service.ContractTerms).Preferred(age,p.id)
+            do ..Contract(p,year+p.contractYears)
+            set id=c.id_"-renew-"_year_"-"_p.id,contract={"id":(id),"clubId":(c.id),"playerId":(p.id),"kind":"renewal","day":(day),"weeklyWage":(wage),"contractEndDate":(p.contractEndDate),"contractYears":(p.contractYears),"fee":0}
             do ##class(Rugby.Service.Store).Put("PlayerContract",contract),changes.%Push(contract)
         }
         do ##class(Rugby.Service.Store).Put("Player",p)
@@ -107,9 +108,10 @@ ClassMethod Acquire(c As %DynamicObject, pos As %Integer, year As %Integer, seri
     set best.clubId=c.id,best.category="senior",best.weeklyWage=bestWage,best.signedDay=c.day
     if ##class(Rugby.Service.Payroll).Active() set best.weeklyWage=$select(##class(Rugby.Service.Payroll).CanPay(c.id,best.id,best.weeklyWage):best.weeklyWage,1:##class(Rugby.Service.Payroll).Reference(best,c.id))
     do ##class(Rugby.Service.Payroll).Check(c.id,best.id,best.weeklyWage)
-    do ..Contract(best,year),##class(Rugby.Service.Store).Put("Player",best)
+    set best.contractYears=##class(Rugby.Service.ContractTerms).Preferred((c.day-best.birthDay)\365,best.id)
+    do ..Contract(best,year+best.contractYears-1),##class(Rugby.Service.Store).Put("Player",best)
     if fee do ##class(Rugby.Service.Management).Money(c,-fee,"transfer","Fichaje de "_best.name,"season-sign-"_year_"-"_serial)
-    set contract={"id":("season-sign-"_year_"-"_c.id_"-"_serial),"clubId":(c.id),"playerId":(best.id),"kind":"signing","day":(c.day),"weeklyWage":(best.weeklyWage),"contractEndDate":(best.contractEndDate),"fee":(fee)}
+    set contract={"id":("season-sign-"_year_"-"_c.id_"-"_serial),"clubId":(c.id),"playerId":(best.id),"kind":"signing","day":(c.day),"weeklyWage":(best.weeklyWage),"contractEndDate":(best.contractEndDate),"contractYears":(best.contractYears),"fee":(fee)}
     do ##class(Rugby.Service.Store).Put("PlayerContract",contract)
     set pool=##class(Rugby.Service.TransferPool).Refresh(c.day)
     quit contract
@@ -153,6 +155,8 @@ ClassMethod Tick(day As %Integer) As %DynamicObject
         for i=0:1:fixtures.%Size()-1 { set f=fixtures.%Get(i) if f.status'="finished" set ready=0
             if f.day>last set last=f.day }
     }
+    set cup=##class(Rugby.Service.Store).Get("Competition","cup-"_year,0)
+    if $isobject(cup) { if cup.phase'="finished" set ready=0 }
     if 'ready quit result
     if (day<(last+7))||##class(Rugby.Service.Store).Active(##class(Rugby.Service.Store).ManagedClub()) quit result
     if $data(^RugbyWorld(game,"seasonClosures",year)) quit ##class(%DynamicObject).%FromJSON(^RugbyWorld(game,"seasonClosures",year))

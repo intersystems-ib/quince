@@ -4,7 +4,7 @@ import type {Injury,InjuryType,Player} from './types';
 
 const date=(value:string)=>new Date(`${value}T12:00:00`).toLocaleDateString('es-ES');
 export const injuryText=(injury:Injury)=>`${injury.name} · Grado ${injury.grade} · ${injury.remainingWeeks??injury.weeks} sem. · Alta ${date(injury.expectedReturn)}`;
-export function InjuryMark({player}:{player:Player|undefined}){
+export function InjuryMark({player}:{player:Pick<Player,'name'|'injury'>|undefined}){
  if(!player?.injury)return null;
  const label=`Lesionado: ${player.name}. ${injuryText(player.injury)}`;
  return <span className="injury-mark" role="img" aria-label={label} title={label}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2h8v6h6v8h-6v6H8v-6H2V8h6Z" fill="currentColor"/></svg></span>;

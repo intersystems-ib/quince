@@ -5727,7 +5727,7 @@
     },
     "/negotiations/{negotiationId}/offer": {
       "post": {
-        "summary": "Presentar salario mensual o semanal en céntimos; hasta cinco ofertas y contraofertas",
+        "summary": "Negociar salario y contrato de 1 a 5 temporadas; hasta cinco ofertas y contraofertas",
         "operationId": "post__negotiations_negotiationId_offer",
         "parameters": [
           {
@@ -16740,6 +16740,11 @@
           "wageSource": {
             "type": "string"
           },
+          "contractYears": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
           "contractEndDate": {
             "type": "string",
             "format": "date"
@@ -17458,6 +17463,12 @@
               "required": []
             }
           },
+          "competitionType": {
+            "type": "string"
+          },
+          "groupId": {
+            "type": "string"
+          },
           "competitionKey": {
             "type": "string"
           },
@@ -17471,6 +17482,8 @@
             "type": "string",
             "enum": [
               "regular",
+              "cup-group",
+              "quarterfinal",
               "semifinal",
               "final",
               "friendly"
@@ -17856,6 +17869,12 @@
             "type": "string"
           },
           "movementVersion": {
+            "type": "string"
+          },
+          "competitionType": {
+            "type": "string"
+          },
+          "groupId": {
             "type": "string"
           },
           "competitionKey": {
@@ -18252,6 +18271,21 @@
           "contractId": {
             "type": "string"
           },
+          "contractYears": {
+            "type": "integer"
+          },
+          "counterContractYears": {
+            "type": "integer"
+          },
+          "agreedContractYears": {
+            "type": "integer"
+          },
+          "preferredMinYears": {
+            "type": "integer"
+          },
+          "preferredMaxYears": {
+            "type": "integer"
+          },
           "offers": {
             "type": "array",
             "items": {
@@ -18264,6 +18298,15 @@
                   "type": "integer"
                 },
                 "offeredWeeklyWage": {
+                  "type": "integer"
+                },
+                "offeredContractYears": {
+                  "type": "integer"
+                },
+                "counterContractYears": {
+                  "type": "integer"
+                },
+                "agreedContractYears": {
                   "type": "integer"
                 },
                 "status": {
@@ -18317,6 +18360,11 @@
         "properties": {
           "version": {
             "type": "integer"
+          },
+          "contractYears": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
           },
           "weeklyWage": {
             "type": "integer",
@@ -18560,6 +18608,10 @@
             "enum": [
               "regular",
               "playoffs",
+              "groups",
+              "quarterfinal",
+              "semifinal",
+              "final",
               "finished"
             ]
           },
@@ -18580,6 +18632,58 @@
           },
           "version": {
             "type": "integer"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "league",
+              "cup"
+            ]
+          },
+          "exemptTeamIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "qualifiedTeamIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "groupDates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quarterfinalDate": {
+            "type": "string"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "teamIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "standings": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Standing"
+                  }
+                }
+              },
+              "required": []
+            }
           },
           "seasonStartDate": {
             "type": "string",
@@ -18667,6 +18771,10 @@
             "enum": [
               "regular",
               "playoffs",
+              "groups",
+              "quarterfinal",
+              "semifinal",
+              "final",
               "finished"
             ]
           },
@@ -18718,6 +18826,70 @@
           },
           "regularFinished": {
             "type": "integer"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "league",
+              "cup"
+            ]
+          },
+          "exemptTeamIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "qualifiedTeamIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "groupDates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quarterfinalDate": {
+            "type": "string"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "teamIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "standings": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Standing"
+                  }
+                }
+              },
+              "required": []
+            }
+          },
+          "quarterfinals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fixture"
+            }
+          },
+          "fixtures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Fixture"
+            }
           }
         },
         "required": [

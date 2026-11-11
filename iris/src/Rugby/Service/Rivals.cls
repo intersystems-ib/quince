@@ -183,9 +183,10 @@ ClassMethod AcceptRecruitment(c As %DynamicObject, proposal As %DynamicObject, d
     set fee=candidate.%Get("signingFee",0),candidate.clubId=c.id,candidate.category="senior",candidate.contractStatus="employed",candidate.weeklyWage=bestWage,candidate.monthlyWage=##class(Rugby.Service.Payroll).Monthly(bestWage),candidate.signedDay=day,candidate.payrollStartDay=day
     if medical { set candidate.injuryCoverForPlayerId=need.playerId,c.aiInjurySignings=c.%Get("aiInjurySignings",0)+1 }
     else { set c.aiSignings=c.aiSignings+1 do candidate.%Remove("injuryCoverForPlayerId") }
-    do ##class(Rugby.Service.Seasons).Contract(candidate,##class(Rugby.Service.Seasons).Year(c.id)),##class(Rugby.Service.Store).Put("Player",candidate)
+    set candidate.contractYears=##class(Rugby.Service.ContractTerms).Preferred((day-candidate.birthDay)\365,candidate.id)
+    do ##class(Rugby.Service.Seasons).Contract(candidate,##class(Rugby.Service.Seasons).Year(c.id)+candidate.contractYears-1),##class(Rugby.Service.Store).Put("Player",candidate)
     do ##class(Rugby.Service.Management).Money(c,-fee,"transfer","Fichaje de "_candidate.name,"ai-sign-"_day)
-    set reason=$select(medical:"injuryCover",1:"squadImprovement"),contract={"id":(c.id_"-sign-"_day),"clubId":(c.id),"playerId":(candidate.id),"kind":"signing","reason":(reason),"replacementForPlayerId":(need.%Get("playerId")),"day":(day),"weeklyWage":(candidate.weeklyWage),"monthlyWage":(candidate.monthlyWage),"payPeriod":"monthly","contractEndDate":(candidate.contractEndDate),"fee":(fee)}
+    set reason=$select(medical:"injuryCover",1:"squadImprovement"),contract={"id":(c.id_"-sign-"_day),"clubId":(c.id),"playerId":(candidate.id),"kind":"signing","reason":(reason),"replacementForPlayerId":(need.%Get("playerId")),"day":(day),"weeklyWage":(candidate.weeklyWage),"monthlyWage":(candidate.monthlyWage),"payPeriod":"monthly","contractEndDate":(candidate.contractEndDate),"contractYears":(candidate.contractYears),"fee":(fee)}
     do ##class(Rugby.Service.Store).Put("PlayerContract",contract)
     set pool=##class(Rugby.Service.TransferPool).Refresh(day)
     quit {"signed":true,"reason":(reason),"replacementForPlayerId":(need.%Get("playerId")),"playerId":(candidate.id),"position":(candidate.position),"average":(##class(Rugby.Service.Development).Average(candidate)),"fee":(fee),"weeklyWage":(candidate.weeklyWage),"monthlyWage":(candidate.monthlyWage),"contract":(contract)}
