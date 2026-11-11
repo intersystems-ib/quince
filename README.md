@@ -13,6 +13,8 @@ docker compose up -d --build
 
 Aplicación: [localhost:5175](http://localhost:5175). [Estado de la API](http://localhost:8085/api/v1/health). También puedes usar `./scripts/start.ps1`. La imagen IRIS se configura en `.env` y usa `latest-preview` por defecto.
 
+Para publicar en AWS, configura `APP_PORT` en `.env` (por ejemplo, `80`) y permite ese puerto en el grupo de seguridad de la instancia. Compose escucha en todas las interfaces: accede mediante el dominio o la IP pública. La aplicación incluye el acceso a la API en `/api/v1`; no hace falta abrir `API_PORT` (por defecto `8085`) en el grupo de seguridad. `VITE_API_TARGET` sólo se usa en desarrollo.
+
 ## Jugar
 
 Crea una cuenta y una partida, elige división y club. La temporada empieza el 1 de septiembre. Gestiona plantilla y cantera, alineación, entrenamientos, empleados y fichajes. Avanza días y disputa los encuentros pendientes. Calendario permite concertar amistosos y responder a invitaciones de rivales.

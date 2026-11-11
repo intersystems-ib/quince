@@ -23,7 +23,7 @@ services:
       ISC_CSP_CONF_FILE: /config/CSP.conf
       ISC_CSP_INI_FILE: /config/CSP.ini
     ports:
-      - '127.0.0.1:8085:80'
+      - '${API_PORT:-8085}:80'
     depends_on:
       - iris
     healthcheck:
@@ -36,7 +36,7 @@ services:
   frontend:
     build: ./rugby-frontend
     ports:
-      - '127.0.0.1:${APP_PORT:-5175}:80'
+      - '${APP_PORT:-5175}:80'
     depends_on:
       - webgateway
     restart: unless-stopped
