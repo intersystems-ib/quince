@@ -134,4 +134,7 @@
 
 .calendar-teams{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto}.calendar-teams strong{max-width:none;white-space:nowrap;flex-shrink:0}.calendar-teams>.club-crest,.calendar-teams>.calendar-result{flex-shrink:0;white-space:nowrap}.calendar-teams>.club-crest:first-child{margin-left:auto}.calendar-teams>.club-crest:last-child{margin-right:auto}
 
-.calendar-fixture-status{text-align:center;color:var(--muted);font-size:11px;margin:-10px 0 20px}
+.calendar-fixture>.calendar-fixture-status{display:flex;justify-content:center;align-items:center;width:100%;text-align:center;color:var(--muted);font-size:11px;margin:-10px 0 20px}
+.calendar-fixture>.venue-info{justify-content:center;text-align:center;width:100%}
+
+.command-card{display:flex;flex-direction:column;min-height:0;overflow:hidden}.command-card>h3,.command-card>p{flex-shrink:0}.command-list{min-height:0;max-height:400px;overflow-y:auto}.match-main>.feed-card{margin-bottom:0}@media(min-width:951px){.live-layout>.match-right{contain:size;display:flex;flex-direction:column;min-height:0}.live-layout>.match-right>.card{flex-shrink:0}.live-layout>.match-right>.command-card{flex:0 1 auto;min-height:0;margin-bottom:0}.match-right .command-list{max-height:none}}
