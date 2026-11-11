@@ -69,8 +69,10 @@ ClassMethod Step(m As %DynamicObject)
     set chance=..Clamp(.59+((attack-defense)/180)+((..Rating(p,"decisions")-55)/350)+$select(t.tempo="fast":.025,t.tempo="slow":-.015,1:0))
     set contest.defense=defense,contest.successChance=chance
     if phase="conversion" {
+        do ##class(Rugby.Service.MatchStatistics).Add(p,"conversionAttempts")
         set type="conversion",contest.successChance=..Clamp(.52+(..Rating(p,"kicking")/250)-($zabs(m.y-35)/180)),success=..Random(m)<contest.successChance
         if success set points=2,stats.conversions=stats.conversions+1
+        if success do ##class(Rugby.Service.MatchStatistics).Add(p,"conversions")
         set text=$select(success:"Transformación entre palos. Dos puntos más.",1:"La transformación se marcha fuera."),m.possession=other,m.x=50,m.y=35,m.phase="restart"
     } elseif phase="restart" {
         set type="kickoff",m.x=..Clamp(50+(direction*(15+(..Random(m)*12))),0,100),m.y=15+(..Random(m)*40),m.phase="open",m.possession=other,text="Reinicio largo. El receptor asegura la posesión."
@@ -78,22 +80,29 @@ ClassMethod Step(m As %DynamicObject)
         set skill=$select(phase="scrum":"scrum",1:"lineout"),type=phase
         set contest.successChance=..Clamp(.58+((attack-defense)/160)),win=..Random(m)<contest.successChance
         do stats.%Set($select(phase="scrum":"scrums",1:"lineouts"),stats.%Get($select(phase="scrum":"scrums",1:"lineouts"))+1)
+        do ##class(Rugby.Service.MatchStatistics).Add(p,$select(phase="scrum":"scrums",1:"lineouts"))
         if 'win set m.possession=other,ds.turnovers=ds.turnovers+1
+        if 'win do ##class(Rugby.Service.MatchStatistics).Credit(##class(Rugby.Simulation.Performance).Unit(defenders,"forwards"),"turnovers",skill)
         set text=$select(phase="scrum":"Melé",1:"Touche")_$select(win:" ganada por el equipo que introduce.",1:" robada por el rival."),m.phase="open",m.y=35
     } elseif phase="penalty" {
         set type="penalty",stats.penalties=stats.penalties+1
         if progress>55 {
+            do ##class(Rugby.Service.MatchStatistics).Add(p,"penaltyAttempts")
             set contest.successChance=..Clamp(.35+(..Rating(p,"kicking")/170)-((100-progress)/180)),success=..Random(m)<contest.successChance,type="penaltyGoal"
             if success set points=3,stats.penaltyGoals=stats.penaltyGoals+1
+            if success do ##class(Rugby.Service.MatchStatistics).Add(p,"penaltyGoals")
             set text=$select(success:"Golpe a palos convertido. Tres puntos.",1:"El golpe a palos no encuentra su objetivo."),m.phase="restart",m.x=50,m.y=35,m.possession=other
         } else { set m.x=..Clamp(m.x+(direction*22),2,98),m.y=0,m.phase="lineout",text="Golpe de castigo. Patada a touche para ganar terreno." }
     } else {
         set r=..Random(m),kick=$select(t.style="kicking":.30,t.style="hands":.06,1:.15)
         if (progress>78)&&(r<.07) {
+            do ##class(Rugby.Service.MatchStatistics).Add(p,"dropAttempts")
             set type="drop",success=..Random(m)<..Clamp(.12+(..Rating(p,"kicking")/230))
             if success set points=3,stats.drops=stats.drops+1
+            if success do ##class(Rugby.Service.MatchStatistics).Add(p,"drops")
             set text=$select(success:"Drop certero. Tres puntos desde el juego abierto.",1:"El intento de drop se desvía."),m.phase="restart",m.x=50,m.y=35,m.possession=other
         } elseif r<kick {
+            do ##class(Rugby.Service.MatchStatistics).Add(p,"kicks")
             set type="kick",stats.kicks=stats.kicks+1,m.x=..Clamp(m.x+(direction*(12+(..Rating(p,"kicking")/5))),2,98)
             if ..Random(m)<.42 { set m.phase="lineout",m.y=0,text=p.name_" busca la touche con el pie." } else { set m.phase="open",text=p.name_" patea al espacio; recoge el rival." }
             set m.possession=other
@@ -102,16 +111,22 @@ ClassMethod Step(m As %DynamicObject)
             do ##class(Rugby.Simulation.Discipline).Foul(m,other,localDefense)
         } elseif ..Random(m)<chance {
             set metres=3+(..Random(m)*10)+((##class(Rugby.Simulation.Performance).Skill(p,"carry")-50)/12)+$select(t.tempo="fast":2,1:0)
-            set m.x=..Clamp(m.x+(direction*metres),0,100),m.y=..Clamp(m.y+((..Random(m)-.5)*20),1,69),stats.metres=stats.metres+metres
+            set m.x=..Clamp(m.x+(direction*metres),0,100),m.y=..Clamp(m.y+((..Random(m)-.5)*20),1,69),metres=$zabs(m.x-oldX),stats.metres=stats.metres+metres
+            do ##class(Rugby.Service.MatchStatistics).Add(p,"metres",metres),##class(Rugby.Service.MatchStatistics).Add(p,"carries")
             set type=$select(r<.58:"pass",1:"run")
             if type="pass" set stats.passes=stats.passes+1
+            if type="pass" do ##class(Rugby.Service.MatchStatistics).Add(p,"passes")
             set text=p.name_$select(type="pass":" enlaza un pase y gana ",1:" rompe la línea y avanza ")_(metres\1)_" metros.",m.phase="ruck",ds.tackles=ds.tackles+1
+            do ##class(Rugby.Service.MatchStatistics).Credit(localDefense,"tackles")
             set newProgress=$select(direction=1:m.x,1:100-m.x)
             if newProgress>=100 {
                 set type="try",points=5,stats.tries=stats.tries+1,p.stats.tries=p.stats.tries+1,m.phase="conversion",text="¡Ensayo de "_p.name_"! Apoya el balón en la zona de marca."
             }
         } else {
             set r=..Random(m)
+            if r<.3 { do ##class(Rugby.Service.MatchStatistics).Add(p,"knockOns") }
+            elseif r<.6 { do ##class(Rugby.Service.MatchStatistics).Credit(localDefense,"turnovers","contact") }
+            else { do ##class(Rugby.Service.MatchStatistics).Credit(localDefense,"tackles") }
             if r<.3 { set type="knockOn",m.phase="scrum",m.possession=other,text="Avant de "_p.name_". Melé para el rival." } elseif r<.6 {
                 set type="turnover",m.possession=other,m.phase="ruck",ds.turnovers=ds.turnovers+1,text="El rival recupera el balón en el ruck."
             } else { set type="tackle",m.phase="ruck",ds.tackles=ds.tackles+1,text="Placaje firme. "_p.name_" protege el balón en el ruck." }

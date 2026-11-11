@@ -117,3 +117,13 @@
 .player-detail-metrics .metric>strong .energy b{font-size:28px;font-weight:650;line-height:1.2;color:inherit;white-space:nowrap;font-variant-numeric:tabular-nums}.player-detail-metrics .metric>strong .energy small{font-size:14px;margin-left:3px}@media(max-width:700px){.player-detail-metrics .metric>strong .energy b{font-size:26px}}
 
 .attribute-values{display:inline-flex;align-items:baseline;gap:8px;flex-shrink:0}.attribute-delta{font-size:11px;font-weight:650;white-space:nowrap}.attribute-delta.growth{color:#23814e}.attribute-delta.decline{color:#c33e36}
+
+.training-improvements .training-improved-attributes{color:#23814e;font-weight:600}.training-improvements{margin-top:14px}.weekly-day select{font-size:11px}
+
+.weekly-drill{display:block;margin:0;min-width:0}.weekly-drill>small{display:none}@media(max-width:900px){.weekly-drill>small{display:block;font-size:9px;color:#788477;margin-bottom:4px}}
+
+.training-improvements{min-width:0;table-layout:fixed;white-space:normal}.training-improvements th:first-child{width:44%}.training-improvements th:nth-child(2){width:26%}.training-improvements td{overflow-wrap:anywhere}@media(max-width:650px){.training-improvements th:nth-child(2),.training-improvements td:nth-child(2){display:none}.training-improvements th:first-child{width:60%}.training-improvements th:last-child{width:40%}.training-improvements td,.training-improvements .player-name{font-size:11px}}
+
+.player-match-history,.individual-statistics{margin-top:24px}.performance-summary{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:20px}.performance-summary small{display:block;color:var(--muted);font-size:10px}.performance-summary strong{display:block;font-size:22px;margin-top:5px}.performance-table{min-width:950px}.performance-table small{display:block;color:var(--muted);margin-top:3px}.performance-details{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:10px 20px;margin:12px 0;white-space:normal}.performance-details>div{display:flex;justify-content:space-between;gap:12px}.performance-details dt{font-size:11px;color:var(--muted)}.performance-details dd{font-size:12px;font-weight:600;margin:0}.individual-team{margin-top:20px}.individual-team h4{margin-bottom:12px}.performance-table details[open]{min-width:580px}.performance-table summary{cursor:pointer}@media(max-width:700px){.performance-summary{grid-template-columns:repeat(3,minmax(0,1fr))}.performance-details{grid-template-columns:repeat(2,minmax(120px,1fr))}}
+
+.performance-table{min-width:840px}.performance-table th{white-space:normal}.performance-table td:nth-child(2){white-space:normal;min-width:120px;max-width:190px}

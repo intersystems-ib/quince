@@ -48,9 +48,18 @@ ClassMethod Validate(weekly) As %DynamicObject
             set index=+d.day
             if seen.%IsDefined(index) do ##class(Rugby.Service.Store).Fail(422,"WEEKLY_DAY","No repitas días de la semana.")
             set t=..Theme(d.%Get("theme"))
-            do seen.%Set(index,t.id)
+            set entry={"day":(index),"theme":(t.id)}
+            for line="forwards","backs" {
+                if d.%IsDefined(line) {
+                    if d.%GetTypeOf(line)'="string" do ##class(Rugby.Service.Store).Fail(422,"WEEKLY_FOCUS","El ejercicio debe ser un tipo de entrenamiento válido.")
+                    set focus=d.%Get(line)
+                    if '$listfind($listfromstring(t.%Get(line)),focus) do ##class(Rugby.Service.Store).Fail(422,"WEEKLY_FOCUS","El ejercicio debe corresponder al enfoque y grupo elegidos.")
+                    do entry.%Set(line,focus)
+                }
+            }
+            do seen.%Set(index,entry)
         }
-        for day=1:1:7 { do days.%Push({"day":(day),"theme":(seen.%Get(day))}) }
+        for day=1:1:7 { do days.%Push(seen.%Get(day)) }
         do clean.%Set(category,days)
     }
     quit clean
@@ -66,7 +75,7 @@ ClassMethod Context(club As %String, plan As %DynamicObject) As %DynamicObject
 }
 ClassMethod Group(p As %DynamicObject, day As %Integer, context As %DynamicObject) As %DynamicObject
 {
-    set weekday=..Weekday(day),category=p.category,week=context.weekly.%Get(category),theme=context.themes.%Get(week.%Get(weekday-1).theme),line=$select(p.position<=8:"forwards",1:"backs"),focus=$piece(theme.%Get(line),",",weekday),intensity=$select((p.energy<75)||(((day-p.birthDay)\365)>=33):"low",1:"normal"),reason="scheduled"
+    set weekday=..Weekday(day),category=p.category,week=context.weekly.%Get(category),entry=week.%Get(weekday-1),theme=context.themes.%Get(entry.theme),line=$select(p.position<=8:"forwards",1:"backs"),focus=entry.%Get(line,$piece(theme.%Get(line),",",weekday)),intensity=$select((p.energy<75)||(((day-p.birthDay)\365)>=33):"low",1:"normal"),reason="scheduled"
     if ('p.available)||(p.energy<60) set focus="recovery",reason=$select('p.available:"unavailable",1:"lowEnergy")
     if (category="senior")&&context.matchDays.%IsDefined(day) set focus="recovery",reason="matchPreparation"
     if focus="recovery" set intensity="low"

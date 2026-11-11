@@ -188,6 +188,7 @@ ClassMethod Simulate(f As %DynamicObject)
         }
         for n=1:1:3 { if ##class(Rugby.Simulation.Engine).Random(rng)<.45 set kicks=kicks+1 }
         do f.%Set(side_"Score",(tries*5)+(conversions*2)+(kicks*3)),f.%Set(side_"Tries",tries)
+        do f.%Set(side_"Conversions",conversions),f.%Set(side_"PenaltyGoals",kicks)
     }
     set f.winnerId=$select(f.homeScore>f.awayScore:f.homeId,f.awayScore>f.homeScore:f.awayId,1:"")
     if $listfind($listbuild("quarterfinal","semifinal","final"),f.stage)&&(f.winnerId="") {
@@ -196,6 +197,7 @@ ClassMethod Simulate(f As %DynamicObject)
         else  { set f.awayShootout=4,f.winnerId=f.awayId }
     }
     set f.status="finished",f.simulationVersion=..#VERSION
+    do ##class(Rugby.Service.MatchStatistics).Aggregate(f)
     set f.classification=..Classification(f)
     do ##class(Rugby.Service.Store).Put("Fixture",f)
     do ##class(Rugby.Service.Rivals).SettleFixture(f)

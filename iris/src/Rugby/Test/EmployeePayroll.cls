@@ -21,13 +21,34 @@ ClassMethod Run()
     set before=##class(Rugby.Service.Store).All("PlayerContract").%Size(),again=##class(Rugby.Service.MonthlyPayroll).Initialize()
     do ..Assert((again.players=0)&&(##class(Rugby.Service.Store).All("PlayerContract").%Size()=before),"Monthly migration is idempotent")
     do ..Assert(##class(Rugby.Service.MonthlyPayroll).StaffMonthly("head",90,"c1")>##class(Rugby.Service.MonthlyPayroll).StaffMonthly("head",35,"c1"),"Employee salary grows with quality")
-    do ..Assert('##class(Rugby.Service.MonthlyPayroll).CanHire("c1","head",99999999),"Unaffordable employees are rejected")
+    do ..Assert('##class(Rugby.Service.MonthlyPayroll).CanHire("c1","head",99999999),"Automated management detects unaffordable employees")
     // Accrual keeps the old employee's earned amount after replacement or departure.
     set state=##class(%DynamicObject).%FromJSON(^RugbyWorld(game,"monthlyPayroll",c.id)),state.wages=12345,state.staffWages=6789,state.financeWages=3456,state.lastDay=start+59,state.adoptedDay=start+59
     set ^RugbyWorld(game,"monthlyPayroll",c.id)=state.%ToJSON(),paid=##class(Rugby.Service.MonthlyPayroll).Tick(c.id,start+60)
     set m=##class(Rugby.Service.Store).Get("FinancialMovement",c.id_"-monthly-payroll-2026-10-wages")
     do ..Assert(m.amount=-+$justify(12345+(totals.players/31),0,0),"Unpaid carry survives until the next month end")
-    do ..Migration(),..Advance()
+    do ..Migration(),..Advance(),..UnrestrictedHiring()
+}
+ClassMethod UnrestrictedHiring()
+{
+    tstart
+    set c=##class(Rugby.Service.Store).Get("Club","c1"),c.divisionBudgetReference=1000000,c.balance=0
+    do ##class(Rugby.Service.Store).Put("Club",c)
+    set market=##class(Rugby.Service.Payroll).Market("head"),candidate=market.%Get(0),staff=##class(Rugby.Service.Staff).View(c.id)
+    do ..Assert('##class(Rugby.Service.MonthlyPayroll).CanHire(c.id,candidate.role,candidate.monthlyWage),"Test club has no salary margin for a coach")
+    set body={"coachId":(candidate.id),"version":(staff.version)},hired=##class(Rugby.Service.Staff).Hire(c.id,body,"test-unrestricted-coach")
+    do ..Assert((##class(Rugby.Service.Store).Get("Coach",candidate.id).clubId=c.id)&&(hired.monthlyWage>0),"Player can hire a coach without salary margin or cash")
+    set retry=##class(Rugby.Service.Staff).Hire(c.id,body,"test-unrestricted-coach")
+    do ..Assert(retry.version=hired.version,"Unrestricted coach hiring remains idempotent")
+    set office=##class(Rugby.Service.Finance).Office(c.id)
+    for i=0:1:office.candidates.%Size()-1 { set candidate=office.candidates.%Get(i) quit:candidate.id'=office.director.%Get("id") }
+    set wage=##class(Rugby.Service.MonthlyPayroll).DirectorMonthly(candidate.quality,c.id)
+    do ..Assert('##class(Rugby.Service.MonthlyPayroll).CanHire(c.id,"finance",wage),"Test club has no salary margin for a director")
+    set body={"candidateId":(candidate.id),"version":(office.version)},hired=##class(Rugby.Service.Finance).Hire(c.id,body,"test-unrestricted-director"),office=##class(Rugby.Service.Finance).Office(c.id)
+    do ..Assert((office.director.id=candidate.id)&&(office.director.monthlyWage=wage),"Player can hire a director without salary margin")
+    set retry=##class(Rugby.Service.Finance).Hire(c.id,body,"test-unrestricted-director")
+    do ..Assert(retry.%ToJSON()=hired.%ToJSON(),"Unrestricted director hiring remains idempotent")
+    trollback 1
 }
 ClassMethod Migration()
 {

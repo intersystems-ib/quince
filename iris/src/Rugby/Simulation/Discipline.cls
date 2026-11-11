@@ -102,6 +102,7 @@ ClassMethod Aggregate(f As %DynamicObject, rng As %DynamicObject) As %DynamicObj
         }
     }
     set rng.rng=m.rng,f.disciplineVersion=..#VERSION,f.redCardRule="permanent",f.disciplineEvents=m.disciplineEvents,f.disciplineParticipants=participants,f.injuryEvents=m.injuryEvents,f.matchInjuries=injuries
+    set f.statisticsPlayers={"home":(m.homePlayers),"away":(m.awayPlayers)}
     quit {"home":(seconds.home/72000),"away":(seconds.away/72000)}
 }
 }

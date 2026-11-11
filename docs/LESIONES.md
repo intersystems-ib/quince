@@ -21,6 +21,6 @@ Las bajas ocurren en partidos y entrenamientos; influyen edad, fatiga, intensida
 | Rotura de ligamento cruzado | 3 | 28–40 |
 | Rotura del tendón de Aquiles | 3 | 24–36 |
 
-La cruz roja en «Situación» identifica lesionados. Los suplentes de baja pasan automáticamente a «No disponibles»; los titulares deben ser reemplazados. El jugador se recupera en la fecha prevista, conserva historial y vuelve a ser elegible sin alinearse automáticamente.
+La cruz roja identifica lesionados. Los suplentes de baja pasan automáticamente a «No disponibles»; los titulares deben ser reemplazados. Al recuperarse, el jugador conserva su historial y pasa al banquillo si hay menos de ocho suplentes; si está completo, aparece en «No convocados». Si sigue figurando como titular, conserva su puesto.
 
 Durante la baja recupera energía y no entrena atributos. Una lesión propia pausa el partido; se reanuda eligiendo velocidad. El rival usa las mismas reglas de lesiones y disponibilidad.

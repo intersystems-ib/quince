@@ -54,7 +54,6 @@ ClassMethod Assign(club As %String, coachId As %String, key As %String) As %Dyna
     set candidate=##class(Rugby.Service.Store).Get("Coach",coachId)
     if candidate.clubId'="" do ##class(Rugby.Service.Store).Fail(409,"COACH_UNAVAILABLE","Este entrenador ya tiene contrato. Actualiza los candidatos.")
     set candidate.monthlyWage=##class(Rugby.Service.MonthlyPayroll).StaffMonthly(candidate.role,candidate.quality,club),candidate.weeklyWage=##class(Rugby.Service.MonthlyPayroll).Weekly(candidate.monthlyWage)
-    if ##class(Rugby.Service.MonthlyPayroll).Active()&&('##class(Rugby.Service.MonthlyPayroll).CanHire(club,candidate.role,candidate.monthlyWage)) do ##class(Rugby.Service.Store).Fail(409,"PAYROLL_LIMIT","No hay margen salarial para contratar a este entrenador.")
     set candidate.payrollStartDay=##class(Rugby.Service.Store).Get("Club",club).day,candidate.staffPayVersion=##class(Rugby.Service.StaffPay).#VERSION,candidate.salaryEffectiveDay=candidate.payrollStartDay,candidate.salaryBeforeAdjustment=0
     set ids=[],replaced=""
     for i=0:1:staff.coachIds.%Size()-1 {

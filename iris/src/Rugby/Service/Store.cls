@@ -40,12 +40,15 @@ ClassMethod Put(kind As %String, d As %DynamicObject)
     set previous={}
     if o.Version>1 { set previousJSON=$get(^RugbyWorld(..Game(),"indexed",kind,d.id),"{}"),previous=##class(%DynamicObject).%FromJSON(previousJSON) }
     set indexed={}
-    for field="clubId","matchId","competitionId","competitionKey","source" {
+    for field="clubId","matchId","competitionId","competitionKey","source","playerId" {
         if previous.%IsDefined(field) kill ^RugbyWorld(..Game(),"lookup",kind,field,"@"_previous.%Get(field),d.id)
         if d.%IsDefined(field) { do indexed.%Set(field,d.%Get(field)) set ^RugbyWorld(..Game(),"lookup",kind,field,"@"_d.%Get(field),d.id)=1 }
     }
     set ^RugbyWorld(..Game(),"indexed",kind,d.id)=indexed.%ToJSON()
     if kind="TrainingExecution" do ##class(Rugby.Service.AttributeProgress).Record(d)
+    if (kind="Player")&&$isobject(previousSalary) {
+        if ('previousSalary.%Get("available",1))&&d.available&&(previousSalary.clubId=d.clubId) do ##class(Rugby.Service.Management).ReturnToBench(d)
+    }
 }
 ClassMethod Flags(d As %DynamicObject)
 {
@@ -55,7 +58,7 @@ ClassMethod Flags(d As %DynamicObject)
 }
 ClassMethod All(kind As %String, field As %String = "", value As %String = "") As %DynamicArray
 {
-    if $listfind($listbuild("clubId","matchId","competitionId","competitionKey","source"),field) {
+    if $listfind($listbuild("clubId","matchId","competitionId","competitionKey","source","playerId"),field) {
         if '$get(^RugbyWorld(..Game(),"lookupReady",kind,field)) {
             kill ^RugbyWorld(..Game(),"lookup",kind,field)
             set id=""

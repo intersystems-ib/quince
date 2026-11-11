@@ -77,7 +77,7 @@ ClassMethod Market(role As %String = "") As %DynamicArray
         set p=all.%Get(i)
         if (role'="")&&(p.role'=role) continue
         if ..Active() set p.weeklyWage=..StaffWage(p.role,p.quality,club)
-        set p.monthlyWage=##class(Rugby.Service.MonthlyPayroll).StaffMonthly(p.role,p.quality,club),p.affordable=##class(Rugby.Service.MonthlyPayroll).CanHire(club,p.role,p.monthlyWage)
+        set p.monthlyWage=##class(Rugby.Service.MonthlyPayroll).StaffMonthly(p.role,p.quality,club)
         set ordered(-p.quality,p.name,p.id)=p
     }
     set quality=""

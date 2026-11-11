@@ -153,7 +153,6 @@ ClassMethod Hire(club As %String, b As %DynamicObject, key As %String) As %Dynam
     if 'found do ##class(Rugby.Service.Store).Fail(422,"FINANCIAL_CANDIDATE","Elige un financiero disponible.")
     if o.director.%Get("id")=chosen.id do ##class(Rugby.Service.Store).Fail(409,"FINANCIAL_EMPLOYED","Este financiero ya está contratado.")
     set chosen.monthlyWage=##class(Rugby.Service.MonthlyPayroll).DirectorMonthly(chosen.quality,club),chosen.weeklyWage=##class(Rugby.Service.MonthlyPayroll).Weekly(chosen.monthlyWage)
-    if '##class(Rugby.Service.MonthlyPayroll).CanHire(club,"finance",chosen.monthlyWage) do ##class(Rugby.Service.Store).Fail(409,"PAYROLL_LIMIT","No hay margen salarial para contratar a este financiero.")
     set chosen.payrollStartDay=##class(Rugby.Service.Store).Get("Club",club).day
     set o.director=chosen,c=##class(Rugby.Service.Store).Get("Club",club),o.hiredOn=c.date
     do ##class(Rugby.Service.Store).Put("FinancialOffice",o)

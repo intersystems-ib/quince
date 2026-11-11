@@ -16,7 +16,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             set events=[]
             for seq=before.sequence+1:1:after.sequence { do events.%Push(##class(Rugby.Service.Store).Get("MatchEvent",after.id_"-"_$translate($justify(seq,6)," ","0"))) }
             set movements=##class(Rugby.Service.Store).All("FinancialMovement","source","match-"_after.id)
-            set pResponse.DetailsJSON={"events":(events),"tacticalAssessment":(after.%Get("aiTacticalAssessment")),"matchEconomy":(after.%Get("economy")),"pause":{"speed":(after.speed),"reason":(after.%Get("pauseReason")),"message":(after.%Get("pauseMessage")),"clock":(after.clock)},"settled":(after.settled),"moraleResults":(after.%Get("moraleResults")),"financialMovements":(movements),"classification":(after.%Get("classification"))}.%ToJSON()
+            set pResponse.DetailsJSON={"events":(events),"tacticalAssessment":(after.%Get("aiTacticalAssessment")),"matchEconomy":(after.%Get("economy")),"pause":{"speed":(after.speed),"reason":(after.%Get("pauseReason")),"message":(after.%Get("pauseMessage")),"clock":(after.clock)},"settled":(after.settled),"playerStatistics":(##class(Rugby.Service.Store).All("PlayerMatchStats","matchId",after.id)),"moraleResults":(after.%Get("moraleResults")),"financialMovements":(movements),"classification":(after.%Get("classification"))}.%ToJSON()
         } elseif (pRequest.Channel="system")&&(pRequest.Resource="bootstrap") {
             set %RugbyAuditUser="system:startup"
             do ##class(Rugby.Service.Auth).Init(),##class(Rugby.Service.Games).Initialize(),##class(Rugby.Service.Rivals).InitializeAll(),##class(Rugby.Service.Transfers).InitializeAll()

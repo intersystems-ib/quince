@@ -28,6 +28,18 @@ ClassMethod NormalizeBench(l As %DynamicObject) As %DynamicArray
     }
     quit removed
 }
+ClassMethod ReturnToBench(p As %DynamicObject)
+{
+    if (p.clubId="")||(p.category'="senior")||('p.available)||p.%Get("retired",0) quit
+    set lineups=##class(Rugby.Service.Store).All("Lineup","clubId",p.clubId)
+    for i=0:1:lineups.%Size()-1 {
+        set l=lineups.%Get(i),removed=..NormalizeBench(l),selected=0
+        for j=0:1:l.slots.%Size()-1 { if l.slots.%Get(j).playerId=p.id set selected=1 }
+        for j=0:1:l.bench.%Size()-1 { if l.bench.%Get(j)=p.id set selected=1 }
+        if ('selected)&&(l.bench.%Size()<8) { do l.bench.%Push(p.id) set selected=2 }
+        if (selected=2)||(removed.%Size()>0) do ##class(Rugby.Service.Store).Put("Lineup",l)
+    }
+}
 ClassMethod RefreshAvailability(club As %String)
 {
     set lineups=##class(Rugby.Service.Store).All("Lineup","clubId",club)

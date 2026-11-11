@@ -76,6 +76,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
             if child="friendly-invitations" quit ..Paginate(##class(Rugby.Service.FriendlyRequests).List(id))
             if child="friendly-options" quit ##class(Rugby.Service.Calendar).Options(id,%RugbyQuery.%Get("date"))
         }
+        if (resource="players")&&(child="match-stats") quit ##class(Rugby.Service.MatchStatistics).History(id)
         if (resource="players")&&(child="") {
             set p=##class(Rugby.Service.Store).Get("Player",id)
             if p.clubId="" { do ##class(Rugby.Service.AttributeProgress).View(p,##class(Rugby.Service.Seasons).Year()) quit ##class(Rugby.Service.Development).FreeProfile(p) }

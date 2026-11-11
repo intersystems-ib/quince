@@ -2,9 +2,9 @@
 
 En **Planifica la semana**, elige un enfoque para cada día: ataque, defensa, preparación física, destrezas, formaciones, táctica o descanso. Primer equipo y cantera tienen semanas independientes que se repiten hasta guardar cambios.
 
-El cuerpo técnico reparte los ejercicios entre delanteros y tres cuartos según el enfoque y día. Incluye automáticamente nuevos jugadores, reduce intensidad por edad o cansancio y prioriza recuperación en bajas, energía inferior a 60 y primer equipo con partido ese día o el siguiente. La calidad de los entrenadores determina la progresión; la cantera usa exclusivamente su entrenador.
+«Solicitar planificación» propone una semana diferente para la categoría abierta. Puedes cambiar el enfoque y los ejercicios de delanteros y tres cuartos antes de guardar. El cuerpo técnico incluye nuevos jugadores, reduce intensidad por edad o cansancio y prioriza recuperación en bajas, energía inferior a 60 y primer equipo con partido ese día o el siguiente. La cantera usa exclusivamente su entrenador.
 
-Las partidas nuevas incluyen una semana inicial. Al guardar se activa o modifica el plan semanal. Las partidas que conservan grupos manuales los mantienen hasta esa confirmación. La próxima sesión y el potencial muestran el plan guardado.
+Al guardar se activa el plan recurrente; pedir una propuesta no lo sustituye hasta confirmarla. La lista de mejoras muestra los jugadores y características que aumentaron en el último entrenamiento, separando primer equipo y cantera.
 
 Hay diecisiete atributos entre 1 y 100, con decimales internos. Descanso recupera energía y no cuenta como atributo. La cantera usa la calidad de su entrenador; el primer equipo combina principal, especialista y apoyo (15 %, 65 % y 20 %).
 

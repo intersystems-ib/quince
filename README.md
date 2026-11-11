@@ -46,6 +46,6 @@ El volumen `iris-data` conserva las partidas al detener o recrear contenedores. 
 - [Acceso y partidas](docs/ACCESO-PARTIDAS.md).
 - [Reglas](docs/REGLAS.md), [competición](docs/COMPETICION.md) y [temporadas](docs/TEMPORADAS-CONTRATOS.md).
 - [Jugadores](docs/PLANTILLAS-REALES.md), [calidad](docs/CALIDAD-EQUIPOS.md) y [cantera](docs/CANTERA.md).
-- [Entrenamiento](docs/ENTRENAMIENTO.md), [lesiones](docs/LESIONES.md) y [moral](docs/MORAL.md).
+- [Entrenamiento](docs/ENTRENAMIENTO.md), [lesiones](docs/LESIONES.md), [estadísticas](docs/ESTADISTICAS.md) y [moral](docs/MORAL.md).
 - [Fichajes](docs/FICHAJES.md), [finanzas](docs/FINANZAS.md) y [salarios](docs/SALARIOS-PRESUPUESTO.md).
 - [API](docs/openapi.json): regenerar con `python scripts/generate_openapi.py`.

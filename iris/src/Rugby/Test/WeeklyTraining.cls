@@ -40,12 +40,23 @@ ClassMethod Run()
     for i=0:1:6 { set rest.weekly.senior.%Get(i).theme="rest" }
     set actual=##class(Rugby.Service.Development).Profile(##class(%DynamicObject).%FromJSON(p.%ToJSON()),c,saved,q),resting=##class(Rugby.Service.Development).Profile(##class(%DynamicObject).%FromJSON(p.%ToJSON()),c,rest,q)
     do ..Assert((actual.potential>resting.potential)&&($zabs(resting.potential-p.average)<.00001),"Season potential respects the recurring week and rest")
-    for invalid="missing","duplicate","theme","shape" {
+    set custom=##class(Rugby.Service.WeeklyTraining).Defaults(),custom.senior.%Get(0).theme="physical",custom.senior.%Get(0).forwards="stamina",custom.senior.%Get(0).backs="agility",custom.academy.%Get(0).theme="technique",custom.academy.%Get(0).forwards="passing"
+    set current=##class(Rugby.Service.Store).Get("TrainingPlan",club),customSaved=##class(Rugby.Service.WeeklyTraining).Save(club,{"version":(current.version),"weekly":(custom)}),ctx=##class(Rugby.Service.WeeklyTraining).Context(club,customSaved),ctx.matchDays={}
+    set fw.category="senior",fw.available=1,fw.energy=100,g=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,ctx),gb=##class(Rugby.Service.WeeklyTraining).Group(back,c.day,ctx),repeat=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day+7,ctx)
+    do ..Assert((g.focus="stamina")&&(gb.focus="agility")&&(repeat.focus="stamina"),"Custom exercises persist by line and repeat each week")
+    set fw.category="academy",ga=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,ctx)
+    do ..Assert(ga.focus="passing","Academy exercises remain independent")
+    set fw.category="senior",fw.energy=30,g=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,ctx)
+    do ..Assert(g.focus="recovery","Custom exercises preserve low-energy recovery")
+    for invalid="missing","duplicate","theme","shape","exercise","restExercise","exerciseShape" {
         set bad=##class(Rugby.Service.WeeklyTraining).Defaults(),failed=0
         if invalid="missing" do bad.senior.%Pop()
         if invalid="duplicate" set bad.senior.%Get(1).day=1
         if invalid="theme" set bad.senior.%Get(1).theme="football"
         if invalid="shape" do bad.senior.%Set(1,[])
+        if invalid="exercise" set bad.senior.%Get(1).forwards="kicking"
+        if invalid="restExercise" set bad.senior.%Get(0).backs="speed"
+        if invalid="exerciseShape" set bad.senior.%Get(1).forwards=[]
         try { set ignore=##class(Rugby.Service.WeeklyTraining).Validate(bad) } catch ex { set failed=ex.Code=422 }
         do ..Assert(failed,"Malformed weekly plan rejected: "_invalid)
     }

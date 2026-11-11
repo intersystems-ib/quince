@@ -25,7 +25,7 @@ schemas={
  "Training":obj({"id":S,"clubId":S,"groups":{"type":"array","maxItems":50,"items":ref('TrainingGroup')},"dailyCost":{"type":"integer","enum":[0],"description":"Sin coste adicional: cubierto por las nóminas."},"modelVersion":S,"version":I},['groups','version']),
  "TrainingSuggestion":obj({"groups":arr(ref('TrainingGroup')),"variant":I,"playerCount":I,"recoveryCount":I,"dailyCost":{"type":"integer","enum":[0],"description":"Sin coste adicional: cubierto por las nóminas."}},['groups','variant','playerCount','recoveryCount','dailyCost']),
  "TrainingType":obj({"id":S,"name":S,"coachRole":S,"supportRole":S},['id','name','coachRole','supportRole']),
- "Coach":obj({"id":S,"clubId":S,"name":S,"role":enum('head','forwards','backs','defense','attack','skills','fitness','academy'),"quality":{"type":"integer","minimum":1,"maximum":100},"weeklyWage":I,"monthlyWage":I,"affordable":B,"effectiveness":N,"status":enum('available','employed'),"version":I},['id','name','role','quality','weeklyWage','effectiveness','status']),
+ "Coach":obj({"id":S,"clubId":S,"name":S,"role":enum('head','forwards','backs','defense','attack','skills','fitness','academy'),"quality":{"type":"integer","minimum":1,"maximum":100},"weeklyWage":I,"monthlyWage":I,"effectiveness":N,"status":enum('available','employed'),"version":I},['id','name','role','quality','weeklyWage','effectiveness','status']),
  "StaffRole":obj({"id":S,"name":S,"englishName":S,"description":S,"baseWeeklyWage":I}),
  "Staff":obj({"id":S,"clubId":S,"version":I,"coaches":arr(ref('Coach')),"weeklyWage":I,"monthlyWage":I,"payPeriod":S,"roles":arr(ref('StaffRole'))},['id','clubId','version','coaches','weeklyWage','roles']),
  "HireCoach":obj({"coachId":S,"version":I},['coachId','version']),
@@ -33,7 +33,7 @@ schemas={
  "Movement":obj({"id":S,"clubId":S,"day":I,"date":S,"amount":I,"type":enum('training','wages','staffWages','match','transfer'),"concept":S,"source":S,"idempotencyKey":S},['id','amount','concept']),
  "Finances":obj({"balance":I,"initialBalance":I,"currency":{"const":"EUR"},"unit":{"const":"cent"},"negative":B},['balance','initialBalance','currency','unit','negative']),
  "Fixture":obj({"id":S,"clubId":S,"homeId":S,"awayId":S,"day":I,"status":enum('scheduled','live','finished'),"matchId":S,"homeScore":I,"awayScore":I},['id','homeId','awayId','day','status','matchId']),
- "Stats":{"type":"object","additionalProperties":N,"description":"actions, possessionSeconds, metres, tackles, turnovers, scrums, lineouts, penalties, tries, conversions, penaltyGoals, drops, kicks, passes, yellowCards, redCards, infringements"},
+ "Stats":{"type":"object","additionalProperties":N,"description":"actions, possessionSeconds, metres, carries, tackles, conversionAttempts, penaltyAttempts, dropAttempts, knockOns, points, turnovers, scrums, lineouts, penalties, tries, conversions, penaltyGoals, drops, kicks, passes, yellowCards, redCards, infringements"},
  "Snapshot":obj({"id":S,"matchId":S,"playerId":S,"clubId":S,"side":enum('home','away'),"name":S,"attributes":ref('Attributes'),"position":I,"naturalPosition":I,"positionRole":S,"positionName":S,"positionGroup":enum("forwards","backs"),"secondary":arr(I),"status":enum('field','bench','replaced','sinBin','sentOff'),"energy":N,"form":N,"morale":N,"stats":ref('Stats')},['id','playerId','status','energy','attributes']),
  "Match":obj({"id":S,"clubId":S,"fixtureId":S,"homeId":S,"awayId":S,"homeName":S,"awayName":S,"homeColor":S,"awayColor":S,"lineupId":S,"status":enum('scheduled','first','halftime','second','finished'),"period":I,"clock":I,"speed":{"type":"integer","enum":[0,1,5,20,60]},"pauseReason":S,"pauseMessage":S,"pausedClock":I,"pausedPlayerId":S,"credit":N,"homeScore":I,"awayScore":I,"possession":enum('home','away'),"x":{"type":"number","minimum":0,"maximum":100},"y":{"type":"number","minimum":0,"maximum":70},"phase":enum('restart','open','ruck','scrum','lineout','penalty','conversion','stoppage'),"seed":I,"rng":I,"engineVersion":S,"sequence":I,"commandSequence":I,"version":I,"settled":B,"homeSubs":I,"awaySubs":I,"homePlayers":arr(ref('Snapshot')),"awayPlayers":arr(ref('Snapshot')),"homeStats":ref('Stats'),"awayStats":ref('Stats'),"homeTactic":ref('Tactic'),"awayTactic":ref('Tactic')},['id','status','clock','sequence','version']),
  "Event":obj({"id":S,"matchId":S,"sequence":I,"period":I,"clock":I,"type":S,"side":enum('home','away',''),"playerId":S,"from":obj({'x':N,'y':N}),"to":obj({'x':N,'y':N}),"points":{"type":"integer","enum":[0,2,3,5]},"homeScore":I,"awayScore":I,"result":obj({'phase':S,'possession':S,'inGoal':B}),"text":S},['id','sequence','clock','type','points','text']),
@@ -85,6 +85,10 @@ schemas['Snapshot']['properties']['status']=enum('field','bench','replaced','sin
 for entity in ['Club','Player','Lineup','Movement','Fixture','Command','Coach','TrainingExecution']:
  schemas[entity+'Page']=page(entity)
 schemas['EventPage']=obj({'items':arr(ref('Event')),'lastSequence':I,'hasMore':B},['items','lastSequence','hasMore'])
+schemas['PlayerMatchStats']=obj({'id':S,'playerId':S,'playerName':S,'clubId':S,'clubName':S,'opponentId':S,'opponentName':S,'fixtureId':S,'matchId':S,'date':S,'day':I,'season':S,'stage':S,'competitionType':S,'side':enum('home','away'),'position':I,'playedSeconds':I,'homeScore':I,'awayScore':I,'stats':ref('Stats'),'complete':B,'source':enum('live','aggregate','legacy'),'modelVersion':S},['id','playerId','fixtureId','date','stats','complete'])
+schemas['PlayerMatchStatsPage']=page('PlayerMatchStats')
+schemas['PlayerMatchStatsPage']['properties']['summary']=obj({'appearances':I,'playedSeconds':I,'stats':ref('Stats'),'partialMatches':I})
+schemas['Snapshot']['properties'].update({'playedSeconds':I,'infringements':I,'statsVersion':S})
 paths={}
 pagination=[{'name':'offset','in':'query','schema':{'type':'integer','minimum':0,'default':0}},{'name':'limit','in':'query','schema':{'type':'integer','minimum':1,'maximum':500,'default':100}}]
 def route(path,method,summary,response,request=None,key=False,paged=False,created=False):
@@ -104,6 +108,7 @@ route('/clubs','get','Veinte clubes oficiales','ClubPage',paged=True)
 route('/clubs/{clubId}','get','Detalle de club','Club')
 route('/clubs/{clubId}/players','get','Plantilla y cantera del club','PlayerPage',paged=True)
 route('/players/{playerId}','get','Ficha de jugador','Player')
+route('/players/{playerId}/match-stats','get','Historial individual por encuentro, paginado y con totales de todos los registros disponibles','PlayerMatchStatsPage',paged=True)
 route('/players/{playerId}/release','post','Rescindir contrato y retirar al jugador de plantilla, entrenamientos y alineaciones','ReleaseResult','Version',key=True)
 route('/clubs/{clubId}/academy','get','Jugadores juveniles','PlayerPage',paged=True)
 route('/clubs/{clubId}/academy/{playerId}/promote','post','Abrir negociación salarial para promocionar; no cambia todavía de categoría','Negotiation','Version',key=True)
@@ -217,7 +222,7 @@ schemas['Competition']['properties'].update({'seasonStartDate':{'type':'string',
 
 schemas['Player']['properties'].update({'talentScaleVersion':S,'talentScaleFactor':N})
 
-schemas['WeeklyDay']=obj({'day':{'type':'integer','minimum':1,'maximum':7},'theme':enum('attack','defense','physical','technique','setPieces','tactics','rest')},['day','theme'])
+schemas['WeeklyDay']=obj({'day':{'type':'integer','minimum':1,'maximum':7},'theme':enum('attack','defense','physical','technique','setPieces','tactics','rest'),'forwards':S,'backs':S},['day','theme'])
 schemas['TrainingWeek']=obj({c:{'type':'array','minItems':7,'maxItems':7,'items':ref('WeeklyDay')} for c in ['senior','academy']},['senior','academy'])
 schemas['Training']['properties'].update({'mode':enum('weekly','groups'),'weekly':ref('TrainingWeek'),'weeklyConfigured':B,'nextGroups':arr(ref('TrainingGroup')),'nextDay':I,'nextDate':S,'nextWeekday':I,'themes':arr(obj({'id':S,'name':S,'forwards':S,'backs':S}))})
 schemas['Training']['required']=[k for k in schemas['Training']['required'] if k!='groups']

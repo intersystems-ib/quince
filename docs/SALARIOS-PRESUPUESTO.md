@@ -15,3 +15,5 @@ Los salarios individuales dependen de calidad y margen del club. El presupuesto 
 Un recambio necesario por lesión puede elevar esos límites al 90 % de gasto total y 70 % en jugadores. Se conserva al menos un 10 % de reserva. La regla vale para usuario y rivales.
 
 La referencia técnica conjunta es hasta el 22,5 % del presupuesto, ponderada por especialidad, calidad y capacidad. El aumento de contratos existentes se limita al margen disponible. No se cambian pagos históricos ni devengos anteriores. Entrenar no añade costes diarios.
+
+El usuario puede contratar entrenadores y financiero sin límite salarial; asume el gasto mensual mostrado. Los equipos automáticos siguen comprobando su margen antes de contratar.

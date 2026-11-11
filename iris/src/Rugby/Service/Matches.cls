@@ -41,6 +41,7 @@ ClassMethod Start(id As %String) As %DynamicObject
             set p=##class(Rugby.Service.Store).Get("Player",pid)
             set s={"id":(id_"-"_pid),"matchId":(id),"playerId":(pid),"clubId":(cid),"side":(side),"name":(p.name),"attributes":(p.attributes),"naturalPosition":(p.position),"secondary":(p.secondary),"position":($select(starter:i+1,1:p.position)),"status":($select(starter:"field",1:"bench")),"playedSeconds":0,"yellowCards":0,"redCards":0,"sinBinUntil":0,"cards":[],"energy":(p.energy),"form":(p.form),"morale":(p.morale),"stats":{"actions":0,"tries":0,"points":0}}
             set s.age=p.age
+            set s.stats=##class(Rugby.Service.MatchStatistics).Empty(),s.statsVersion=##class(Rugby.Service.MatchStatistics).#VERSION,s.side=side
             do ##class(Rugby.Simulation.Performance).ApplyMorale(s)
             do snapshots.%Push(s)
             do ##class(Rugby.Service.Store).Put("MatchPlayer",s)
@@ -182,6 +183,7 @@ ClassMethod Settle(m As %DynamicObject)
     set f.winnerId=m.%Get("winnerId",$select(m.homeScore>m.awayScore:m.homeId,m.awayScore>m.homeScore:m.awayId,1:""))
     if m.%IsDefined("homeShootout") set f.homeShootout=m.homeShootout,f.awayShootout=m.awayShootout
     set f.classification=##class(Rugby.Service.Competition).Classification(f),m.classification=f.classification
+    do ##class(Rugby.Service.MatchStatistics).Live(m,f)
     do ##class(Rugby.Service.Store).Put("Fixture",f)
     if f.%Get("competitionKey")'="" do ##class(Rugby.Service.Competition).Sync(club.day)
     set commands=##class(Rugby.Service.Store).All("MatchCommand","matchId",m.id)
