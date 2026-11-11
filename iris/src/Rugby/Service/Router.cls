@@ -78,8 +78,9 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
         }
         if (resource="players")&&(child="") {
             set p=##class(Rugby.Service.Store).Get("Player",id)
-            if p.clubId="" quit ##class(Rugby.Service.Development).FreeProfile(p)
+            if p.clubId="" { do ##class(Rugby.Service.AttributeProgress).View(p,##class(Rugby.Service.Seasons).Year()) quit ##class(Rugby.Service.Development).FreeProfile(p) }
             set c=##class(Rugby.Service.Store).Get("Club",p.clubId)
+            do ##class(Rugby.Service.AttributeProgress).View(p,##class(Rugby.Service.Seasons).Year(p.clubId))
             quit ##class(Rugby.Service.Development).Profile(p,c,##class(Rugby.Service.Store).Get("TrainingPlan",p.clubId),##class(Rugby.Service.Staff).Qualities(p.clubId))
         }
         if resource="matches" {

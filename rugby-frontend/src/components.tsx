@@ -15,6 +15,14 @@ export function Loading(){return <div className="loading" role="status"><LoaderC
 export function Heading({eyebrow,title,description,action}:{eyebrow:string;title:string;description?:string;action?:React.ReactNode}){return <div className="page-heading"><div><div className="eyebrow">{eyebrow}</div><h1>{title}</h1>{description&&<p>{description}</p>}</div>{action}</div>}
 export function Energy({value}:{value:number}){const energy=Number.isFinite(value)?Math.min(100,Math.max(0,value)):0;return <span className="energy"><span className="energy-track"><i style={{width:`${energy}%`,background:`hsl(${energy*1.2} 72% 42%)`}}/></span><b>{Math.round(energy)}<small>%</small></b></span>}
 export function TrendArrow({trend}:{trend:'growth'|'decline'|'stable'}){const label={growth:'Mejora prevista',decline:'Declive previsto',stable:'Sin variación prevista'}[trend];return <span className={`trend-arrow trend-${trend}`} role="img" aria-label={label} title={label}>{({growth:'↑',decline:'↓',stable:'→'})[trend]}</span>}
+export function AttributeDelta({value,year}:{value:number;year?:number}){
+ if(!Number.isFinite(value))return null;
+ const amount=Math.round(Math.abs(value));
+ if(!amount)return null;
+ const formatted=new Intl.NumberFormat('es-ES',{maximumFractionDigits:0}).format(amount),sign=value>0?'+':'−';
+ const label=`${value>0?'Subida':'Bajada'} de ${formatted} ${amount===1?'punto':'puntos'} en la temporada${year?` ${year}/${year+1}`:''}`;
+ return <small className={`attribute-delta ${value>0?'growth':'decline'}`} aria-label={label} title={label}>{sign}{formatted}</small>;
+}
 export function Action({path,method='POST',body,children,onSuccess,className='',disabled=false,confirmMessage,confirmLabel='Rescindir contrato',errorResetKey}:{path:string;method?:string;body?:unknown;children:React.ReactNode;onSuccess?:(data:unknown)=>void;className?:string;disabled?:boolean;confirmMessage?:string;confirmLabel?:string;errorResetKey?:string}){
  const qc=useQueryClient(),key=useRef(crypto.randomUUID()),dialog=useRef<HTMLDialogElement>(null),[confirmOpen,setConfirmOpen]=useState(false);
  useEffect(()=>{if(confirmOpen)dialog.current?.showModal();else dialog.current?.close();},[confirmOpen]);

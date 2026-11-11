@@ -258,7 +258,7 @@ ClassMethod Process(club As %String, day As %Integer) As %DynamicObject
         do ##class(Rugby.Service.Store).Put("Player",p)
     }
     do ##class(Rugby.Service.Management).RefreshAvailability(club)
-    set execution={"id":(eid),"clubId":(club),"day":(day),"modelVersion":(..#VERSION),"mode":(plan.%Get("mode","groups")),"weekly":(plan.%Get("weekly",{})),"groups":(resolved),"staffSnapshot":(staff.coaches),"results":(results),"trainingCost":0,"playerWeeklyWages":(wages),"staffWeeklyWages":(staff.weeklyWage)}
+    set execution={"id":(eid),"clubId":(club),"day":(day),"seasonYear":(##class(Rugby.Service.Seasons).Year(club)),"attributeScale":(##class(Rugby.Service.TalentScale).Factor()),"modelVersion":(..#VERSION),"mode":(plan.%Get("mode","groups")),"weekly":(plan.%Get("weekly",{})),"groups":(resolved),"staffSnapshot":(staff.coaches),"results":(results),"trainingCost":0,"playerWeeklyWages":(wages),"staffWeeklyWages":(staff.weeklyWage)}
     do ##class(Rugby.Service.Store).Put("TrainingExecution",execution)
     quit execution
 }

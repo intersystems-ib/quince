@@ -16740,6 +16740,15 @@
           "wageSource": {
             "type": "string"
           },
+          "attributeSeasonChanges": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "attributeSeasonYear": {
+            "type": "integer"
+          },
           "contractYears": {
             "type": "integer",
             "minimum": 1,

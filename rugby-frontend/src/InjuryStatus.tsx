@@ -1,3 +1,5 @@
+import {HeartPulse} from 'lucide-react';
+import Metric from './Metric';
 import {useQuery} from '@tanstack/react-query';
 import {api} from './api';
 import type {Injury,InjuryType,Player} from './types';
@@ -18,7 +20,7 @@ export default function InjuryStatus({player}:{player:Player}){
 
 export function InjuryPanel({player}:{player:Player}){
  const injury=player.injury,history=player.injuryHistory??[];
- return <section className="card injury-panel"><h3>Estado físico y lesiones</h3>{injury?<><p className="injury-alert">{injuryText(injury)}</p><p>{injury.severity[0].toUpperCase()+injury.severity.slice(1)} · Baja inicial: {injury.weeks} {injury.weeks===1?'semana':'semanas'} · Desde {date(injury.startedOn)} · {injury.source==='match'?'Partido':'Entrenamiento'}</p><p>{injury.remainingDays??injury.weeks*7} días de baja pendientes.</p></>:<InjuryStatus player={player}/>} {history.length>0&&<details><summary>Historial de lesiones · {history.length}</summary><ul>{[...history].reverse().map(i=><li key={i.id}>{i.name} · Grado {i.grade} · {i.weeks} semanas · {date(i.startedOn)} — {date(i.recoveredOn??i.expectedReturn)}</li>)}</ul></details>}</section>;
+ return <Metric icon={injury?<InjuryMark player={player}/>:<HeartPulse/>} label="Estado físico y lesiones" value={player.retired?'Retirado':injury?injury.name:player.available?'Disponible':'No disponible'} note={injury?<><span>Grado {injury.grade} · {injury.severity} · {injury.remainingWeeks??injury.weeks} sem. restantes</span><span>Alta prevista: {date(injury.expectedReturn)}</span></>:player.retired?'Fuera de competición':player.available?'Sin lesión activa':player.unavailableReason??'En recuperación'} tag="SALUD" className="player-info-metric injury-metric">{injury&&<details className="metric-details"><summary>Detalle de la lesión</summary><p>Baja inicial: {injury.weeks} {injury.weeks===1?'semana':'semanas'} · Desde {date(injury.startedOn)} · {injury.source==='match'?'Partido':'Entrenamiento'}</p><p>{injury.remainingDays??injury.weeks*7} días de baja pendientes.</p></details>}{history.length>0&&<details className="metric-details"><summary>Historial de lesiones · {history.length}</summary><ul>{[...history].reverse().map(i=><li key={i.id}>{i.name} · Grado {i.grade} · {i.weeks} semanas · {date(i.startedOn)} — {date(i.recoveredOn??i.expectedReturn)}</li>)}</ul></details>}</Metric>;
 }
 
 export function InjuryCatalog(){

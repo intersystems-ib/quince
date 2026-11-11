@@ -45,6 +45,7 @@ ClassMethod Put(kind As %String, d As %DynamicObject)
         if d.%IsDefined(field) { do indexed.%Set(field,d.%Get(field)) set ^RugbyWorld(..Game(),"lookup",kind,field,"@"_d.%Get(field),d.id)=1 }
     }
     set ^RugbyWorld(..Game(),"indexed",kind,d.id)=indexed.%ToJSON()
+    if kind="TrainingExecution" do ##class(Rugby.Service.AttributeProgress).Record(d)
 }
 ClassMethod Flags(d As %DynamicObject)
 {
