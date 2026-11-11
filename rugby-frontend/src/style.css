@@ -137,4 +137,5 @@
 .calendar-fixture>.calendar-fixture-status{display:flex;justify-content:center;align-items:center;width:100%;text-align:center;color:var(--muted);font-size:11px;margin:-10px 0 20px}
 .calendar-fixture>.venue-info{justify-content:center;text-align:center;width:100%}
 
-.command-card{display:flex;flex-direction:column;min-height:0;overflow:hidden}.command-card>h3,.command-card>p{flex-shrink:0}.command-list{min-height:0;max-height:400px;overflow-y:auto}.match-main>.feed-card{margin-bottom:0}@media(min-width:951px){.live-layout>.match-right{contain:size;display:flex;flex-direction:column;min-height:0}.live-layout>.match-right>.card{flex-shrink:0}.live-layout>.match-right>.command-card{flex:0 1 auto;min-height:0;margin-bottom:0}.match-right .command-list{max-height:none}}
+
+.match-main>.feed-card{margin-bottom:0}.match-timeline>.card-top{padding:18px 21px;margin:0;border-bottom:1px solid var(--line)}.match-timeline .event>div{min-width:0;flex:1}.event.decision{background:#f5f3e9;border-radius:5px;padding:14px 10px;margin:5px 11px}.decision-marker{background:#c8794b!important}.decision-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}.decision-heading strong{font-size:11px;color:#526249}.decision-source{display:block;font-size:9px;color:#9a8667;margin-top:5px}.live-layout.match-finished{grid-template-columns:minmax(0,1fr)}
