@@ -119,7 +119,14 @@ ClassMethod Commands(m As %DynamicObject, speedOnly As %Boolean = 0)
             if c.type="tactic" do m.%Set(c.side_"Tactic",b.tactic)
             if c.type="substitution" {
                 set players=m.%Get(c.side_"Players"),pos=0
-                for i=0:1:players.%Size()-1 { set p=players.%Get(i) if p.playerId=b.outId { set pos=p.position,p.substituted=1 if p.status'="injured" set p.status="replaced" } }
+                for i=0:1:players.%Size()-1 {
+                    set p=players.%Get(i)
+                    if p.playerId=b.outId {
+                        set pos=p.position,p.substituted=1
+                        if p.status'="injured" set p.status="replaced"
+                        do ##class(Rugby.Simulation.Performance).ApplyMorale(p)
+                    }
+                }
                 for i=0:1:players.%Size()-1 { set p=players.%Get(i) if p.playerId=b.inId set p.position=pos,p.status="field" do ##class(Rugby.Simulation.Performance).ApplyMorale(p) }
                 do m.%Set(c.side_"Subs",m.%Get(c.side_"Subs")+1)
             }

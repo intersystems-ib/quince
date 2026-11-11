@@ -1,6 +1,6 @@
-# Equipaciones y colores
+# Equipaciones
 
-Referencia: patrón facilitado por el usuario el 10 de noviembre de 2026. Dos diseños por equipo, con color principal, colores secundarios y franjas horizontales, verticales, mitades o ribetes.
+Colores facilitados por el usuario. El visitante usa la segunda camiseta si hay conflicto; los diseños se aplican al campo, marcador y directorio.
 
 | Club | Primera equipación | Segunda equipación elegida |
 |---|---|---|
@@ -24,13 +24,3 @@ Referencia: patrón facilitado por el usuario el 10 de noviembre de 2026. Dos di
 | Barça Rugbi | Azulgrana | Blanco con detalles azulgranas |
 | Club de Rugby Sant Cugat | Azul y rojo a rayas horizontales | Blanco |
 | Torrealday Gernika Rugby Taldea | Negro y verde | Blanco con detalles verdes |
-
-Las alternativas se eligen entre las facilitadas por el usuario para favorecer contraste. Se conservan nombres de clubes y patrocinadores.
-
-El visitante usa la segunda equipación cuando coinciden los colores principales. Si persiste la coincidencia se comprueban las alternativas del local. Los 380 cruces ordenados permiten distinguir colores. La elección se conserva al cambiar de campo en el descanso.
-
-Campo, bolas del marcador, leyenda y directorio muestran la paleta y el patrón seleccionados. Los dorsales tienen un fondo del color principal para mantener contraste mínimo de 4,5:1. Los escudos permanecen en el marcador y se retiran del terreno. El balón móvil utiliza el PNG original del icono de la aplicación.
-
-La versión 2.0.0 actualiza clubes y metadatos visuales de partidos existentes, conservando datos deportivos y económicos. Se registra mediante kitImports de System.Operation.
-
-Validación: 33 grupos IRIS, 380 cruces y contraste de dorsales. Revisión visual de Cisneros con franjas azules y VRAC en segunda camiseta rosa. Registros: test-results/team-kits-core-validation.log y team-kits-preservation-validation.log.

@@ -11,7 +11,7 @@ ClassMethod Run()
             if p.category="senior" { set seniors=seniors+avg,ns=ns+1,lo=$select(avg<lo:avg,1:lo),hi=$select(avg>hi:avg,1:hi) }
             else { set academy=academy+avg,na=na+1 }
         }
-        do ..Assert(($zabs((seniors/ns)-row.seniorTarget)<.0001)&&($zabs((academy/na)-row.academyTarget)<.0001),"Both seeded category means match target for "_row.clubId)
+        do ..Assert(($zabs((seniors/ns)-(row.seniorTarget*##class(Rugby.Service.TalentScale).Factor()))<.0001)&&($zabs((academy/na)-(row.academyTarget*##class(Rugby.Service.TalentScale).Factor()))<.0001),"Both seeded category means match target for "_row.clubId)
         do ..Assert((hi-lo)>1,"Individual player variation retained")
         if last.%IsDefined(row.divisionId) do ..Assert((seniors/ns)<last.%Get(row.divisionId),"Rank order strictly decreases within division")
         do last.%Set(row.divisionId,seniors/ns)
@@ -25,7 +25,7 @@ ClassMethod Run()
     set copy.attributes.tackling=copy.attributes.tackling+.123456
     do ##class(Rugby.Seed.Quality).Adjust(copy,row.seniorOffset,ref.version,row.clubId)
     do ..Assert($zabs(copy.attributes.tackling-expected)<.000002,"A new calibration replaces the old offset and retains accumulated training")
-    do ..Assert(last.%Get(416)>64,"Weakest Honor squad exceeds strongest Elite squad")
+    do ..Assert(last.%Get(416)>(64*##class(Rugby.Service.TalentScale).Factor()),"Weakest Honor squad exceeds strongest Elite squad")
     set p=##class(Rugby.Service.Store).Get("Player","c3-p1"),version=p.qualityVersion,delta=p.qualityOffset,old=p.%ToJSON()
     set again=##class(Rugby.Seed.Quality).Apply()
     do ..Assert((again.players=0)&&(##class(Rugby.Service.Store).Get("Player",p.id).%ToJSON()=old),"Calibration is idempotent")

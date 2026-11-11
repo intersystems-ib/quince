@@ -59,7 +59,10 @@ ClassMethod Profile(p As %DynamicObject, club As %DynamicObject, plan As %Dynami
     }
     set days=##class(Rugby.Simulation.Engine).Clamp($zdateh(endDate,3)-$zdateh(club.date,3),0,366)
     // Forecast only: reuse the real development rules on a detached copy, without saving or charging.
-    for n=1:1:days { set result=..Apply(future,group,club.day+n,qualities,0) }
+    set weekly=plan.%Get("mode")="weekly",context=""
+    if weekly set context=##class(Rugby.Service.WeeklyTraining).Context(club.id,plan)
+    for n=1:1:days { if weekly set group=##class(Rugby.Service.WeeklyTraining).Group(future,club.day+n,context)
+        set result=..Apply(future,group,club.day+n,qualities,0) }
     set p.potential=..Average(future),p.potentialDate=endDate
     set p.potentialTrend=$select(p.potential<p.average:"decline",p.potential>p.average:"growth",1:"stable")
     do p.%Remove("developmentCeiling")
@@ -135,13 +138,15 @@ ClassMethod Decline(p As %DynamicObject, total As %Numeric, changes As %DynamicA
     }
     quit (total-remaining)*sign
 }
-ClassMethod Save(club As %String, b As %DynamicObject) As %DynamicObject
+ClassMethod Save(club As %String, b As %DynamicObject, key As %String = "") As %DynamicObject
 {
     do ##class(Rugby.Service.Store).Managed(club)
+    if b.%Get("mode")="weekly" quit ##class(Rugby.Service.WeeklyTraining).Save(club,b,key)
     quit ..SavePlan(club,b)
 }
 ClassMethod SavePlan(club As %String, b As %DynamicObject) As %DynamicObject
 {
+    if b.%Get("mode")="weekly" quit ##class(Rugby.Service.WeeklyTraining).Save(club,b)
     set old=##class(Rugby.Service.Store).Get("TrainingPlan",club)
     do ##class(Rugby.Service.Store).CheckVersion(old,b)
     if '$isobject(b.%Get("groups")) do ##class(Rugby.Service.Store).Fail(422,"TRAINING_GROUPS","Selecciona jugadores y crea sus grupos de entrenamiento.")
@@ -238,8 +243,10 @@ ClassMethod Process(club As %String, day As %Integer) As %DynamicObject
     set eid=club_"-day"_day,previous=##class(Rugby.Service.Store).Get("TrainingExecution",eid,0)
     if $isobject(previous) quit previous
     set plan=##class(Rugby.Service.Store).Get("TrainingPlan",club),staff=##class(Rugby.Service.Staff).View(club),qualities=##class(Rugby.Service.Staff).Qualities(club),groups={}
-    for i=0:1:plan.groups.%Size()-1 {
-        set g=plan.groups.%Get(i)
+    set resolved=plan.groups
+    if plan.%Get("mode")="weekly" set resolved=##class(Rugby.Service.WeeklyTraining).Groups(club,plan,day)
+    for i=0:1:resolved.%Size()-1 {
+        set g=resolved.%Get(i)
         for j=0:1:g.playerIds.%Size()-1 { do groups.%Set(g.playerIds.%Get(j),g) }
     }
     set players=##class(Rugby.Service.Store).All("Player","clubId",club),results=[],wages=0
@@ -251,7 +258,7 @@ ClassMethod Process(club As %String, day As %Integer) As %DynamicObject
         do ##class(Rugby.Service.Store).Put("Player",p)
     }
     do ##class(Rugby.Service.Management).RefreshAvailability(club)
-    set execution={"id":(eid),"clubId":(club),"day":(day),"modelVersion":(..#VERSION),"groups":(plan.groups),"staffSnapshot":(staff.coaches),"results":(results),"trainingCost":0,"playerWeeklyWages":(wages),"staffWeeklyWages":(staff.weeklyWage)}
+    set execution={"id":(eid),"clubId":(club),"day":(day),"modelVersion":(..#VERSION),"mode":(plan.%Get("mode","groups")),"weekly":(plan.%Get("weekly",{})),"groups":(resolved),"staffSnapshot":(staff.coaches),"results":(results),"trainingCost":0,"playerWeeklyWages":(wages),"staffWeeklyWages":(staff.weeklyWage)}
     do ##class(Rugby.Service.Store).Put("TrainingExecution",execution)
     quit execution
 }

@@ -3,6 +3,18 @@ Class Rugby.Test.Performance Extends %RegisteredObject
 ClassMethod Assert(ok As %Boolean, text As %String) { do ##class(Rugby.Test.Suite).Assert(ok,text) }
 ClassMethod Run()
 {
+    set low={"position":1,"naturalPosition":10,"secondary":[],"status":"field","morale":5}
+    do ##class(Rugby.Simulation.Performance).ApplyMorale(low)
+    do ..Assert((low.morale=0)&&(low.positionMoraleApplied=5),"Low morale records only the actual position deduction")
+    set low.position=10
+    do ##class(Rugby.Simulation.Performance).ApplyMorale(low)
+    do ..Assert(low.morale=5,"Returning to natural position restores the exact previous morale")
+    set low.position=1
+    do ##class(Rugby.Simulation.Performance).ApplyMorale(low)
+    set low.status="replaced"
+    do ##class(Rugby.Simulation.Performance).ApplyMorale(low)
+    do ..Assert((low.morale=5)&&(low.positionMoraleApplied=0),"Leaving the XV restores the position deduction")
+
     set m=##class(Rugby.Test.Suite).Build(593)
     // Uniform controlled attributes isolate the effect of role, unit and absences.
     for side="home","away" {
@@ -53,11 +65,11 @@ ClassMethod Run()
     do ..Assert(##class(Rugby.Simulation.Performance).Skill(p,"carry")<old,"Strength and agility now influence ball carrying")
     set kicker=##class(Rugby.Simulation.Performance).Kicker(m.homePlayers),oldId=kicker.playerId,kicker.status="sentOff",next=##class(Rugby.Simulation.Performance).Kicker(m.homePlayers)
     do ..Assert(next.playerId'=oldId,"An excluded kicker cannot take a kick")
-    // Settlement keeps the morale loss while leaving skills untouched.
-    set m=##class(Rugby.Test.Suite).Build(852),p=m.homePlayers.%Get(3),pid=p.playerId,p.naturalPosition=12,p.secondary=[],raw=p.attributes.%ToJSON()
+    // Settlement applies results to base morale, preserving skills.
+    set m=##class(Rugby.Test.Suite).Build(852),p=m.homePlayers.%Get(3),pid=p.playerId,p.naturalPosition=12,p.secondary=[],raw=p.attributes.%ToJSON(),baseMorale=p.morale
     do ##class(Rugby.Simulation.Performance).AlignmentMorale(m.homePlayers)
-    set penalized=p.morale,m=##class(Rugby.Test.Suite).Finish(m),saved=##class(Rugby.Service.Store).Get("Player",pid),expected=$select(m.homeScore>m.awayScore:100,m.homeScore=m.awayScore:penalized,1:##class(Rugby.Simulation.Engine).Clamp(penalized-5,0,100))
-    do ..Assert((saved.morale=expected)&&(saved.attributes.%ToJSON()=raw),"Result morale applies after positional loss without changing attributes")
+    set penalized=p.morale,m=##class(Rugby.Test.Suite).Finish(m),saved=##class(Rugby.Service.Store).Get("Player",pid),expected=$select(m.homeScore>m.awayScore:100,m.homeScore=m.awayScore:baseMorale,1:##class(Rugby.Simulation.Engine).Clamp(baseMorale-5,0,100))
+    do ..Assert((saved.morale=expected)&&(saved.attributes.%ToJSON()=raw),"Results apply to base morale without retaining positional loss or changing attributes")
     set m=##class(Rugby.Test.Suite).Build(593),m.phase="scrum",m.possession="home",m.engineVersion="1.0.0"
     do ##class(Rugby.Simulation.Engine).Step(m)
     set e=##class(Rugby.Service.Store).Get("MatchEvent",m.id_"-"_$translate($justify(m.sequence,6)," ","0"))

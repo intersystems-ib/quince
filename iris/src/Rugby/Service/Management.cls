@@ -107,9 +107,9 @@ ClassMethod Promote(club As %String, pid As %String) As %DynamicObject
     }
     quit p
 }
-ClassMethod Training(club As %String, b As %DynamicObject) As %DynamicObject
+ClassMethod Training(club As %String, b As %DynamicObject, key As %String = "") As %DynamicObject
 {
-    quit ##class(Rugby.Service.Development).Save(club,b)
+    quit ##class(Rugby.Service.Development).Save(club,b,key)
 }
 ClassMethod Release(pid As %String, b As %DynamicObject, key As %String) As %DynamicObject
 {
@@ -182,7 +182,7 @@ ClassMethod Advance(club As %String, b As %DynamicObject, key As %String) As %Dy
     set announcements=##class(Rugby.Service.Seasons).Announce(c.day),rivals=##class(Rugby.Service.Rivals).Day(c.day)
     do ##class(Rugby.Service.Competition).Sync(c.day)
     set rivals.monthlyPayroll=payroll,rivals.financeExecution=##class(Rugby.Service.Finance).TickAll(c.day)
-    set rivals.retirementAnnouncements=announcements,rivals.seasonTransition=##class(Rugby.Service.Seasons).Tick(c.day)
+    set rivals.friendlyInvitations=##class(Rugby.Service.FriendlyRequests).Tick(),rivals.retirementAnnouncements=announcements,rivals.seasonTransition=##class(Rugby.Service.Seasons).Tick(c.day)
     do ##class(Rugby.Service.Store).Put("RivalExecution",rivals)
     set c=##class(Rugby.Service.Store).Get("Club",club)
     set ^RugbyWorld(##class(Rugby.Service.Store).Game(),"retry","day",club,key)=c.%ToJSON()

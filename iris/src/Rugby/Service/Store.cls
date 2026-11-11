@@ -24,6 +24,7 @@ ClassMethod Put(kind As %String, d As %DynamicObject)
 {
     do ..Venue(kind,d)
     set previousSalary=..Get(kind,d.id,0)
+    if (kind="Player")&&('$isobject(previousSalary))&&(##class(Rugby.Service.TalentScale).Factor()<1) do ##class(Rugby.Service.TalentScale).Player(d)
     do ##class(Rugby.Service.MonthlyPayroll).Sync(kind,d,previousSalary)
     if kind="Player" do ##class(Rugby.Service.Seasons).Prepare(d)
     if kind="Player" set d.average=##class(Rugby.Service.Development).Average(d),d.form=d.average

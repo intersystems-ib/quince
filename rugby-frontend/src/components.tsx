@@ -1,24 +1,36 @@
 import {useEffect,useRef,useState} from 'react';
 import {useMutation,useQueryClient} from '@tanstack/react-query';
-import {ArrowRight,Check,LoaderCircle,TriangleAlert} from 'lucide-react';
+import {ArrowRight,Check,LoaderCircle,TriangleAlert,X} from 'lucide-react';
 import {api} from './api';
-import type {Kit,Match,Tactic} from './types';
+import {advanceWithRefresh} from './advanceDay';
+import type {Club,Kit,Match,Tactic} from './types';
 import {pitchFormation,positions} from './positions';
 export {positions} from './positions';
 export const attrLabels:Record<string,string>={speed:'Velocidad',strength:'Fuerza',stamina:'Resistencia',agility:'Agilidad',passing:'Pase',handling:'Manejo',tackling:'Placaje',kicking:'Patada',scrum:'Melé',lineout:'Touche',discipline:'Disciplina',decisions:'Decisiones',leadership:'Liderazgo',ruck:'Rucks',maul:'Mauls',attacking:'Estructura de ataque',defensiveReading:'Lectura defensiva'};
 export const money=(n:number)=>new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n/100);
 export const clock=(n:number)=>`${Math.floor(n/60).toString().padStart(2,'0')}:${Math.floor(n%60).toString().padStart(2,'0')}`;
 export const statusLabels:Record<string,string>={scheduled:'Programado',first:'Primera parte',halftime:'Descanso',second:'Segunda parte',finished:'Finalizado',live:'En juego'};
-export function ErrorBox({error}:{error:unknown}){return <div role="alert" className="error"><TriangleAlert size={19}/><span>{error instanceof Error?error.message:'No se han podido cargar los datos.'}</span></div>}
+export function ErrorBox({error,onDismiss}:{error:unknown;onDismiss?:()=>void}){return <div role="alert" className="error"><TriangleAlert size={19}/><span>{error instanceof Error?error.message:'No se han podido cargar los datos.'}</span>{onDismiss&&<button type="button" className="error-dismiss" aria-label="Cerrar aviso" onClick={onDismiss}><X size={17}/></button>}</div>}
 export function Loading(){return <div className="loading" role="status"><LoaderCircle className="spin" size={22}/> Cargando datos del club…</div>}
 export function Heading({eyebrow,title,description,action}:{eyebrow:string;title:string;description?:string;action?:React.ReactNode}){return <div className="page-heading"><div><div className="eyebrow">{eyebrow}</div><h1>{title}</h1>{description&&<p>{description}</p>}</div>{action}</div>}
 export function Energy({value}:{value:number}){const energy=Number.isFinite(value)?Math.min(100,Math.max(0,value)):0;return <span className="energy"><span className="energy-track"><i style={{width:`${energy}%`,background:`hsl(${energy*1.2} 72% 42%)`}}/></span><b>{Math.round(energy)}<small>%</small></b></span>}
 export function TrendArrow({trend}:{trend:'growth'|'decline'|'stable'}){const label={growth:'Mejora prevista',decline:'Declive previsto',stable:'Sin variación prevista'}[trend];return <span className={`trend-arrow trend-${trend}`} role="img" aria-label={label} title={label}>{({growth:'↑',decline:'↓',stable:'→'})[trend]}</span>}
-export function Action({path,method='POST',body,children,onSuccess,className='',disabled=false,confirmMessage,confirmLabel='Rescindir contrato'}:{path:string;method?:string;body?:unknown;children:React.ReactNode;onSuccess?:(data:unknown)=>void;className?:string;disabled?:boolean;confirmMessage?:string;confirmLabel?:string}){
+export function Action({path,method='POST',body,children,onSuccess,className='',disabled=false,confirmMessage,confirmLabel='Rescindir contrato',errorResetKey}:{path:string;method?:string;body?:unknown;children:React.ReactNode;onSuccess?:(data:unknown)=>void;className?:string;disabled?:boolean;confirmMessage?:string;confirmLabel?:string;errorResetKey?:string}){
  const qc=useQueryClient(),key=useRef(crypto.randomUUID()),dialog=useRef<HTMLDialogElement>(null),[confirmOpen,setConfirmOpen]=useState(false);
  useEffect(()=>{if(confirmOpen)dialog.current?.showModal();else dialog.current?.close();},[confirmOpen]);
- const mutation=useMutation({mutationFn:()=>api(path,method,body,key.current),onSuccess:(data)=>{key.current=crypto.randomUUID();void qc.invalidateQueries();onSuccess?.(data);}});
- return <div className="action-wrap"><button className={`button ${className}`} disabled={disabled||mutation.isPending} onClick={()=>{if(confirmMessage){setConfirmOpen(true);return;}mutation.mutate();}}>{mutation.isPending?<LoaderCircle className="spin" size={16}/>:mutation.isSuccess?<Check size={16}/>:null}{children}</button>{confirmMessage&&<dialog ref={dialog} className="action-confirm" aria-labelledby={`confirm-${key.current}`} onCancel={e=>{e.preventDefault();setConfirmOpen(false);}}><h3 id={`confirm-${key.current}`}>{confirmLabel}</h3><p>{confirmMessage}</p><div className="confirm-buttons"><button className="button" autoFocus onClick={()=>setConfirmOpen(false)}>Cancelar</button><button className="button danger" onClick={()=>{setConfirmOpen(false);mutation.mutate();}}>{confirmLabel}</button></div></dialog>}{mutation.error&&<ErrorBox error={mutation.error}/>}</div>
+ const errorContext=useRef(errorResetKey);
+ const mutation=useMutation({mutationFn:()=>{
+  if(method==='POST'&&path.endsWith('/advance-day')&&body&&typeof body==='object'&&'version' in body&&typeof body.version==='number'&&'day' in body&&typeof body.day==='number'){
+   return advanceWithRefresh(body as {version:number;day:number},version=>api<Club>(path,method,{...body,version},key.current),async()=>{
+    const fresh=await api<Club>(path.replace(/\/advance-day$/,''));
+    qc.setQueryData(['club'],fresh);
+    return fresh;
+   });
+  }
+  return api(path,method,body,key.current);
+ },onSuccess:(data)=>{key.current=crypto.randomUUID();void qc.invalidateQueries();onSuccess?.(data);}});
+ useEffect(()=>{if(errorContext.current===errorResetKey)return;errorContext.current=errorResetKey;if(mutation.isError)mutation.reset();},[errorResetKey,mutation.isError,mutation.reset]);
+ return <div className="action-wrap"><button className={`button ${className}`} disabled={disabled||mutation.isPending} onClick={()=>{if(confirmMessage){setConfirmOpen(true);return;}mutation.mutate();}}>{mutation.isPending?<LoaderCircle className="spin" size={16}/>:mutation.isSuccess?<Check size={16}/>:null}{children}</button>{confirmMessage&&<dialog ref={dialog} className="action-confirm" aria-labelledby={`confirm-${key.current}`} onCancel={e=>{e.preventDefault();setConfirmOpen(false);}}><h3 id={`confirm-${key.current}`}>{confirmLabel}</h3><p>{confirmMessage}</p><div className="confirm-buttons"><button className="button" autoFocus onClick={()=>setConfirmOpen(false)}>Cancelar</button><button className="button danger" onClick={()=>{setConfirmOpen(false);mutation.mutate();}}>{confirmLabel}</button></div></dialog>}{mutation.error&&<ErrorBox error={mutation.error} onDismiss={()=>mutation.reset()}/>}</div>
 }
 export function TacticFields({value,onChange}:{value:Tactic;onChange:(t:Tactic)=>void}){return <div className="tactic-fields"><label>Construcción del juego<span className="sr-only">Estilo</span><select aria-label="Estilo de juego" value={value.style} onChange={e=>onChange({...value,style:e.target.value as Tactic['style']})}><option value="hands">A la mano</option><option value="balanced">Equilibrado</option><option value="kicking">Al pie</option></select></label><label>Ritmo<select value={value.tempo} onChange={e=>onChange({...value,tempo:e.target.value as Tactic['tempo']})}><option value="slow">Pausado</option><option value="normal">Normal</option><option value="fast">Alto</option></select></label><label>Presión defensiva<select value={value.defense} onChange={e=>onChange({...value,defense:e.target.value as Tactic['defense']})}><option value="low">Baja</option><option value="normal">Normal</option><option value="high">Alta</option></select></label></div>}
 function KitPattern({id,kit,color}:{id:string;kit:Kit|undefined;color:string}){

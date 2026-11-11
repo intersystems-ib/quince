@@ -3,7 +3,7 @@ import {injuryText} from './InjuryStatus';
 import {kitBackground} from './kitAppearance';
 import {useEffect,useRef,useState} from 'react';
 import {Link,useParams} from 'react-router-dom';
-import {useQuery} from '@tanstack/react-query';
+import {useQuery,useQueryClient} from '@tanstack/react-query';
 import {ArrowLeftRight,ArrowRight,CheckCircle2,Radio,Trophy,WifiOff} from 'lucide-react';
 import {api,getClubId} from './api';
 import ClubCrest from './ClubCrest';
@@ -13,11 +13,18 @@ import {Action,Energy,ErrorBox,Heading,Loading,Pitch,TacticFields,clock,position
 import type {Command,Match,MatchEvent,Page,Snapshot,Tactic} from './types';
 const statLabels:Record<string,string>={tries:'Ensayos',conversions:'Transformaciones',penaltyGoals:'Golpes a palos',drops:'Drops',metres:'Metros ganados',tackles:'Placajes',turnovers:'Recuperaciones',passes:'Pases',kicks:'Patadas',scrums:'Melés',lineouts:'Touches',penalties:'Golpes de castigo',yellowCards:'Tarjetas amarillas',redCards:'Tarjetas rojas'};
 export default function MatchView(){
+ const qc=useQueryClient(),syncedMatch=useRef<string|undefined>(undefined);
  const {id}=useParams(),[events,setEvents]=useState<MatchEvent[]>([]),seq=useRef(0),[tab,setTab]=useState('narracion');
  const state=useQuery({queryKey:['match',id],queryFn:()=>api<Match>(`/matches/${id}`),refetchInterval:q=>q.state.data?.status==='finished'?false:1000});
  const commandQuery=useQuery({queryKey:['commands',id],queryFn:()=>api<Page<Command>>(`/matches/${id}/commands?limit=500`),refetchInterval:state.data?.status==='finished'?false:1500});
  const feed=useQuery({queryKey:['events',id],queryFn:async()=>{const d=await api<{items:MatchEvent[];lastSequence:number;hasMore:boolean}>(`/matches/${id}/events?afterSequence=${seq.current}&limit=500`);if(d.items.length){seq.current=d.items[d.items.length-1].sequence;setEvents(old=>Array.from(new Map([...old,...d.items].map(e=>[e.sequence,e])).values()).sort((a,b)=>a.sequence-b.sequence));}return d;},refetchInterval:()=>state.data?.status==='finished'&&seq.current>=state.data.sequence?false:1000});
  useEffect(()=>{seq.current=0;setEvents([])},[id]);
+ useEffect(()=>{
+  if(state.data?.status==='finished'&&syncedMatch.current!==state.data.id){
+   syncedMatch.current=state.data.id;
+   void qc.invalidateQueries();
+  }
+ },[qc,state.data?.id,state.data?.status]);
  const m=state.data;
  if(state.isLoading)return <Loading/>;if(state.error&&!m)return <ErrorBox error={state.error}/>;if(!m)return null;
  const side=m.homeId===getClubId()?'home':'away',own=m[`${side}Players`],finished=m.status==='finished';

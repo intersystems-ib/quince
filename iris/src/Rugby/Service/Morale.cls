@@ -30,7 +30,7 @@ ClassMethod Result(club As %String, day As %Integer, key As %String, outcome As 
         set before=p.morale,s=indexed.%Get(p.id),seconds=0
         if $isobject(s) {
             set seconds=s.%Get("playedSeconds",0)
-            if s.%IsDefined("morale") set p.morale=s.morale
+            if s.%IsDefined("morale") set p.morale=##class(Rugby.Simulation.Engine).Clamp(s.morale+s.%Get("positionMoraleApplied",s.%Get("positionMoralePenalty",0)),0,100)
         }
         if seconds>0 set p.lastAppearanceDay=day,p.matchAppearances=p.%Get("matchAppearances",0)+1
         if outcome="win" set p.morale=100
@@ -66,7 +66,7 @@ ClassMethod Initialize() As %DynamicObject
         if (m.status="scheduled")||(m.status="finished") continue
         for side="home","away" {
             set snapshots=m.%Get(side_"Players")
-            for j=0:1:snapshots.%Size()-1 { set s=snapshots.%Get(j),s.morale=100,s.positionMoralePenalty=0 do ##class(Rugby.Simulation.Performance).ApplyMorale(s),##class(Rugby.Service.Store).Put("MatchPlayer",s) }
+            for j=0:1:snapshots.%Size()-1 { set s=snapshots.%Get(j),s.morale=100,s.positionMoralePenalty=0,s.positionMoraleApplied=0 do ##class(Rugby.Simulation.Performance).ApplyMorale(s),##class(Rugby.Service.Store).Put("MatchPlayer",s) }
         }
         do ##class(Rugby.Service.Store).Put("Match",m)
     }

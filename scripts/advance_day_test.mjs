@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {createRequire} from 'node:module';
+const require=createRequire(new URL('../rugby-frontend/package.json',import.meta.url));
+const ts=require('typescript');
+const source=await readFile(new URL('../rugby-frontend/src/advanceDay.ts',import.meta.url),'utf8');
+const compiled=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
+const {advanceWithRefresh}=await import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`);
+const conflict=()=>Object.assign(new Error('stale'),{status:409,code:'VERSION_CONFLICT'});
+let calls=[],reads=0;
+assert.deepEqual(await advanceWithRefresh({day:10,version:1},async v=>{calls.push(v);return {day:11,version:2};},async()=>{reads++;}),{day:11,version:2});
+assert.deepEqual(calls,[1]);assert.equal(reads,0);
+calls=[];reads=0;
+const result=await advanceWithRefresh({day:10,version:1},async v=>{calls.push(v);if(v===1)throw conflict();return {day:11,version:8};},async()=>{reads++;return {day:10,version:7};});
+assert.equal(result.day,11);assert.deepEqual(calls,[1,7]);assert.equal(reads,1);
+calls=[];
+const concurrent={day:11,version:9};
+assert.equal(await advanceWithRefresh({day:10,version:1},async v=>{calls.push(v);throw conflict();},async()=>concurrent),concurrent);
+assert.deepEqual(calls,[1],'Do not advance twice when another request already advanced the day');
+for(const code of ['MATCH_PENDING','MATCH_ACTIVE','BUSY','FORBIDDEN']){
+ let reads=0;const error=Object.assign(new Error(code),{status:409,code});
+ await assert.rejects(advanceWithRefresh({day:10,version:1},async()=>{throw error;},async()=>{reads++;}),e=>e===error);
+ assert.equal(reads,0,'Preserve other business errors');
+}
+let attempts=0;
+await assert.rejects(advanceWithRefresh({day:10,version:1},async()=>{attempts++;throw conflict();},async()=>({day:10,version:7})),e=>e.code==='VERSION_CONFLICT');
+assert.equal(attempts,2,'A repeated conflict cannot trigger an endless retry');
+let resetAttempts=0;
+await assert.rejects(advanceWithRefresh({day:10,version:1},async()=>{resetAttempts++;throw conflict();},async()=>({day:5,version:8})),e=>e.code==='VERSION_CONFLICT');
+assert.equal(resetAttempts,1);
+console.log('PASS normal advance, stale-version refresh, bounded retry, no duplicate day, reset protection and unchanged business errors');

@@ -157,7 +157,7 @@ ClassMethod Recruit(c As %DynamicObject, day As %Integer, medicalOnly As %Boolea
     }
     if c.balance<$select(medical:500000,1:5000000) quit {"signed":false,"reason":"cashReserve"}
     set used=##class(Rugby.Service.Payroll).Used(c.id),wageCap=$select(medical:##class(Rugby.Service.Payroll).MedicalWeeklyCap(c.id),1:##class(Rugby.Service.Payroll).WeeklyCap(c.id))
-    set free=##class(Rugby.Service.TransferPool).Players(),candidate="",best=-1,pos=$select(medical:need.position,1:weakest.position),minimum=$select(medical:$select(need.healthySpecialists=0:$select(c.competitionId=416:58,1:50),weak>62:weak-12,1:50),1:weak+1)
+    set free=##class(Rugby.Service.TransferPool).Players(),candidate="",best=-1,pos=$select(medical:need.position,1:weakest.position),minimum=$select(medical:$select(need.healthySpecialists=0:($select(c.competitionId=416:58,1:50)*##class(Rugby.Service.TalentScale).Factor()),weak>(62*##class(Rugby.Service.TalentScale).Factor()):weak-(12*##class(Rugby.Service.TalentScale).Factor()),1:(50*##class(Rugby.Service.TalentScale).Factor())),1:weak+1)
     for i=0:1:free.%Size()-1 {
         set p=free.%Get(i)
         if $isobject(excluded)&&excluded.%IsDefined(p.id) continue

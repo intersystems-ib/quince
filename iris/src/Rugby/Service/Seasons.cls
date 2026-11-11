@@ -60,7 +60,7 @@ ClassMethod RenewRival(c As %DynamicObject, day As %Integer) As %DynamicArray
         if day<review continue
         if p.%Get("renewalReviewYear",-1)=year continue
         set p.renewalReviewYear=year,age=(day-p.birthDay)\365,quality=##class(Rugby.Service.Development).Average(p)
-        set keep=$select(p.category="academy":(age<=22)&&(quality>=40),p.position<=3:1,seniors<=23:1,1:(age<34)&&(quality>=50))
+        set keep=$select(p.category="academy":(age<=22)&&(quality>=(40*##class(Rugby.Service.TalentScale).Factor())),p.position<=3:1,seniors<=23:1,1:(age<34)&&(quality>=(50*##class(Rugby.Service.TalentScale).Factor())))
         if keep {
             set wage=(((p.weeklyWage*(102+(quality\20)))+9999)\10000)*100,p.weeklyWage=$select(##class(Rugby.Service.Payroll).CanPay(c.id,p.id,wage):wage,1:p.weeklyWage),wage=p.weeklyWage
             do ..Contract(p,year+1)

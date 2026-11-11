@@ -49,7 +49,9 @@ ClassMethod Create(b As %DynamicObject, key As %String) As %DynamicObject
     do ##class(Rugby.Seed.Initial).Run()
     set game={"id":(id),"userId":(%RugbyUser),"name":(name),"clubId":(club.id),"clubName":(club.name),"divisionId":(club.competitionId),"division":(club.competition),"date":"2026-09-01","createdAt":(##class(Rugby.Service.Auth).Now()),"updatedAt":(##class(Rugby.Service.Auth).Now()),"active":false}
     do ##class(Rugby.Service.Rivals).Initialize(),##class(Rugby.Service.Transfers).Initialize()
-    set finance=##class(Rugby.Service.Finance).Initialize(),payroll=##class(Rugby.Service.Payroll).Initialize(),staffNames=##class(Rugby.Seed.StaffNames).Initialize(),monthly=##class(Rugby.Service.MonthlyPayroll).Initialize(),pool=##class(Rugby.Service.TransferPool).Initialize(),staffPay=##class(Rugby.Service.StaffPay).Initialize()
+    set finance=##class(Rugby.Service.Finance).Initialize(),payroll=##class(Rugby.Service.Payroll).Initialize(),staffNames=##class(Rugby.Seed.StaffNames).Initialize(),monthly=##class(Rugby.Service.MonthlyPayroll).Initialize(),pool=##class(Rugby.Service.TransferPool).Initialize(),staffPay=##class(Rugby.Service.StaffPay).Initialize(),talent=##class(Rugby.Service.TalentScale).Apply()
+    set training=##class(Rugby.Service.Store).Get("TrainingPlan",club.id),weekly=##class(Rugby.Service.WeeklyTraining).Save(club.id,{"version":(training.version),"weekly":(##class(Rugby.Service.WeeklyTraining).Defaults())})
+    set invitation=##class(Rugby.Service.FriendlyRequests).Tick()
     set ^RugbyGames(id)=game.%ToJSON(),^RugbyGameRetry(%RugbyUser,key)=id
     quit game
 }

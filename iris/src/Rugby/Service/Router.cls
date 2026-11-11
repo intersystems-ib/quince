@@ -55,7 +55,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
                 for i=0:1:lineups.%Size()-1 { do ##class(Rugby.Service.Management).NormalizeBench(lineups.%Get(i)) }
                 quit ..Paginate(lineups)
             }
-            if child="training-plan" quit ##class(Rugby.Service.Store).Get("TrainingPlan",id)
+            if child="training-plan" quit ##class(Rugby.Service.WeeklyTraining).View(id)
             if child="training-suggestion" quit ##class(Rugby.Service.Development).Suggest(id,%RugbyQuery.%Get("variant",0))
             if child="staff" quit ##class(Rugby.Service.Staff).View(id)
             if child="training-executions" {
@@ -73,6 +73,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
             if child="fixtures" {
                 quit ..Paginate(##class(Rugby.Service.Competition).ClubFixtures(id))
             }
+            if child="friendly-invitations" quit ..Paginate(##class(Rugby.Service.FriendlyRequests).List(id))
             if child="friendly-options" quit ##class(Rugby.Service.Calendar).Options(id,%RugbyQuery.%Get("date"))
         }
         if (resource="players")&&(child="") {
@@ -106,8 +107,9 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
     if (resource="clubs")&&(method'="GET") {
         do ##class(Rugby.Service.Store).Managed(id)
         if (child="advance-day")&&(method="POST") quit ##class(Rugby.Service.Management).Advance(id,b,key)
+        if (child="friendly-invitations")&&(method="POST") quit ##class(Rugby.Service.FriendlyRequests).Respond(id,b.%Get("invitationId"),b,key)
         if (child="friendlies")&&(method="POST") quit ##class(Rugby.Service.Calendar).Create(id,b,key)
-        if (child="training-plan")&&(method="PUT") quit ##class(Rugby.Service.Management).Training(id,b)
+        if (child="training-plan")&&(method="PUT") quit ##class(Rugby.Service.Management).Training(id,b,key)
         if (child="financial-director")&&(method="POST") quit ##class(Rugby.Service.Finance).Hire(id,b,key)
         if (child="staff")&&(method="POST") quit ##class(Rugby.Service.Staff).Hire(id,b,key)
         if (child="lineups")&&(method="POST") quit ##class(Rugby.Service.Management).SaveLineup("",b)

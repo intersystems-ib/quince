@@ -97,7 +97,7 @@ ClassMethod Aggregate(f As %DynamicObject, rng As %DynamicObject) As %DynamicObj
         set players=m.%Get(side_"Players")
         for i=0:1:players.%Size()-1 {
             set p=players.%Get(i)
-            if (i<15)||(p.playedSeconds>0) do participants.%Push({"side":(side),"playerId":(p.playerId),"playedSeconds":(p.playedSeconds),"morale":(p.morale)})
+            if (i<15)||(p.playedSeconds>0) do participants.%Push({"side":(side),"playerId":(p.playerId),"playedSeconds":(p.playedSeconds),"morale":(p.morale),"positionMoralePenalty":(p.%Get("positionMoralePenalty",0)),"positionMoraleApplied":(p.%Get("positionMoraleApplied",0))})
             if $isobject(p.%Get("injury")) do injuries.%Push({"playerId":(p.playerId),"injury":(p.injury)})
         }
     }

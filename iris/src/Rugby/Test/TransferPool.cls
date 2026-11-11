@@ -11,7 +11,7 @@ ClassMethod Run()
         set low=$select(v<low:v,1:low),high=$select(v>high:v,1:high)
         if p.nationalityCode="ES" { set spanish=spanish+1 } else { set foreign=foreign+1 }
     }
-    do ..Assert((positions.%Size()=15)&&(high>=74)&&((high-low)>10)&&spanish&&foreign,"Market covers all positions with varied quality and nationalities")
+    do ..Assert((positions.%Size()=15)&&(high>=(74*##class(Rugby.Service.TalentScale).Factor()))&&((high-low)>10)&&spanish&&foreign,"Market covers all positions with varied quality and nationalities")
     set original=##class(Rugby.Service.Store).All("Player").%ToJSON(),clubs=##class(Rugby.Service.Store).All("Club"),own=##class(Rugby.Service.Store).ManagedClub()
     for i=0:1:clubs.%Size()-1 {
         set c=clubs.%Get(i),%RugbyManagedClub=c.id,rows=##class(Rugby.Service.Transfers).Market()

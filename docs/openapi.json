@@ -7692,7 +7692,7 @@
     },
     "/clubs/{clubId}/training-plan": {
       "get": {
-        "summary": "Consultar entrenamiento",
+        "summary": "Consultar semana y próximas sesiones por posición",
         "operationId": "get__clubs_clubId_training-plan",
         "parameters": [
           {
@@ -7952,7 +7952,7 @@
         }
       },
       "put": {
-        "summary": "Guardar plan con versión actual",
+        "summary": "Guardar planificación semanal recurrente con versión actual",
         "operationId": "put__clubs_clubId_training-plan",
         "parameters": [
           {
@@ -14340,6 +14340,568 @@
         }
       }
     },
+    "/clubs/{clubId}/friendly-invitations": {
+      "get": {
+        "summary": "Invitaciones vigentes: máximo una al mes, en fin de semana libre",
+        "operationId": "get__clubs_clubId_friendly-invitations",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          },
+          {
+            "name": "X-Game-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendlyInvitationPage"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Entrada o paginación inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Club no gestionable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entidad no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Versión obsoleta, ocupado o partido activo/pendiente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Más de 64 KiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Regla de negocio inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sesión JWT ausente, inválida o caducada",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Límite de intentos de acceso",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Producción de interoperabilidad no disponible; no se ejecuta la operación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Aceptar o rechazar una invitación; aceptar crea un amistoso",
+        "operationId": "post__clubs_clubId_friendly-invitations",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[a-zA-Z0-9_.-]+$"
+            }
+          },
+          {
+            "name": "X-Game-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendlyInvitation"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Entrada o paginación inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Club no gestionable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entidad no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Versión obsoleta, ocupado o partido activo/pendiente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Más de 64 KiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Regla de negocio inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sesión JWT ausente, inválida o caducada",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Límite de intentos de acceso",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Producción de interoperabilidad no disponible; no se ejecuta la operación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FriendlyInvitationResponse"
+              }
+            }
+          }
+        }
+      }
+    },
     "/clubs/{clubId}/friendlies": {
       "post": {
         "summary": "Concertar amistoso en casa o fuera",
@@ -16224,6 +16786,12 @@
           },
           "askingMonthlyWage": {
             "type": "integer"
+          },
+          "talentScaleVersion": {
+            "type": "string"
+          },
+          "talentScaleFactor": {
+            "type": "number"
           }
         },
         "required": [
@@ -16406,12 +16974,61 @@
           },
           "version": {
             "type": "integer"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "weekly",
+              "groups"
+            ]
+          },
+          "weekly": {
+            "$ref": "#/components/schemas/TrainingWeek"
+          },
+          "weeklyConfigured": {
+            "type": "boolean"
+          },
+          "nextGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrainingGroup"
+            }
+          },
+          "nextDay": {
+            "type": "integer"
+          },
+          "nextDate": {
+            "type": "string"
+          },
+          "nextWeekday": {
+            "type": "integer"
+          },
+          "themes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "forwards": {
+                  "type": "string"
+                },
+                "backs": {
+                  "type": "string"
+                }
+              },
+              "required": []
+            }
           }
         },
         "required": [
-          "groups",
           "version"
-        ]
+        ],
+        "description": "Plan semanal: mode=weekly y weekly con siete días por categoría. Los grupos manuales se conservan por compatibilidad. Las sesiones se resuelven cada día por posición, edad, energía y calendario."
       },
       "TrainingSuggestion": {
         "type": "object",
@@ -18720,6 +19337,111 @@
           "recordsDeleted"
         ]
       },
+      "FriendlyInvitation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "clubId": {
+            "type": "string"
+          },
+          "opponentId": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "venue": {
+            "type": "string",
+            "enum": [
+              "home",
+              "away"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "accepted",
+              "rejected",
+              "expired"
+            ]
+          },
+          "createdOn": {
+            "type": "string"
+          },
+          "expiresOn": {
+            "type": "string"
+          },
+          "fixtureId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "clubId",
+          "opponentId",
+          "date",
+          "venue",
+          "status",
+          "expiresOn",
+          "version"
+        ]
+      },
+      "FriendlyInvitationPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendlyInvitation"
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "offset",
+          "limit"
+        ]
+      },
+      "FriendlyInvitationResponse": {
+        "type": "object",
+        "properties": {
+          "invitationId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "accept",
+              "reject"
+            ]
+          }
+        },
+        "required": [
+          "invitationId",
+          "version",
+          "decision"
+        ]
+      },
       "TeamSummary": {
         "type": "object",
         "properties": {
@@ -19169,6 +19891,57 @@
           }
         },
         "required": []
+      },
+      "WeeklyDay": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 7
+          },
+          "theme": {
+            "type": "string",
+            "enum": [
+              "attack",
+              "defense",
+              "physical",
+              "technique",
+              "setPieces",
+              "tactics",
+              "rest"
+            ]
+          }
+        },
+        "required": [
+          "day",
+          "theme"
+        ]
+      },
+      "TrainingWeek": {
+        "type": "object",
+        "properties": {
+          "senior": {
+            "type": "array",
+            "minItems": 7,
+            "maxItems": 7,
+            "items": {
+              "$ref": "#/components/schemas/WeeklyDay"
+            }
+          },
+          "academy": {
+            "type": "array",
+            "minItems": 7,
+            "maxItems": 7,
+            "items": {
+              "$ref": "#/components/schemas/WeeklyDay"
+            }
+          }
+        },
+        "required": [
+          "senior",
+          "academy"
+        ]
       }
     },
     "securitySchemes": {

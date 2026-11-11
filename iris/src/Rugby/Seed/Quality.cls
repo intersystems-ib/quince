@@ -9,6 +9,7 @@ ClassMethod Catalog() As %DynamicObject
 ClassMethod Adjust(p As %DynamicObject, offset As %Numeric, version As %String, origin As %String)
 {
     if p.%Get("qualityVersion")=version quit
+    if p.%Get("talentScaleVersion")=##class(Rugby.Service.TalentScale).#VERSION set offset=offset*##class(Rugby.Service.TalentScale).#FACTOR
     set catalog=##class(Rugby.Service.Development).Catalog(),changes={}
     for k=0:1:16 {
         set key=catalog.%Get(k).id,old=p.attributes.%Get(key),prior=$select(p.%Get("qualityVersion")'="":p.%Get("qualityChanges",{}).%Get(key,0),1:0),base=old-prior,value=+$justify(##class(Rugby.Simulation.Engine).Clamp(base+offset,1,100),0,6)
@@ -25,6 +26,7 @@ ClassMethod Apply() As %DynamicObject
         set row=catalog.clubs.%Get(i),c=##class(Rugby.Service.Store).Get("Club",row.clubId)
         do reference.%Set(c.id,row)
         set c.qualityVersion=catalog.version,c.qualityReferenceRank=row.rank,c.qualityReferenceDate=catalog.consultedOn,c.qualitySeniorTarget=row.seniorTarget,c.qualityAcademyTarget=row.academyTarget,c.qualityAcademyOffset=row.academyOffset,c.qualityHistoricalWeight=row.%Get("historicalWeight",0),c.qualityHistoricalRank=row.%Get("historicalRank",0),c.qualityHistoricalSeason="2025/2026",c.qualityBlendedRank=row.%Get("blendedRank",row.rank)
+        if c.%Get("talentScaleVersion")=##class(Rugby.Service.TalentScale).#VERSION set c.qualitySeniorTarget=c.qualitySeniorTarget*##class(Rugby.Service.TalentScale).#FACTOR,c.qualityAcademyTarget=c.qualityAcademyTarget*##class(Rugby.Service.TalentScale).#FACTOR
         do ##class(Rugby.Service.Store).Put("Club",c),report.clubs.%Push(row)
     }
     set players=##class(Rugby.Service.Store).All("Player")

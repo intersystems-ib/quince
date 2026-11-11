@@ -3,6 +3,13 @@ Class Rugby.Test.Morale Extends %RegisteredObject
 ClassMethod Assert(ok As %Boolean, text As %String) { do ##class(Rugby.Test.Suite).Assert(ok,text) }
 ClassMethod Run()
 {
+    tstart
+    set c=##class(Rugby.Service.Store).Get("Club","c1"),p=##class(Rugby.Service.Store).Get("Player","c1-p1"),p.morale=70
+    do ##class(Rugby.Service.Store).Put("Player",p)
+    set outcome=##class(Rugby.Service.Morale).Result("c1",c.day,"position-baseline-test","loss",[{"playerId":"c1-p1","playedSeconds":80,"morale":55,"positionMoralePenalty":15,"positionMoraleApplied":15}])
+    do ..Assert(##class(Rugby.Service.Store).Get("Player","c1-p1").morale=65,"Results affect base morale, not a temporary position penalty")
+    trollback 1
+
     set players=##class(Rugby.Service.Store).All("Player"),clubs=##class(Rugby.Service.Store).All("Club")
     for i=0:1:players.%Size()-1 { do ..Assert(players.%Get(i).morale=100,"All initial seniors, academies and free agents start at one hundred") }
     set p=##class(Rugby.Service.Store).Get("Player","c1-p4"),raw=p.attributes.%ToJSON()

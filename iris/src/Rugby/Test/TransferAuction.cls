@@ -10,7 +10,7 @@ ClassMethod Run()
         do ..Assert($isobject(candidate),"A centre is available for the controlled competition")
         set all=##class(Rugby.Service.Store).All("Player","clubId","")
         for i=0:1:all.%Size()-1 { set p=all.%Get(i) if p.id'=candidate.id { set p.available=0 do ##class(Rugby.Service.Store).Put("Player",p) } }
-        for k=0:1:16 { do candidate.attributes.%Set(catalog.%Get(k).id,$select(scenario="salary":78,1:65)) }
+        for k=0:1:16 { do candidate.attributes.%Set(catalog.%Get(k).id,($select(scenario="salary":78,1:65)*##class(Rugby.Service.TalentScale).Factor())) }
         do ##class(Rugby.Service.Store).Put("Player",candidate)
         for cid="c1","c2","c3" {
             set c=##class(Rugby.Service.Store).Get("Club",cid),c.aiSignings=2,c.aiInjurySignings=0,c.aiPromotions=2,players=##class(Rugby.Service.Store).All("Player","clubId",cid)

@@ -10,10 +10,8 @@ ClassMethod MoralePenalty(p As %DynamicObject) As %Integer
 }
 ClassMethod ApplyMorale(p As %DynamicObject)
 {
-    if p.status'="field" quit
-    set penalty=..MoralePenalty(p),previous=p.%Get("positionMoralePenalty",0)
-    // Apply only the difference: repeated ticks and half time cannot stack it.
-    set p.morale=##class(Rugby.Simulation.Engine).Clamp(p.morale+previous-penalty,0,100),p.positionMoralePenalty=penalty
+    set previous=p.%Get("positionMoraleApplied",p.%Get("positionMoralePenalty",0)),base=##class(Rugby.Simulation.Engine).Clamp(p.morale+previous,0,100),penalty=$select(p.status="field":..MoralePenalty(p),1:0)
+    set p.morale=##class(Rugby.Simulation.Engine).Clamp(base-penalty,0,100),p.positionMoralePenalty=penalty,p.positionMoraleApplied=base-p.morale
 }
 ClassMethod AlignmentMorale(players As %DynamicArray)
 {

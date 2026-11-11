@@ -122,10 +122,10 @@ route('/staff-market','get','Entrenadores disponibles para contratar','CoachPage
 route('/clubs/{clubId}/staff','get','Cuerpo técnico contratado, roles y gasto semanal','Staff')
 route('/clubs/{clubId}/staff','post','Contratar candidato y sustituir al titular del mismo puesto','Staff','HireCoach',key=True)
 route('/clubs/{clubId}/training-executions','get','Historial de sesiones aplicado una vez por día','TrainingExecutionPage',paged=True)
-route('/clubs/{clubId}/training-plan','get' ,'Consultar entrenamiento','Training')
+route('/clubs/{clubId}/training-plan','get' ,'Consultar semana y próximas sesiones por posición','Training')
 route('/clubs/{clubId}/training-suggestion','get','Proponer grupos para toda la plantilla sin guardar','TrainingSuggestion')
 paths['/clubs/{clubId}/training-suggestion']['get']['parameters'].append({'name':'variant','in':'query','schema':{'type':'integer','minimum':0,'maximum':1000000,'default':0}})
-route('/clubs/{clubId}/training-plan','put','Guardar plan con versión actual','Training','Training')
+route('/clubs/{clubId}/training-plan','put','Guardar planificación semanal recurrente con versión actual','Training','Training')
 route('/clubs/{clubId}/advance-day','post','Aplicar entrenamiento, recuperación y economía una vez','Club','Version',key=True)
 route('/clubs/{clubId}/finances','get','Saldo en céntimos','Finances')
 route('/clubs/{clubId}/financial-movements','get','Libro de movimientos','MovementPage',paged=True)
@@ -167,6 +167,11 @@ route('/games/{gameId}/load','post','Cargar partida y reanudar su simulación','
 route('/games/{gameId}/unload','post','Guardar y pausar partida','Saved')
 route('/clubs/{clubId}/friendly-options','get','Tres rivales aleatorios disponibles en la fecha','FriendlyOptions')
 paths['/clubs/{clubId}/friendly-options']['get']['parameters'].append({'name':'date','in':'query','required':True,'schema':{'type':'string','format':'date'}})
+schemas['FriendlyInvitation']=obj({'id':S,'clubId':S,'opponentId':S,'date':{'type':'string','format':'date'},'venue':enum('home','away'),'status':enum('pending','accepted','rejected','expired'),'createdOn':S,'expiresOn':S,'fixtureId':S,'version':I},['id','clubId','opponentId','date','venue','status','expiresOn','version'])
+schemas['FriendlyInvitationPage']=page('FriendlyInvitation')
+schemas['FriendlyInvitationResponse']=obj({'invitationId':S,'version':I,'decision':enum('accept','reject')},['invitationId','version','decision'])
+route('/clubs/{clubId}/friendly-invitations','get','Invitaciones vigentes: máximo una al mes, en fin de semana libre','FriendlyInvitationPage',paged=True)
+route('/clubs/{clubId}/friendly-invitations','post','Aceptar o rechazar una invitación; aceptar crea un amistoso','FriendlyInvitation','FriendlyInvitationResponse',key=True)
 route('/clubs/{clubId}/friendlies','post','Concertar amistoso en casa o fuera','Fixture','NewFriendly',key=True)
 schemas['TeamSummary']=obj({'count':I,'average':N,'energy':N,'morale':N,'attributes':ref('Attributes')})
 schemas['ComparisonTeam']=obj({'clubId':S,'name':S,'lineupId':S,'groups':obj({k:ref('TeamSummary') for k in ['all','forwards','backs']})})
@@ -206,6 +211,14 @@ for operations in paths.values():
   op['responses']['503']={'description':'Producción de interoperabilidad no disponible; no se ejecuta la operación','content':{'application/json':{'schema':ref('Error')}}}
 
 schemas['Competition']['properties'].update({'seasonStartDate':{'type':'string','format':'date'},'closedDate':{'type':'string','format':'date'},'retiringPlayers':arr(obj({'playerId':S,'name':S,'clubId':S,'retirementDate':{'type':'string','format':'date'}}))})
+
+schemas['Player']['properties'].update({'talentScaleVersion':S,'talentScaleFactor':N})
+
+schemas['WeeklyDay']=obj({'day':{'type':'integer','minimum':1,'maximum':7},'theme':enum('attack','defense','physical','technique','setPieces','tactics','rest')},['day','theme'])
+schemas['TrainingWeek']=obj({c:{'type':'array','minItems':7,'maxItems':7,'items':ref('WeeklyDay')} for c in ['senior','academy']},['senior','academy'])
+schemas['Training']['properties'].update({'mode':enum('weekly','groups'),'weekly':ref('TrainingWeek'),'weeklyConfigured':B,'nextGroups':arr(ref('TrainingGroup')),'nextDay':I,'nextDate':S,'nextWeekday':I,'themes':arr(obj({'id':S,'name':S,'forwards':S,'backs':S}))})
+schemas['Training']['required']=[k for k in schemas['Training']['required'] if k!='groups']
+schemas['Training']['description']='Plan semanal: mode=weekly y weekly con siete días por categoría. Los grupos manuales se conservan por compatibilidad. Las sesiones se resuelven cada día por posición, edad, energía y calendario.'
 
 doc={'openapi':'3.1.0','info':{'title':'Quince · API local de Rugby Manager','version':'1.0.0','description':'Sesión JWT HS256 en cookie HttpOnly y partidas privadas seleccionadas con X-Game-Id. Importes en céntimos. GET listas con offset/limit, salvo eventos con afterSequence. Los PUT requieren version del GET; las claves de reintento devuelven la primera intención y no comparan cuerpos.'},'servers':[{'url':'http://localhost:5175/api/v1'},{'url':'http://localhost:8085/api/v1'}],'paths':paths,'security':[{'sessionJWT':[]}],'components':{'schemas':schemas,'securitySchemes':{'sessionJWT':{'type':'apiKey','in':'cookie','name':'rugby_session','description':'JWT HS256; también admite Authorization: Bearer para clientes API.'}}}}
 target=Path(__file__).resolve().parents[1]/'docs'/'openapi.json'
