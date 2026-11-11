@@ -9,7 +9,7 @@ ClassMethod Run(only As %String = "")
     lock +^RugbyWrite:15
     if '$test { write "TESTS FAILED: busy",! quit }
     set failures=0
-    for name="Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","MatchStatistics","Morale","Seasons","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
+    for name="Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
         if (only'="")&&(name'=only) continue
         try {
             if name'="Concurrency" tstart
@@ -25,6 +25,7 @@ ClassMethod Run(only As %String = "")
     lock -^RugbyWrite
     write $select(failures:"TESTS FAILED: "_failures,1:"ALL TESTS PASSED"),!
 }
+ClassMethod News() { do ##class(Rugby.Test.News).Run() }
 ClassMethod MatchStatistics() { do ##class(Rugby.Test.MatchStatistics).Run() }
 ClassMethod EmployeePayroll() { do ##class(Rugby.Test.EmployeePayroll).Run() }
 ClassMethod TrainingCosts() { do ##class(Rugby.Test.TrainingCosts).Run() }

@@ -89,6 +89,9 @@ schemas['PlayerMatchStats']=obj({'id':S,'playerId':S,'playerName':S,'clubId':S,'
 schemas['PlayerMatchStatsPage']=page('PlayerMatchStats')
 schemas['PlayerMatchStatsPage']['properties']['summary']=obj({'appearances':I,'playedSeconds':I,'stats':ref('Stats'),'partialMatches':I})
 schemas['Snapshot']['properties'].update({'playedSeconds':I,'infringements':I,'statsVersion':S})
+schemas['News']=obj({'id':S,'type':enum('injury','playerSigning','staffSigning'),'date':S,'day':I,'clubId':S,'clubName':S,'personName':S,'playerId':S,'title':S,'text':S,'category':S,'role':S})
+schemas['NewsPage']=page('News')
+schemas['NewsPage']['properties'].update({'fromDate':S,'toDate':S})
 paths={}
 pagination=[{'name':'offset','in':'query','schema':{'type':'integer','minimum':0,'default':0}},{'name':'limit','in':'query','schema':{'type':'integer','minimum':1,'maximum':500,'default':100}}]
 def route(path,method,summary,response,request=None,key=False,paged=False,created=False):
@@ -104,6 +107,7 @@ def route(path,method,summary,response,request=None,key=False,paged=False,create
 route('/competitions','get','Competiciones y sorteos persistentes por división y temporada','CompetitionPage',paged=True)
 route('/competitions/{competitionId}','get','Clasificación, jornadas y cuadro final de la competición','CompetitionView')
 route('/health','get','Estado del servicio y trabajador','Health')
+route('/news','get','Lesiones y fichajes de todos los clubes en los últimos siete días de la partida','NewsPage',paged=True)
 route('/clubs','get','Veinte clubes oficiales','ClubPage',paged=True)
 route('/clubs/{clubId}','get','Detalle de club','Club')
 route('/clubs/{clubId}/players','get','Plantilla y cantera del club','PlayerPage',paged=True)

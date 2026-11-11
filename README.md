@@ -21,6 +21,8 @@ Crea una cuenta y una partida, elige división y club. La temporada empieza el 1
 
 El directo admite pausa, velocidades, sustituciones y cambios tácticos; se detiene al descanso y ante lesiones propias. Competición reúne regular y playoffs. Las nóminas se pagan al final de mes y el financiero negocia los ingresos de septiembre.
 
+«Tu club» reúne las lesiones y fichajes de jugadores y empleados de todos los clubes en los últimos siete días de la partida.
+
 ## Desarrollo y pruebas
 
 ```powershell

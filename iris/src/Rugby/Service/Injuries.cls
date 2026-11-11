@@ -61,6 +61,7 @@ ClassMethod Create(p As %DynamicObject, day As %Integer, source As %String, cont
     set weeks=chosen.minWeeks+((##class(Rugby.Simulation.Engine).Random(rng)*(chosen.maxWeeks-chosen.minWeeks+1))\1)
     set injury={"id":(p.id_"-"_context),"typeId":(chosen.id),"name":(chosen.name),"grade":(chosen.grade),"severity":(chosen.severity),"weeks":(weeks),"startedDay":(day),"startedOn":(..Date(day)),"recoveryDay":(day+(weeks*7)),"expectedReturn":(..Date(day+(weeks*7))),"remainingDays":(weeks*7),"remainingWeeks":(weeks),"source":(source),"contextId":(context),"status":"active","modelVersion":(..#VERSION)}
     set p.injury=injury,p.available=0,p.recoveryDay=injury.recoveryDay
+    set injury.clubId=p.clubId,injury.category=p.category
     quit injury
 }
 ClassMethod Risk(energy As %Numeric, age As %Integer) As %Numeric

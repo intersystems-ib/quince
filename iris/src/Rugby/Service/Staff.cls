@@ -71,6 +71,7 @@ ClassMethod Assign(club As %String, coachId As %String, key As %String) As %Dyna
     do ##class(Rugby.Service.Store).Put("TechnicalStaff",staff)
     set c=##class(Rugby.Service.Store).Get("Club",club)
     set contract={"id":(club_"-"_key),"clubId":(club),"coachId":(candidate.id),"replacedCoachId":(replaced),"role":(candidate.role),"quality":(candidate.quality),"weeklyWage":(candidate.weeklyWage),"monthlyWage":(candidate.monthlyWage),"payPeriod":"monthly","day":(c.day),"idempotencyKey":(key)}
+    set contract.kind="hire",contract.employeeName=candidate.name
     do ##class(Rugby.Service.Store).Put("StaffContract",contract)
     set result=..View(club),^RugbyWorld(##class(Rugby.Service.Store).Game(),"retry","staff",club,key)=result.%ToJSON()
     quit result

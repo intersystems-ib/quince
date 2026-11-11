@@ -157,6 +157,8 @@ ClassMethod Hire(club As %String, b As %DynamicObject, key As %String) As %Dynam
     set o.director=chosen,c=##class(Rugby.Service.Store).Get("Club",club),o.hiredOn=c.date
     do ##class(Rugby.Service.Store).Put("FinancialOffice",o)
     do ..Tick(club)
+    set contract={"id":(club_"-finance-"_key),"clubId":(club),"directorId":(chosen.id),"employeeName":(chosen.name),"role":"finance","kind":"hire","day":(c.day),"date":(c.date),"monthlyWage":(chosen.monthlyWage),"weeklyWage":(chosen.weeklyWage),"payPeriod":"monthly","idempotencyKey":(key)}
+    do ##class(Rugby.Service.Store).Put("StaffContract",contract)
     set result=..View(club),^RugbyWorld(game,"retry","financeHire",club,key)=result.%ToJSON()
     quit result
 }
