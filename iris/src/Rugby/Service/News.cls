@@ -19,6 +19,18 @@ ClassMethod Recent() As %DynamicObject
     set players=##class(Rugby.Service.Store).All("Player")
     for i=0:1:players.%Size()-1 {
         set p=players.%Get(i),injuries=##class(%DynamicArray).%FromJSON(p.%Get("injuryHistory",[]).%ToJSON())
+        set announced=p.%Get("retirementAnnouncedDate")
+        if announced'="" {
+            set day=$zdateh(announced,3)-$zdateh("2026-11-07",3),cid=p.%Get("retirementClubId",p.clubId)
+            if (day>=first)&&(day<=last)&&(cid'="") {
+                set n=..Item("retirement-"_p.id_"-"_announced,"retirement",day,cid,p.name,p.id)
+                if $isobject(n) {
+                    set date=p.%Get("retirementDate"),n.title=p.name_" anuncia su retirada",n.text="Dejará el rugby al finalizar la temporada.",n.category=p.category
+                    if date'="" set n.text=n.text_" Fecha prevista: "_$piece(date,"-",3)_"/"_$piece(date,"-",2)_"/"_$piece(date,"-",1)_"."
+                    set ordered(-day,n.id)=n
+                }
+            }
+        }
         if $isobject(p.%Get("injury")) do injuries.%Push(p.injury)
         for j=0:1:injuries.%Size()-1 {
             set injury=injuries.%Get(j)

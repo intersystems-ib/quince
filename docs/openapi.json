@@ -797,7 +797,7 @@
     },
     "/news": {
       "get": {
-        "summary": "Lesiones y fichajes de todos los clubes en los últimos siete días de la partida",
+        "summary": "Lesiones, fichajes y anuncios de retirada de todos los clubes en los últimos siete días de la partida",
         "operationId": "get__news",
         "parameters": [
           {
@@ -18623,12 +18623,62 @@
           },
           "inId": {
             "type": "string"
+          },
+          "changes": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "properties": {
+                "outId": {
+                  "type": "string"
+                },
+                "inId": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "outId",
+                "inId"
+              ]
+            }
           }
         },
         "required": [
-          "type",
-          "outId",
-          "inId"
+          "type"
+        ],
+        "oneOf": [
+          {
+            "required": [
+              "outId",
+              "inId"
+            ],
+            "not": {
+              "required": [
+                "changes"
+              ]
+            }
+          },
+          {
+            "required": [
+              "changes"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "outId"
+                  ]
+                },
+                {
+                  "required": [
+                    "inId"
+                  ]
+                }
+              ]
+            }
+          }
         ]
       },
       "CommandRequest": {
@@ -20010,7 +20060,8 @@
             "enum": [
               "injury",
               "playerSigning",
-              "staffSigning"
+              "staffSigning",
+              "retirement"
             ]
           },
           "date": {

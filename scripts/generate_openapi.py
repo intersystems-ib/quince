@@ -39,7 +39,7 @@ schemas={
  "Event":obj({"id":S,"matchId":S,"sequence":I,"period":I,"clock":I,"type":S,"side":enum('home','away',''),"playerId":S,"from":obj({'x':N,'y':N}),"to":obj({'x':N,'y':N}),"points":{"type":"integer","enum":[0,2,3,5]},"homeScore":I,"awayScore":I,"result":obj({'phase':S,'possession':S,'inGoal':B}),"text":S},['id','sequence','clock','type','points','text']),
  "SpeedCommand":obj({"type":{"const":"speed"},"speed":{"type":"integer","enum":[0,1,5,20,60]}},['type','speed']),
  "TacticCommand":obj({"type":{"const":"tactic"},"tactic":ref('Tactic')},['type','tactic']),
- "SubstitutionCommand":obj({"type":{"const":"substitution"},"outId":S,"inId":S},['type','outId','inId']),
+ "SubstitutionCommand":obj({"type":{"const":"substitution"},"outId":S,"inId":S,"changes":{"type":"array","minItems":1,"maxItems":8,"items":obj({"outId":S,"inId":S},['outId','inId'])}},['type']),
  "CommandRequest":{"oneOf":[ref('SpeedCommand'),ref('TacticCommand'),ref('SubstitutionCommand')],"discriminator":{"propertyName":"type","mapping":{k:f'#/components/schemas/{v}' for k,v in [('speed','SpeedCommand'),('tactic','TacticCommand'),('substitution','SubstitutionCommand')]}}},
  "Command":obj({"id":S,"matchId":S,"clubId":S,"side":S,"type":enum('speed','tactic','substitution'),"parameters":ref('CommandRequest'),"idempotencyKey":S,"sequence":I,"status":enum('pending','applied','rejected'),"receivedClock":I,"appliedClock":I,"reason":S,"source":enum('user','ai')},['id','type','status','sequence','reason']),
  "CreateMatch":obj({"fixtureId":S,"lineupId":S,"seed":{"type":"integer","minimum":1,"maximum":2147483646,"default":17341}},['fixtureId']),
@@ -47,6 +47,7 @@ schemas={
  "Health":obj({"status":S,"workerHeartbeat":N}),
 }
 schemas['Player']['properties'].update({'signingFee':I,'askingWeeklyWage':I,'nationalityCode':S,'nationality':S,'realIdentity':B,'identityClubId':S,'identitySource':S,'identitySourceId':S,'identitySourceFile':S,'identitySourcePage':I,'identityMatchDate':S,'identityMatchCode':S,'identitySeason':S,'identityRawName':S,'identityCategory':S,'positionSource':S,'frontRowQualifications':arr(S),'nationalitySource':S,'ageSource':S,'attributesSource':S,'wageSource':S})
+schemas['SubstitutionCommand']['oneOf']=[{'required':['outId','inId'],'not':{'required':['changes']}},{'required':['changes'],'not':{'anyOf':[{'required':['outId']},{'required':['inId']}]}}]
 schemas['Negotiation']=obj({'id':S,'clubId':S,'playerId':S,'player':ref('Player'),'version':I,'playerVersion':I,'kind':enum('signing','promotion','renewal'),'contractEndDate':{'type':'string','format':'date'},'status':enum('open','counteroffer','agreed','signed','rejected','withdrawn','expired','unavailable','changed'),'askingWeeklyWage':I,'counterWeeklyWage':I,'agreedWeeklyWage':I,'signingFee':I,'round':I,'maxRounds':I,'createdDay':I,'updatedDay':I,'expiresDay':I,'contractId':S,'contractYears':I,'counterContractYears':I,'agreedContractYears':I,'preferredMinYears':I,'preferredMaxYears':I,'offers':arr(obj({'round':I,'day':I,'offeredWeeklyWage':I,'offeredContractYears':I,'counterContractYears':I,'agreedContractYears':I,'status':S,'counterWeeklyWage':I}))},['id','playerId','player','version','status','offers'])
 schemas['NegotiationPage']=page('Negotiation')
 schemas['Player']['properties'].update({'attributeSeasonChanges':{'type':'object','additionalProperties':{'type':'number'}},'attributeSeasonYear':I,'contractYears':{'type':'integer','minimum':1,'maximum':5},'contractEndDate':{'type':'string','format':'date'},'contractStatus':S,'retirementAnnounced':B,'retirementDate':{'type':'string','format':'date'},'retired':B})
@@ -89,7 +90,7 @@ schemas['PlayerMatchStats']=obj({'id':S,'playerId':S,'playerName':S,'clubId':S,'
 schemas['PlayerMatchStatsPage']=page('PlayerMatchStats')
 schemas['PlayerMatchStatsPage']['properties']['summary']=obj({'appearances':I,'playedSeconds':I,'stats':ref('Stats'),'partialMatches':I})
 schemas['Snapshot']['properties'].update({'playedSeconds':I,'infringements':I,'statsVersion':S})
-schemas['News']=obj({'id':S,'type':enum('injury','playerSigning','staffSigning'),'date':S,'day':I,'clubId':S,'clubName':S,'personName':S,'playerId':S,'title':S,'text':S,'category':S,'role':S})
+schemas['News']=obj({'id':S,'type':enum('injury','playerSigning','staffSigning','retirement'),'date':S,'day':I,'clubId':S,'clubName':S,'personName':S,'playerId':S,'title':S,'text':S,'category':S,'role':S})
 schemas['NewsPage']=page('News')
 schemas['NewsPage']['properties'].update({'fromDate':S,'toDate':S})
 paths={}
@@ -107,7 +108,7 @@ def route(path,method,summary,response,request=None,key=False,paged=False,create
 route('/competitions','get','Competiciones y sorteos persistentes por división y temporada','CompetitionPage',paged=True)
 route('/competitions/{competitionId}','get','Clasificación, jornadas y cuadro final de la competición','CompetitionView')
 route('/health','get','Estado del servicio y trabajador','Health')
-route('/news','get','Lesiones y fichajes de todos los clubes en los últimos siete días de la partida','NewsPage',paged=True)
+route('/news','get','Lesiones, fichajes y anuncios de retirada de todos los clubes en los últimos siete días de la partida','NewsPage',paged=True)
 route('/clubs','get','Veinte clubes oficiales','ClubPage',paged=True)
 route('/clubs/{clubId}','get','Detalle de club','Club')
 route('/clubs/{clubId}/players','get','Plantilla y cantera del club','PlayerPage',paged=True)

@@ -18,6 +18,12 @@ ClassMethod Run()
         for i=0:1:o.candidates.%Size()-1 { set candidate=o.candidates.%Get(i) quit:candidate.id'=o.director.%Get("id") }
         set body={"version":(o.version),"candidateId":(candidate.id)},hired=##class(Rugby.Service.Finance).Hire("c1",body,"news-test-finance-"_n),retry=##class(Rugby.Service.Finance).Hire("c1",body,"news-test-finance-"_n)
     }
+    set serial=2
+    for day=0,-6,-7,1 {
+        set retiree=##class(Rugby.Service.Store).Get("Player","c2-p"_serial),retiree.retirementAnnounced=1,retiree.retirementAnnouncedDate=##class(Rugby.Service.Injuries).Date(day),retiree.retirementDate="2027-06-12",retiree.retirementClubId="c2",retiree.clubId=""
+        do ##class(Rugby.Service.Store).Put("Player",retiree)
+        set serial=serial+1
+    }
     set %RugbyQuery={"limit":500},news=##class(Rugby.Service.News).Recent(),found={},finances=0,previous=1
     for i=0:1:news.items.%Size()-1 {
         set item=news.items.%Get(i)
@@ -29,6 +35,10 @@ ClassMethod Run()
     do ..Assert(found.%IsDefined("injury-news-test-injury")&&(found.%Get("injury-news-test-injury").clubId="c2"),"Injuries retain the club of occurrence after a transfer")
     do ..Assert(found.%IsDefined("player-news-test-signing")&&('found.%IsDefined("player-news-test-renewal"))&&('found.%IsDefined("player-news-test-promotion"))&&('found.%IsDefined("player-news-test-salaryAdjustment")),"Only actual player signings are news")
     do ..Assert(found.%IsDefined("staff-c4-news-test-coach")&&(finances=2),"Other clubs' coaches and all financial hires appear without duplication")
+    do ..Assert(found.%IsDefined("retirement-c2-p2-2026-11-07")&&found.%IsDefined("retirement-c2-p3-2026-11-01"),"Retirement announcements appear on their announcement day and the inclusive seven-day boundary")
+    do ..Assert(('found.%IsDefined("retirement-c2-p4-2026-10-31"))&&('found.%IsDefined("retirement-c2-p5-2026-11-08")),"Older and future retirement announcements are excluded")
+    set retirement=found.%Get("retirement-c2-p2-2026-11-07")
+    do ..Assert((retirement.type="retirement")&&(retirement.clubId="c2")&&(retirement.playerId="c2-p2")&&(retirement.text["12/06/2027"),"Retirement news preserves the club of announcement after departure and links the player with the planned retirement date")
     set before=news.%ToJSON()
     do p.%Remove("injury"),##class(Rugby.Service.Store).Put("Player",p)
     set again=##class(Rugby.Service.News).Recent()

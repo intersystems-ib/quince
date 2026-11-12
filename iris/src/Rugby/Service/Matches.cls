@@ -75,6 +75,25 @@ ClassMethod CheckCommand(m As %DynamicObject, b As %DynamicObject, side As %Stri
     }
     if type="tactic" { do ##class(Rugby.Service.Management).Tactic(b.%Get("tactic")) quit "" }
     if type'="substitution" quit "Tipo de comando desconocido."
+    if b.%IsDefined("changes") {
+        if b.%IsDefined("outId")||b.%IsDefined("inId") quit "Indica una lista de cambios o una sustitución individual."
+        set changes=b.changes
+        if '$isobject(changes) quit "La lista de cambios no es válida."
+        if 'changes.%IsA("%Library.DynamicArray") quit "La lista de cambios no es válida."
+        if (changes.%Size()<1)||(changes.%Size()>8)||((m.%Get(side_"Subs")+changes.%Size())>8) quit "No puedes superar las ocho sustituciones del partido."
+        set used={}
+        for i=0:1:changes.%Size()-1 {
+            set pair=changes.%Get(i)
+            if '$isobject(pair) return "Cada cambio debe indicar el jugador que sale y el que entra."
+            if 'pair.%IsA("%Library.DynamicObject") return "Cada cambio debe indicar el jugador que sale y el que entra."
+            set out=pair.%Get("outId"),in=pair.%Get("inId")
+            if used.%IsDefined(out)||used.%IsDefined(in) return "Un jugador no puede participar en dos cambios de la misma solicitud."
+            set reason=..CheckCommand(m,{"type":"substitution","outId":(out),"inId":(in)},side)
+            if reason'="" return reason
+            do used.%Set(out,1),used.%Set(in,1)
+        }
+        quit ""
+    }
     if m.%Get(side_"Subs")>=8 quit "Ya se han utilizado las ocho sustituciones."
     set players=m.%Get(side_"Players"),out="",in=""
     for i=0:1:players.%Size()-1 { set p=players.%Get(i) if p.playerId=b.%Get("outId") set out=p
@@ -119,25 +138,31 @@ ClassMethod Commands(m As %DynamicObject, speedOnly As %Boolean = 0)
             }
             if c.type="tactic" do m.%Set(c.side_"Tactic",b.tactic)
             if c.type="substitution" {
-                set players=m.%Get(c.side_"Players"),pos=0
-                for i=0:1:players.%Size()-1 {
-                    set p=players.%Get(i)
-                    if p.playerId=b.outId {
-                        set pos=p.position,p.substituted=1
-                        if p.status'="injured" set p.status="replaced"
-                        do ##class(Rugby.Simulation.Performance).ApplyMorale(p)
-                    }
-                }
-                for i=0:1:players.%Size()-1 { set p=players.%Get(i) if p.playerId=b.inId set p.position=pos,p.status="field" do ##class(Rugby.Simulation.Performance).ApplyMorale(p) }
-                do m.%Set(c.side_"Subs",m.%Get(c.side_"Subs")+1)
+                set changes=b.%Get("changes",[{"outId":(b.%Get("outId")),"inId":(b.%Get("inId"))}])
+                for i=0:1:changes.%Size()-1 { do ..Substitute(m,c.side,changes.%Get(i)) }
             }
             set c.status="applied",c.appliedClock=m.clock
             set text=$select(c.type="speed":$select(b.speed=0:"Partido en pausa.",1:"Velocidad x"_b.speed),c.type="tactic":"Cambio táctico confirmado.",1:"Sustitución confirmada.")
+            if (c.type="substitution")&&b.%IsDefined("changes") set text=$select(b.changes.%Size()=1:"Sustitución confirmada.",1:b.changes.%Size()_" sustituciones confirmadas.")
             if (c.type="tactic")&&(c.source="ai")&&$isobject(b.%Get("assessment")) set text="El rival ajusta su táctica. "_b.assessment.reason
             do ##class(Rugby.Simulation.Engine).Event(m,"command",c.side,text,0,m.x,m.y,"",b.%Get("assessment"))
         }
         do ##class(Rugby.Service.Store).Put("MatchCommand",c)
     }
+}
+ClassMethod Substitute(m As %DynamicObject, side As %String, pair As %DynamicObject)
+{
+    set players=m.%Get(side_"Players"),pos=0
+    for i=0:1:players.%Size()-1 {
+        set p=players.%Get(i)
+        if p.playerId=pair.outId {
+            set pos=p.position,p.substituted=1
+            if p.status'="injured" set p.status="replaced"
+            do ##class(Rugby.Simulation.Performance).ApplyMorale(p)
+        }
+    }
+    for i=0:1:players.%Size()-1 { set p=players.%Get(i) if p.playerId=pair.inId set p.position=pos,p.status="field" do ##class(Rugby.Simulation.Performance).ApplyMorale(p) }
+    do m.%Set(side_"Subs",m.%Get(side_"Subs")+1)
 }
 ClassMethod AI(m As %DynamicObject)
 {
