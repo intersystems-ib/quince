@@ -4,7 +4,7 @@ Parameter VERSION = "1.0.0";
 Parameter LIMIT = 20;
 ClassMethod Eligible(p As %DynamicObject) As %Boolean
 {
-    quit (p.clubId="")&&p.available&&('p.%Get("retirementAnnounced",0))&&(p.%Get("contractStatus")'="retired")
+    quit (p.clubId="")&&p.available&&('p.%Get("transferMarketRemoved",0))&&('p.%Get("retirementAnnounced",0))&&(p.%Get("contractStatus")'="retired")
 }
 ClassMethod Pending(day As %Integer) As %DynamicObject
 {
@@ -34,6 +34,7 @@ ClassMethod Select(day As %Integer) As %DynamicArray
 }
 ClassMethod Refresh(day As %Integer) As %DynamicObject
 {
+    if ##class(Rugby.Service.ForeignMarket).Active() quit ##class(Rugby.Service.ForeignMarket).Refresh(day)
     set ids=..Select(day),game=##class(Rugby.Service.Store).Game(),old=$get(^RugbyWorld(game,"transferPoolIds"),"[]"),json=ids.%ToJSON()
     set ^RugbyWorld(game,"transferPoolIds")=json
     quit {"version":(..#VERSION),"limit":(..#LIMIT),"playerIds":(ids),"changed":(old'=json)}

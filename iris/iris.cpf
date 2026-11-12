@@ -2,4 +2,4 @@
 CreateDatabase:Name=RUGBYDATA,Directory=/usr/irissys/mgr/rugbydata
 CreateDatabase:Name=RUGBYCODE,Directory=/usr/irissys/mgr/rugbycode
 CreateNamespace:Name=RUGBY,Globals=RUGBYDATA,Routines=RUGBYCODE
-CreateApplication:Name=/api/v1,NameSpace=RUGBY,DispatchClass=Rugby.API.REST,AutheEnabled=64,MatchRoles=:%All
+CreateApplication:Name=/api/v1,NameSpace=RUGBY,DispatchClass=Rugby.API.REST,AutheEnabled=64,MatchRoles=:%All,IsNameSpaceDefault=0

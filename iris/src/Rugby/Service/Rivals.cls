@@ -335,8 +335,9 @@ ClassMethod Day(day As %Integer) As %DynamicObject
     }
     set fixtures=##class(Rugby.Service.Store).All("Fixture"),played=[]
     for i=0:1:fixtures.%Size()-1 { set f=fixtures.%Get(i) if (f.day=day)&&(f.status="finished")&&('f.%Get("archived",0)) do played.%Push(f) }
+    set weeklyMarket=##class(Rugby.Service.ForeignMarket).Tick(day)
     set marketPool=##class(Rugby.Service.TransferPool).Refresh(day)
-    set result={"transferCompetition":(auction),"marketPool":(marketPool),"id":(eid),"clubId":(own),"day":(day),"date":(date),"modelVersion":(..#VERSION),"seed":(..Seed()),"clubs":(report),"finishedFixtures":(played)}
+    set result={"weeklyTransferMarket":(weeklyMarket),"transferCompetition":(auction),"marketPool":(marketPool),"id":(eid),"clubId":(own),"day":(day),"date":(date),"modelVersion":(..#VERSION),"seed":(..Seed()),"clubs":(report),"finishedFixtures":(played)}
     do ##class(Rugby.Service.Store).Put("RivalExecution",result)
     quit result
 }

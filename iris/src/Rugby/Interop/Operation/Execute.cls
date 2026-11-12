@@ -25,6 +25,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             set progress=##class(Rugby.Service.AttributeProgress).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.attributeProgress=progress,pResponse.DetailsJSON=details.%ToJSON()
             set market=##class(Rugby.Service.StaffMarket).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.staffMarket=market,pResponse.DetailsJSON=details.%ToJSON()
             set contracts=##class(Rugby.Seed.Contracts).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.initialContracts=contracts,pResponse.DetailsJSON=details.%ToJSON()
+            set foreignMarket=##class(Rugby.Service.ForeignMarket).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.foreignTransferMarket=foreignMarket,pResponse.DetailsJSON=details.%ToJSON()
             set out={"initialized":true}
         } else {
             if (pRequest.Resource'="auth")&&(pRequest.Resource'="health") {

@@ -32,6 +32,7 @@ ClassMethod Initialize()
 }
 ClassMethod SeedMarket(year As %Integer)
 {
+    if ##class(Rugby.Service.ForeignMarket).Active() quit
     if $get(^RugbyWorld(##class(Rugby.Service.Store).Game(),"internationalMarket",year)) quit
     set c=##class(Rugby.Service.Store).Get("Club",##class(Rugby.Service.Store).ManagedClub()),catalog=##class(Rugby.Service.Development).Catalog(),seed=##class(Rugby.Service.Rivals).Seed()
     for n=1:1:20 {
@@ -106,6 +107,7 @@ ClassMethod Free(pid As %String) As %DynamicObject
     set p=##class(Rugby.Service.Store).Get("Player",pid)
     if p.%Get("retirementAnnounced",0)||(p.%Get("contractStatus")="retired") do ##class(Rugby.Service.Store).Fail(409,"PLAYER_RETIRING","El jugador se retira y no puede firmar.")
     if p.clubId'="" do ##class(Rugby.Service.Store).Fail(409,"PLAYER_TAKEN","El jugador ya tiene equipo.")
+    if p.%Get("transferMarketRemoved",0) do ##class(Rugby.Service.Store).Fail(409,"MARKET_UNLISTED","El jugador ha salido del mercado en la renovación semanal.")
     quit p
 }
 ClassMethod Candidate(pid As %String, kind As %String) As %DynamicObject

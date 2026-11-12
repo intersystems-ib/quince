@@ -4907,7 +4907,7 @@
     },
     "/transfer-market": {
       "get": {
-        "summary": "Mercado compartido de hasta 20 agentes; salarios mensuales y primas en céntimos",
+        "summary": "Mercado compartido de hasta 20 agentes; renovación semanal del 20% de menor media con jugadores extranjeros; salarios y primas en céntimos",
         "operationId": "get__transfer-market",
         "parameters": [
           {
@@ -18813,6 +18813,9 @@
       "Negotiation": {
         "type": "object",
         "properties": {
+          "marketExitReason": {
+            "type": "string"
+          },
           "id": {
             "type": "string"
           },

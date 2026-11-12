@@ -52,7 +52,7 @@ ClassMethod Create(b As %DynamicObject, key As %String) As %DynamicObject
     set finance=##class(Rugby.Service.Finance).Initialize(),payroll=##class(Rugby.Service.Payroll).Initialize(),staffNames=##class(Rugby.Seed.StaffNames).Initialize(),monthly=##class(Rugby.Service.MonthlyPayroll).Initialize(),pool=##class(Rugby.Service.TransferPool).Initialize(),staffPay=##class(Rugby.Service.StaffPay).Initialize(),talent=##class(Rugby.Service.TalentScale).Apply()
     set training=##class(Rugby.Service.Store).Get("TrainingPlan",club.id),weekly=##class(Rugby.Service.WeeklyTraining).Save(club.id,{"version":(training.version),"weekly":(##class(Rugby.Service.WeeklyTraining).Defaults())})
     set invitation=##class(Rugby.Service.FriendlyRequests).Tick(),progress=##class(Rugby.Service.AttributeProgress).Initialize()
-    set staffMarket=##class(Rugby.Service.StaffMarket).Initialize(),initialContracts=##class(Rugby.Seed.Contracts).Initialize()
+    set staffMarket=##class(Rugby.Service.StaffMarket).Initialize(),initialContracts=##class(Rugby.Seed.Contracts).Initialize(),foreignMarket=##class(Rugby.Service.ForeignMarket).Initialize()
     set ^RugbyGames(id)=game.%ToJSON(),^RugbyGameRetry(%RugbyUser,key)=id
     quit game
 }

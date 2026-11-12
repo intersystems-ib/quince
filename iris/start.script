@@ -3,6 +3,10 @@ if ##class(%Dictionary.ClassDefinition).%ExistsId("Ens.Director") { set sc=##cla
 zn "%SYS"
 set sc=##class(%Library.EnsembleMgr).EnableNamespace("RUGBY",1)
 if $SYSTEM.Status.IsError(sc) do $SYSTEM.Status.DisplayError(sc) halt
+set apiProperties("IsNameSpaceDefault")=0
+set sc=##class(Security.Applications).Modify("/api/v1",.apiProperties)
+if $SYSTEM.Status.IsError(sc) do $SYSTEM.Status.DisplayError(sc) halt
+kill apiProperties
 zn "RUGBY"
 set sc=$SYSTEM.OBJ.LoadDir("/opt/rugby/src","ck",,1)
 if $SYSTEM.Status.IsError(sc) do $SYSTEM.Status.DisplayError(sc) halt
