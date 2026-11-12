@@ -58,11 +58,10 @@ ClassMethod Run()
             do ##class(Rugby.Service.Store).Put("Player",p)
         }
     }
-    set last=$listbuild("Ortega","Pérez","Vázquez")
     for tier=1:1:3 {
         set id="market-academy-"_tier
         if $isobject(##class(Rugby.Service.Store).Get("Coach",id,0)) continue
-        set quality=$select(tier=1:40,tier=2:65,1:90),coach={"id":(id),"clubId":"","name":("David "_$list(last,tier)),"role":"academy","quality":(quality),"weeklyWage":(##class(Rugby.Service.Staff).Salary("academy",quality)),"effectiveness":(##class(Rugby.Service.Staff).Multiplier(quality)),"status":"available"}
+        set quality=$select(tier=1:40,tier=2:65,1:90),coach={"id":(id),"clubId":"","name":(##class(Rugby.Seed.StaffNames).Generate(id)),"generatedNameVersion":"1.1.0","role":"academy","quality":(quality),"weeklyWage":(##class(Rugby.Service.Staff).Salary("academy",quality)),"effectiveness":(##class(Rugby.Service.Staff).Multiplier(quality)),"status":"available"}
         do ##class(Rugby.Service.Store).Put("Coach",coach)
     }
     set ^RugbyWorld(##class(Rugby.Service.Store).Game(),"seed",9)=1

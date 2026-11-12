@@ -1,14 +1,16 @@
 Class Rugby.Seed.StaffNames Extends %RegisteredObject
 {
-Parameter VERSION = "1.0.0";
-ClassMethod Generate(id As %String) As %String
+Parameter VERSION = "1.1.0";
+ClassMethod Generate(id As %String, force As %Boolean = 0) As %String
 {
     set game=##class(Rugby.Service.Store).Game(),existing=##class(Rugby.Service.Store).Get("Coach",id,0)
-    if $isobject(existing)&&(existing.%Get("generatedNameVersion")=..#VERSION) quit existing.name
+    if ('force)&&$isobject(existing)&&(existing.%Get("generatedNameVersion")'="") quit existing.name
+    set role=$select($isobject(existing):existing.role,$piece(id,"-",1)="market":$piece(id,"-",2),1:""),free=##class(Rugby.Service.Store).All("Coach","clubId",""),given={}
+    for i=0:1:free.%Size()-1 { set p=free.%Get(i) if (p.id'=id)&&(p.role=role) do given.%Set($piece(p.name," ",1),1) }
     set attempt=0
     for {
         set seed=##class(Rugby.Service.Rivals).Hash("staff-"_id_"-"_attempt,17341),name=##class(Rugby.Service.PlayerNames).Spanish(seed),owner=$get(^RugbyWorld(game,"staffNameOwner",name))
-        quit:(owner="")||(owner=id)
+        quit:((owner="")||(owner=id))&&((given.%Size()>=32)||('given.%IsDefined($piece(name," ",1))))
         set attempt=attempt+1
     }
     set ^RugbyWorld(game,"staffNameOwner",name)=id
@@ -18,14 +20,19 @@ ClassMethod Initialize() As %DynamicObject
 {
     set game=##class(Rugby.Service.Store).Game(),report={"gameId":(game),"version":(..#VERSION),"changes":[]}
     if $get(^RugbyWorld(game,"staffNamesVersion"))=..#VERSION quit report
-    set all=##class(Rugby.Service.Store).All("Coach"),managed=##class(Rugby.Service.Store).ManagedClub()
-    for i=0:1:all.%Size()-1 { set p=all.%Get(i) if (p.clubId=managed)||(p.%Get("generatedNameVersion")=..#VERSION)||(($piece(p.id,"-",2)'="coach")&&($extract(p.id,1,9)'="ai-coach-")) set ^RugbyWorld(game,"staffNameOwner",p.name)=p.id }
+    set all=##class(Rugby.Service.Store).All("Coach"),seen={},given={}
+    // Reserve current identities before repairing available candidates.
+    for i=0:1:all.%Size()-1 { set p=all.%Get(i) set ^RugbyWorld(game,"staffNameOwner",p.name)=p.id }
     for i=0:1:all.%Size()-1 {
-        set p=all.%Get(i)
-        if (p.clubId=managed)||(p.%Get("generatedNameVersion")=..#VERSION) continue
-        if ($piece(p.id,"-",2)'="coach")&&($extract(p.id,1,9)'="ai-coach-") continue
-        set before=p.name,p.name=..Generate(p.id),p.generatedNameVersion=..#VERSION
-        do ##class(Rugby.Service.Store).Put("Coach",p),report.changes.%Push({"coachId":(p.id),"previousName":(before),"name":(p.name)})
+        set p=all.%Get(i),available=(p.clubId=""),first=$piece(p.name," ",1),repair=0
+        if available {
+            set repair=(p.%Get("generatedNameVersion")="")||seen.%IsDefined(p.name)||$data(given(p.role,first))
+        }
+        if repair {
+            set before=p.name,p.name=..Generate(p.id,1),p.generatedNameVersion=..#VERSION
+            do ##class(Rugby.Service.Store).Put("Coach",p),report.changes.%Push({"coachId":(p.id),"previousName":(before),"name":(p.name)})
+        }
+        if available { do seen.%Set(p.name,1) set given(p.role,$piece(p.name," ",1))=1 }
     }
     set ^RugbyWorld(game,"staffNamesVersion")=..#VERSION
     quit report

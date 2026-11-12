@@ -18,7 +18,10 @@ ClassMethod Complete(year As %Integer)
 ClassMethod Run()
 {
     set year=##class(Rugby.Service.Seasons).Year(),final=##class(Rugby.Service.Seasons).FinalDay(year),close=final+7,notice=##class(Rugby.Service.Seasons).NoticeDay(year),p=##class(Rugby.Service.Store).Get("Player","c1-p1")
-    do ..Assert(p.contractEndDate=##class(Rugby.Service.Seasons).EndDate(year),"Existing players have a contract end at the current season closure")
+    do ..Assert((p.contractEndDate>=##class(Rugby.Service.Seasons).EndDate(year))&&(p.contractEndDate<=##class(Rugby.Service.Seasons).EndDate(year+3)),"Initial contracts are distributed across the first four season closures")
+    // Explicitly expiring fixtures exercise renewals and releases independently of the initial draw.
+    for pid="c1-p1","c1-p2","c2-p1" { set p=##class(Rugby.Service.Store).Get("Player",pid),p.contractEndDate=##class(Rugby.Service.Seasons).EndDate(year) do ##class(Rugby.Service.Store).Put("Player",p) }
+    set p=##class(Rugby.Service.Store).Get("Player","c1-p1")
     set raw=p.attributes.%ToJSON(),energy=p.energy,n=##class(Rugby.Service.Transfers).Open(p.id,{"version":(p.version)},"renew-open","renewal")
     do ..Assert((n.kind="renewal")&&(n.signingFee=0),"Renewal opens a salary negotiation without a signing fee")
     set n=##class(Rugby.Service.Transfers).Offer(n.id,{"version":(n.version),"weeklyWage":(n.askingWeeklyWage)},"renew-offer"),version=n.version,n=##class(Rugby.Service.Transfers).Sign(n.id,{"version":(version)},"renew-sign"),again=##class(Rugby.Service.Transfers).Sign(n.id,{"version":(version)},"renew-sign"),p=##class(Rugby.Service.Store).Get("Player","c1-p1")

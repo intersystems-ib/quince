@@ -18927,6 +18927,9 @@
           "version": {
             "type": "integer"
           },
+          "acceptCounteroffer": {
+            "type": "boolean"
+          },
           "contractYears": {
             "type": "integer",
             "minimum": 1,
@@ -18949,6 +18952,30 @@
           "version"
         ],
         "oneOf": [
+          {
+            "required": [
+              "acceptCounteroffer"
+            ],
+            "properties": {
+              "acceptCounteroffer": {
+                "const": true
+              }
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "monthlyWage"
+                  ]
+                },
+                {
+                  "required": [
+                    "weeklyWage"
+                  ]
+                }
+              ]
+            }
+          },
           {
             "required": [
               "monthlyWage"

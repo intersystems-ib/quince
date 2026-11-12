@@ -18,6 +18,10 @@ ClassMethod Run()
     do ..Assert((m.speed=20)&&(m.clock=clock)&&(m.credit=0),"Selecting a speed resumes without accumulating the paused time")
     set hit=##class(Rugby.Service.Injuries).Hit(m,"home",m.homePlayers.%Get(0)),clock=m.clock
     do ..Assert(hit&&(m.speed=0)&&(m.pauseReason="injury")&&(m.pausedPlayerId=m.homePlayers.%Get(0).playerId),"Managed player injury automatically pauses and identifies the player")
+    set injured=m.homePlayers.%Get(0),event=##class(Rugby.Service.Store).Get("MatchEvent",m.id_"-"_$translate($justify(m.sequence,6)," ","0")),expected=injured.name_" se ha lesionado y abandona el campo."
+    do ..Assert((event.text=expected)&&(m.pauseMessage=(expected_" Partido en pausa: revisa la sustitución y selecciona una velocidad para continuar.")),"Live injury announcements omit diagnosis, severity and recovery time")
+    set player=##class(Rugby.Service.Store).Get("Player",injured.playerId)
+    do ..Assert((player.injury.name=injured.injury.name)&&(player.injury.weeks>0)&&(player.injury.grade>0),"Injury details remain available in player management")
     do ##class(Rugby.Service.Store).Put("Match",m)
     set incoming=m.homePlayers.%Get(15),cmd=##class(Rugby.Service.Matches).Command(m.id,{"type":"substitution","outId":(m.homePlayers.%Get(0).playerId),"inId":(incoming.playerId)},"injury-sub"),ok=##class(Rugby.Job.Worker).Cycle(m.id,10),m=##class(Rugby.Service.Store).Get("Match",m.id)
     do ..Assert((m.speed=0)&&(m.clock=clock)&&(m.homeSubs=1),"Injury substitutions can be confirmed while paused")

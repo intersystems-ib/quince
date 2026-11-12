@@ -173,7 +173,13 @@ ClassMethod Offer(id As %String, b As %DynamicObject, key As %String) As %Dynami
     do ##class(Rugby.Service.Store).Key(key)
     set game=##class(Rugby.Service.Store).Game(),club=##class(Rugby.Service.Store).ManagedClub()
     if $data(^RugbyWorld(game,"retry","offer",club,key)) quit ##class(%DynamicObject).%FromJSON(^RugbyWorld(game,"retry","offer",club,key))
-    set n=..Validate(id,b),wage=b.%Get("weeklyWage"),monthly=b.%IsDefined("monthlyWage")
+    set n=..Validate(id,b),accept=b.%Get("acceptCounteroffer",0)
+    if b.%IsDefined("acceptCounteroffer") { if b.%GetTypeOf("acceptCounteroffer")'="boolean" do ##class(Rugby.Service.Store).Fail(422,"COUNTEROFFER","Indica si deseas aceptar la contraoferta.") }
+    if accept {
+        if (n.status'="counteroffer")||(n.counterWeeklyWage<=0)||(n.counterContractYears<1) do ##class(Rugby.Service.Store).Fail(409,"NEGOTIATION_STATE","No hay una contraoferta pendiente que aceptar.")
+        set b={"version":(n.version),"weeklyWage":(n.counterWeeklyWage),"contractYears":(n.counterContractYears)}
+    }
+    set wage=b.%Get("weeklyWage"),monthly=b.%IsDefined("monthlyWage")
     if monthly {
         if b.%IsDefined("weeklyWage") do ##class(Rugby.Service.Store).Fail(422,"WAGE","Indica sólo el salario mensual o semanal, no ambos.")
         set amount=b.monthlyWage
@@ -187,7 +193,7 @@ ClassMethod Offer(id As %String, b As %DynamicObject, key As %String) As %Dynami
     set c=##class(Rugby.Service.Store).Get("Club",club),p=..Candidate(n.playerId,n.%Get("kind","signing")),age=(c.day-p.birthDay)\365,preferred=##class(Rugby.Service.ContractTerms).Preferred(age,p.id),minimum=(((n.reservationWage*##class(Rugby.Service.ContractTerms).Premium(age,years))+99)\100)*100
     if 'n.%IsDefined("contractStartYear") set n.contractStartYear=##class(Rugby.Service.Competition).Year(n.contractEndDate)-(n.%Get("contractYears",1)-1)
     set n.round=n.round+1,n.updatedDay=c.day
-    if wage>=minimum { set n.status="agreed",n.agreedWeeklyWage=wage,n.agreedMonthlyWage=$select(monthly:amount,1:##class(Rugby.Service.Payroll).Monthly(wage)),n.counterWeeklyWage=0,n.agreedContractYears=years,n.contractYears=years,n.counterContractYears=0,n.contractEndDate=##class(Rugby.Service.ContractTerms).EndDate(n,years) }
+    if accept||(wage>=minimum) { set n.status="agreed",n.agreedWeeklyWage=wage,n.agreedMonthlyWage=$select(monthly:amount,1:##class(Rugby.Service.Payroll).Monthly(wage)),n.counterWeeklyWage=0,n.agreedContractYears=years,n.contractYears=years,n.counterContractYears=0,n.contractEndDate=##class(Rugby.Service.ContractTerms).EndDate(n,years) }
     elseif n.round>=n.maxRounds { set n.status="rejected",n.counterWeeklyWage=0,n.counterContractYears=0 }
     else { set n.status="counteroffer",n.contractYears=preferred,n.counterContractYears=preferred,n.contractEndDate=##class(Rugby.Service.ContractTerms).EndDate(n,preferred),n.counterWeeklyWage=n.askingWeeklyWage-(((((n.askingWeeklyWage-n.reservationWage)\100)*n.round)\5)*100) }
     do n.offers.%Push({"round":(n.round),"day":(c.day),"offeredWeeklyWage":(wage),"offeredContractYears":(years),"status":(n.status),"counterWeeklyWage":(n.counterWeeklyWage),"counterContractYears":(n.%Get("counterContractYears",0)),"agreedContractYears":(n.%Get("agreedContractYears",0))})

@@ -15,7 +15,7 @@ export default function TrainingView({club}:{club:Club}){
  const players=useQuery({queryKey:['players'],queryFn:()=>api<Page<Player>>('/my-club/players')});
  const catalog=useQuery({queryKey:['training-types'],queryFn:()=>api<{items:TrainingType[]}>('/training-types')});
  const staff=useQuery({queryKey:['staff'],queryFn:()=>api<Staff>('/my-club/staff')});
- const history=useQuery({queryKey:['training-history'],queryFn:()=>api<Page<TrainingExecution>>('/my-club/training-executions?limit=1')});
+ const history=useQuery({queryKey:['training-history',club.id,club.day],queryFn:()=>api<Page<TrainingExecution>>('/my-club/training-executions?limit=7')});
  if(plan.isLoading||players.isLoading||catalog.isLoading||staff.isLoading||history.isLoading)return <Loading/>;
  if(plan.error||players.error||catalog.error||staff.error||history.error)return <ErrorBox error={plan.error||players.error||catalog.error||staff.error||history.error}/>;
  return <WeeklyEditor key={plan.data!.version} initial={plan.data!} players={players.data!.items} catalog={catalog.data!.items} staff={staff.data!} club={club} history={history.data?.items??[]} category={category} onCategoryChange={setCategory}/>;
@@ -29,10 +29,10 @@ function WeeklyEditor({initial,players,catalog,staff,club,history,category,onCat
  const themes=initial.themes??[];
  const members=players.filter(p=>p.category===category);
  const academyCoach=staff.coaches.find(c=>c.role==='academy');
- const last=history[0];
- const lastDate=new Date(club.date+'T12:00:00');
- if(last)lastDate.setDate(lastDate.getDate()+last.day-club.day);
- const improved=trainingImprovements(last,members);
+ const recent=history.filter(e=>e.day>=club.day-6&&e.day<=club.day);
+ const fromDate=new Date(club.date+'T12:00:00');fromDate.setDate(fromDate.getDate()-6);
+ const period=`${fromDate.toLocaleDateString('es-ES')} – ${new Date(club.date+'T12:00:00').toLocaleDateString('es-ES')}`;
+ const improved=trainingImprovements(history,members,club.day);
  const shown=improved.filter(({player:p})=>(filter==='all'||p.positionGroup===filter)&&p.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
  function changeDay(day:number,patch:Partial<WeeklyDay>){setWeekly({...weekly,[category]:weekly[category].map(d=>d.day===day?{...d,...patch}:d)});}
  function propose(){setWeekly({...weekly,[category]:weeklyProposal(weekly[category],themes)});}
@@ -45,8 +45,8 @@ function WeeklyEditor({initial,players,catalog,staff,club,history,category,onCat
  <p className="muted small">Se repite cada semana. El cuerpo técnico adapta la intensidad y prioriza la recuperación por cansancio, baja o partido cercano.</p>
  <div className="weekly-save"><span className="muted small">{category==='academy'?`Responsable: ${academyCoach?.name??'Entrenador de cantera'} · Calidad ${academyCoach?.quality??25}/100`:'Responsables: especialistas del primer equipo'}{!initial.weeklyConfigured&&' · Guarda para activar el plan semanal.'}</span><div><button className="button secondary" onClick={propose}><Shuffle size={15}/>Solicitar planificación</button>{dirty&&initial.weeklyConfigured&&<button className="button secondary" onClick={()=>setWeekly(structuredClone(initial.weekly!))}><RotateCcw size={15}/>Descartar cambios</button>}<Action path="/my-club/training-plan" method="PUT" body={{version:initial.version,mode:'weekly',weekly}} disabled={!dirty} className="dark">Guardar planificación <Check size={16}/></Action></div></div>
  </section>
- <section className="card training-selection"><div className="card-top"><h3>Mejoras del último entrenamiento{last&&` · ${lastDate.toLocaleDateString('es-ES',{day:'numeric',month:'long'})}`}</h3><span className="pill">{improved.length} JUGADORES</span></div>
- {!last?<p className="empty">Todavía no se ha realizado ningún entrenamiento.</p>:!improved.length?<p className="empty">No hubo mejoras de características en el último entrenamiento de esta categoría.</p>:<><div className="training-filters"><input aria-label="Buscar jugador con mejoras" placeholder="Buscar jugador…" value={search} onChange={e=>setSearch(e.target.value)}/><select aria-label="Filtrar jugadores con mejoras" value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">Todos en esta pestaña</option><option value="forwards">Delanteros</option><option value="backs">Tres cuartos</option></select></div>
+ <section className="card training-selection"><div className="card-top"><h3 title={period}>Mejoras de los últimos 7 días</h3><span className="pill">{improved.length} JUGADORES</span></div>
+ {!recent.length?<p className="empty">No se han realizado entrenamientos en los últimos siete días.</p>:!improved.length?<p className="empty">No hubo mejoras de características en esta categoría durante los últimos siete días.</p>:<><div className="training-filters"><input aria-label="Buscar jugador con mejoras" placeholder="Buscar jugador…" value={search} onChange={e=>setSearch(e.target.value)}/><select aria-label="Filtrar jugadores con mejoras" value={filter} onChange={e=>setFilter(e.target.value)}><option value="all">Todos en esta pestaña</option><option value="forwards">Delanteros</option><option value="backs">Tres cuartos</option></select></div>
  <div className="table-wrap"><table className="player-list-table training-improvements"><thead><tr><th>Jugador</th><th>Posición</th><th>Características mejoradas</th></tr></thead><tbody>{shown.map(({player:p,attributes})=><tr key={p.id}><td><Link className="player-name" title={p.name} to={`/jugadores/${p.id}`}>{p.name}</Link></td><td>{p.positionName}</td><td className="training-improved-attributes">{attributes.map(id=>labels[id]??id).join(' · ')}</td></tr>)}</tbody></table></div>{!shown.length&&<p className="empty">No hay jugadores con estos filtros.</p>}</>}
  </section>
  </div></>;

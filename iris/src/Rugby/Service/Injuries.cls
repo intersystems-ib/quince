@@ -84,7 +84,7 @@ ClassMethod Hit(m As %DynamicObject, side As %String, s As %DynamicObject) As %B
     if ..Active(p,day) quit 0
     set injury=..Create(p,day,"match",$select(m.%Get("aggregate",0):m.fixtureId,1:m.id),m),s.status="injured",s.injury=injury,s.injuredClock=m.clock,s.energy=##class(Rugby.Simulation.Engine).Clamp(s.energy-8,0,100),p.energy=s.energy
     if 'm.%Get("aggregate",0) { do ##class(Rugby.Service.Store).Put("Player",p),##class(Rugby.Service.Management).RefreshAvailability(p.clubId) }
-    set text=p.name_" abandona el campo: "_injury.name_" (grado "_injury.grade_"). Baja de "_injury.weeks_" semanas."
+    set text=p.name_" se ha lesionado y abandona el campo."
     if m.%Get("aggregate",0) {
         do m.injuryEvents.%Push({"type":"injury","side":(side),"playerId":(p.id),"clock":(m.clock),"text":(text),"injury":(injury)})
     } else {

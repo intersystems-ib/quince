@@ -17,6 +17,23 @@ ClassMethod Run()
         do ..Assert(n.status="agreed","Changing duration alone can make the same salary acceptable")
         trollback 1
     }
+    for kind="signing","renewal","promotion" {
+        tstart
+        set c=##class(Rugby.Service.Store).Get("Club","c1"),pool=##class(Rugby.Service.Transfers).Market(),p=##class(Rugby.Service.Store).Get("Player",$select(kind="signing":pool.%Get(0).id,kind="promotion":"c1-p24",1:"c1-p1")),p.signingFee=0
+        do ##class(Rugby.Service.Store).Put("Player",p)
+        set n=##class(Rugby.Service.Transfers).Open(p.id,{"version":(p.version)},"counter-start-"_kind,kind),raw=##class(Rugby.Service.Store).Get("Negotiation",n.id),raw.reservationWage=10000,raw.askingWeeklyWage=10000
+        do ##class(Rugby.Service.Store).Put("Negotiation",raw)
+        set n=##class(Rugby.Service.Transfers).Offer(n.id,{"version":(raw.version),"monthlyWage":500},"counter-low-"_kind),wage=n.counterWeeklyWage,years=n.counterContractYears,body={"version":(n.version),"acceptCounteroffer":true}
+        do ..Assert(n.status="counteroffer","A low monthly offer yields a counteroffer for each negotiation kind")
+        set accepted=##class(Rugby.Service.Transfers).Offer(n.id,body,"counter-accept-"_kind),retry=##class(Rugby.Service.Transfers).Offer(n.id,body,"counter-accept-"_kind)
+        do ..Assert((accepted.status="agreed")&&(accepted.agreedWeeklyWage=wage)&&(accepted.agreedContractYears=years)&&(retry.%ToJSON()=accepted.%ToJSON()),"Accepting a counteroffer preserves exact salary and duration without monthly rounding, and is idempotent")
+        set error=""
+        try { set ignored=##class(Rugby.Service.Transfers).Offer(n.id,{"version":(accepted.version),"acceptCounteroffer":true},"counter-twice-"_kind) } catch ex { set error=ex.Location }
+        do ..Assert(error="NEGOTIATION_STATE","An already accepted counteroffer cannot be accepted again with a different request")
+        set signed=##class(Rugby.Service.Transfers).Sign(n.id,{"version":(accepted.version)},"counter-sign-"_kind),p=##class(Rugby.Service.Store).Get("Player",p.id)
+        do ..Assert((signed.status="signed")&&(p.weeklyWage=wage)&&(p.contractYears=years),"Signing honours the accepted counteroffer for renewals, promotions and signings")
+        trollback 1
+    }
     for years=1:1:5 {
         tstart
         set pool=##class(Rugby.Service.Transfers).Market(),p=##class(Rugby.Service.Store).Get("Player",pool.%Get(0).id),p.signingFee=0

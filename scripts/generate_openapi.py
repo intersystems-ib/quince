@@ -51,8 +51,8 @@ schemas['Negotiation']=obj({'id':S,'clubId':S,'playerId':S,'player':ref('Player'
 schemas['NegotiationPage']=page('Negotiation')
 schemas['Player']['properties'].update({'attributeSeasonChanges':{'type':'object','additionalProperties':{'type':'number'}},'attributeSeasonYear':I,'contractYears':{'type':'integer','minimum':1,'maximum':5},'contractEndDate':{'type':'string','format':'date'},'contractStatus':S,'retirementAnnounced':B,'retirementDate':{'type':'string','format':'date'},'retired':B})
 schemas['Club']['properties'].update({'seasonYear':I,'seasonStartDate':{'type':'string','format':'date'}})
-schemas['SalaryOffer']=obj({'version':I,'contractYears':{'type':'integer','minimum':1,'maximum':5},'weeklyWage':{'type':'integer','minimum':100,'maximum':5000000,'multipleOf':100},'monthlyWage':{'type':'integer','minimum':500,'maximum':21666600,'multipleOf':100}},['version'])
-schemas['SalaryOffer']['oneOf']=[{'required':['monthlyWage'],'not':{'required':['weeklyWage']}},{'required':['weeklyWage'],'not':{'required':['monthlyWage']}}]
+schemas['SalaryOffer']=obj({'version':I,'acceptCounteroffer':B,'contractYears':{'type':'integer','minimum':1,'maximum':5},'weeklyWage':{'type':'integer','minimum':100,'maximum':5000000,'multipleOf':100},'monthlyWage':{'type':'integer','minimum':500,'maximum':21666600,'multipleOf':100}},['version'])
+schemas['SalaryOffer']['oneOf']=[{'required':['acceptCounteroffer'],'properties':{'acceptCounteroffer':{'const':True}},'not':{'anyOf':[{'required':['monthlyWage']},{'required':['weeklyWage']}]}},{'required':['monthlyWage'],'not':{'required':['weeklyWage']}},{'required':['weeklyWage'],'not':{'required':['monthlyWage']}}]
 schemas['Club']['properties'].update({'aiLastDay':I,'aiAdoptedDay':I,'aiSeason':{'oneOf':[I,{'const':''}]},'aiSignings':I,'aiPromotions':I})
 schemas['ReleaseResult']=obj({'playerId':S,'name':S,'formerClubId':S,'status':{'const':'released'},'day':I,'fee':I},['playerId','name','status','day','fee'])
 schemas['Player']['properties'].update({'contractStatus':S,'formerClubId':S,'releasedDay':I,'previousWeeklyWage':I})

@@ -49,12 +49,11 @@ ClassMethod Run()
         do plan.%Remove("players")
         do ##class(Rugby.Service.Store).Put("TrainingPlan",plan)
     }
-    set given=$listbuild("Fernando","Ana","Luis","Marta","Ignacio","Elena","Carlos","David"),surnames=$listbuild("Ortega","Pérez","Vázquez")
     for r=0:1:roles.%Size()-1 {
         set role=roles.%Get(r)
         for tier=1:1:3 {
             set quality=$select(tier=1:40,tier=2:65,1:90),id="market-"_role.id_"-"_tier
-            set coach={"id":(id),"clubId":"","name":($list(given,r+1)_" "_$list(surnames,tier)),"role":(role.id),"quality":(quality),"weeklyWage":(##class(Rugby.Service.Staff).Salary(role.id,quality)),"effectiveness":(##class(Rugby.Service.Staff).Multiplier(quality)),"status":"available"}
+            set coach={"id":(id),"clubId":"","name":(##class(Rugby.Seed.StaffNames).Generate(id)),"generatedNameVersion":"1.1.0","role":(role.id),"quality":(quality),"weeklyWage":(##class(Rugby.Service.Staff).Salary(role.id,quality)),"effectiveness":(##class(Rugby.Service.Staff).Multiplier(quality)),"status":"available"}
             do ##class(Rugby.Service.Store).Put("Coach",coach)
         }
     }

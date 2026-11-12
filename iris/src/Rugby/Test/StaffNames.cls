@@ -29,6 +29,19 @@ ClassMethod Run()
     set oldQuery=$get(%RugbyQuery),%RugbyQuery={"role":"academy","offset":0,"limit":5},page=##class(Rugby.Service.Router).Resolve("GET","staff-market","","","",{},""),%RugbyQuery=oldQuery,previous=101
     do ..Assert((page.items.%Size()=3)&&(page.total=3),"Speciality is filtered before pagination and offers three candidates")
     for i=0:1:page.items.%Size()-1 { set p=page.items.%Get(i) do ..Assert((p.role="academy")&&(p.quality<=previous),"Market is ordered by quality within the requested speciality") set previous=p.quality }
+    set free=##class(Rugby.Service.Store).All("Coach","clubId",""),protected=##class(Rugby.Service.Staff).View(club).%ToJSON()
+    for i=0:1:free.%Size()-1 { set p=free.%Get(i),p.name="Nombre Repetido",p.generatedNameVersion="1.0.0" do ##class(Rugby.Service.Store).Put("Coach",p) }
+    kill ^RugbyWorld(##class(Rugby.Service.Store).Game(),"staffNamesVersion")
+    set repaired=##class(Rugby.Seed.StaffNames).Initialize(),free=##class(Rugby.Service.Store).All("Coach","clubId",""),names={}
+    for i=0:1:free.%Size()-1 {
+        set p=free.%Get(i),first=$piece(p.name," ",1)
+        do ..Assert(('names.%IsDefined(p.name))&&('$data(given(p.role,first))),"Available employees have distinct full names and distinct given names within each speciality")
+        do names.%Set(p.name,1)
+        set given(p.role,first)=1
+    }
+    do ..Assert(##class(Rugby.Service.Staff).View(club).%ToJSON()=protected,"Candidate name repair preserves employed staff and salaries")
+    set stable=##class(Rugby.Service.Store).All("Coach").%ToJSON(),repaired=##class(Rugby.Seed.StaffNames).Initialize()
+    do ..Assert((repaired.changes.%Size()=0)&&(stable=##class(Rugby.Service.Store).All("Coach").%ToJSON()),"Repaired candidate names remain stable on subsequent visits")
     set name=##class(Rugby.Seed.StaffNames).Generate("ai-coach-name-test"),repeat=##class(Rugby.Seed.StaffNames).Generate("ai-coach-name-test")
     do ..Assert(name=repeat,"New automatic coach names are deterministic")
 }
