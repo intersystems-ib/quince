@@ -214,7 +214,7 @@ ClassMethod Sign(id As %String, b As %DynamicObject, key As %String) As %Dynamic
     set c=##class(Rugby.Service.Store).Get("Club",club),p=..Candidate(n.playerId,n.%Get("kind","signing"))
     if (n.signingFee>0)&&(c.balance<n.signingFee) do ##class(Rugby.Service.Store).Fail(409,"SIGNING_FUNDS","No hay saldo suficiente para la prima de incorporación.")
     set cover=##class(Rugby.Service.Rivals).InjuryNeed(c,c.day),medical=(n.%Get("kind","signing")="signing")&&(cover.position>0)&&((cover.position<=8)=(p.position<=8)),useMedical=medical&&##class(Rugby.Service.Payroll).CanPayMedical(club,p.id,n.agreedWeeklyWage)
-    if 'useMedical do ##class(Rugby.Service.Payroll).Check(club,p.id,n.agreedWeeklyWage)
+    if (##class(Rugby.Service.SalaryBudget).Percent(club)>0)||('useMedical) do ##class(Rugby.Service.Payroll).Check(club,p.id,n.agreedWeeklyWage,n.signingFee)
     if n.%Get("kind")'="renewal" set p.clubId=club,p.category="senior",p.signedDay=c.day
     set p.weeklyWage=n.agreedWeeklyWage,p.monthlyWage=n.%Get("agreedMonthlyWage",##class(Rugby.Service.Payroll).Monthly(n.agreedWeeklyWage)),p.payrollStartDay=c.day,p.contractStatus="employed",p.contractYears=n.%Get("agreedContractYears",1),p.contractEndDate=n.%Get("contractEndDate",##class(Rugby.Service.Seasons).EndDate(##class(Rugby.Service.Seasons).Year(club))),p.age=(c.day-p.birthDay)\365
     if useMedical set p.injuryCoverForPlayerId=cover.playerId

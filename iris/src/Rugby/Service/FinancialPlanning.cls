@@ -3,7 +3,7 @@ Class Rugby.Service.FinancialPlanning Extends %RegisteredObject
 Parameter VERSION = "1.0.0";
 ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject) As %DynamicObject
 {
-    set payroll=##class(Rugby.Service.Payroll).Summary(c.id),managed=o.director.%Get("id")'="",quality=o.director.%Get("quality",35),success=##class(Rugby.Service.Finance).Success(c),agreements=##class(Rugby.Service.Store).All("FinancialAgreement","clubId",c.id),slots={},private=0,bar=0
+    set payroll=##class(Rugby.Service.Payroll).Summary(c.id,0),managed=o.director.%Get("id")'="",quality=o.director.%Get("quality",35),success=##class(Rugby.Service.Finance).Success(c),agreements=##class(Rugby.Service.Store).All("FinancialAgreement","clubId",c.id),slots={},private=0,bar=0
     for i=0:1:agreements.%Size()-1 { set a=agreements.%Get(i) if (a.startYear<=s.year)&&(a.endYear>=s.year)&&(a.slot>=1)&&(a.slot<=7) do slots.%Set(a.slot,a.annualAmount) }
     for slot=1:1:7 {
         set amount=slots.%Get(slot,0)

@@ -251,7 +251,8 @@ ClassMethod View(club As %String) As %DynamicObject
     }
     set players=##class(Rugby.Service.Store).All("Player","clubId",club),weekly=##class(Rugby.Service.Staff).View(club).weeklyWage+o.director.%Get("weeklyWage",0),plan=##class(Rugby.Service.Store).Get("TrainingPlan",club)
     for i=0:1:players.%Size()-1 { set weekly=weekly+players.%Get(i).weeklyWage }
-    quit {"office":(o),"season":(s),"agreements":(active),"barConcession":(bar),"fundingReference":(..Funding(c)),"balance":(c.balance),"initialBalance":(c.initialBalance),"currency":"EUR","unit":"cent","income":(income),"expenses":(expenses),"monthly":(monthly),"breakdown":(breakdown),"securedAnnualIncome":(sponsor+barIncome+grants+s.campaignIncome),"financialPlan":(##class(Rugby.Service.FinancialPlanning).Forecast(c,s,o)),"payroll":(##class(Rugby.Service.Payroll).Summary(club)),"annualWages":(##class(Rugby.Service.Payroll).Summary(club).annualPlayers+##class(Rugby.Service.Payroll).Summary(club).annualStaff+##class(Rugby.Service.Payroll).Summary(club).annualDirector),"annualTraining":0,"movements":(entries)}
+    set payroll=##class(Rugby.Service.Payroll).Summary(club)
+    quit {"office":(o),"season":(s),"agreements":(active),"barConcession":(bar),"fundingReference":(..Funding(c)),"balance":(c.balance),"initialBalance":(c.initialBalance),"currency":"EUR","unit":"cent","income":(income),"expenses":(expenses),"monthly":(monthly),"breakdown":(breakdown),"securedAnnualIncome":(sponsor+barIncome+grants+s.campaignIncome),"financialPlan":(##class(Rugby.Service.FinancialPlanning).Forecast(c,s,o)),"salaryBudget":(##class(Rugby.Service.SalaryBudget).Calculate(club)),"payroll":(payroll),"annualWages":(payroll.annualPlayers+payroll.annualStaff+payroll.annualDirector),"annualTraining":0,"movements":(entries)}
 }
 ClassMethod Forecast(f As %DynamicObject, price As %Integer = -1, seasonOverride As %DynamicObject = "") As %DynamicObject
 {

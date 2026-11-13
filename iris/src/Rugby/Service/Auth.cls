@@ -52,27 +52,41 @@ ClassMethod Require(token As %String = "") As %DynamicObject
         set header=##class(%DynamicObject).%FromJSON(..Decode($piece(token,".",1))),claims=##class(%DynamicObject).%FromJSON(..Decode($piece(token,".",2)))
         if (header.alg'="HS256")||(header.typ'="JWT")||(claims.iss'="quince")||(claims.aud'="rugby-manager")||(claims.exp<=..Now())||(claims.iat>..Now()) throw ##class(%Exception.General).%New("JWT")
         if $get(^RugbyAuth("sessions",claims.jti))'=claims.sub throw ##class(%Exception.General).%New("JWT")
-        set user=##class(%DynamicObject).%FromJSON(^RugbyAuth("users",claims.sub)),%RugbyUser=user.id,%RugbySession=claims.jti,valid=1
+        if claims.%Get("role")="admin" {
+            if $get(^RugbyAuth("admins",claims.jti))'=claims.sub throw ##class(%Exception.General).%New("JWT")
+            if '..IRISActive(claims.sub) throw ##class(%Exception.General).%New("JWT")
+            set user={"id":(claims.sub),"username":(claims.sub),"role":"admin"}
+        } else {
+            set user=##class(%DynamicObject).%FromJSON(^RugbyAuth("users",claims.sub)),user.role="manager"
+        }
+        set %RugbyUser=user.id,%RugbySession=claims.jti,valid=1
     } catch ex { set valid=0 }
     if 'valid do ##class(Rugby.Service.Store).Fail(401,"UNAUTHORIZED","Inicia sesión para continuar.")
-    quit {"id":(user.id),"username":(user.username)}
+    quit {"id":(user.id),"username":(user.username),"role":(user.role)}
 }
 ClassMethod Resolve(method As %String, action As %String, b As %DynamicObject) As %DynamicObject
 {
     if (method="GET")&&(action="me") quit ..Require()
     if method'="POST" do ##class(Rugby.Service.Store).Fail(404,"ROUTE_NOT_FOUND","Ruta no disponible.")
     if action="logout" {
-        try { set u=..Require() do ##class(Rugby.Service.Games).PauseUser() kill ^RugbyAuth("sessions",%RugbySession) } catch ignored { }
+        try {
+            set u=..Require()
+            if u.role'="admin" do ##class(Rugby.Service.Games).PauseUser()
+            kill ^RugbyAuth("sessions",%RugbySession),^RugbyAuth("admins",%RugbySession)
+        } catch ignored { }
         do ..Cookie("",0)
         quit {"signedOut":true}
     }
     if (action'="login")&&(action'="register") do ##class(Rugby.Service.Store).Fail(404,"ROUTE_NOT_FOUND","Ruta no disponible.")
     set username=$zcvt($zstrip(b.%Get("username"),"<>W"),"L"),password=b.%Get("password"),now=..Now(),bucket=now\60,ip=%request.GetCgiEnv("REMOTE_ADDR")
-    if ($length(username)<3)||($length(username)>40)||($translate(username,"abcdefghijklmnopqrstuvwxyz0123456789-_.","")'="") do ##class(Rugby.Service.Store).Fail(422,"USERNAME","El usuario debe tener de 3 a 40 letras, números, puntos o guiones.")
-    if ($length(password)<10)||($length(password)>128) do ##class(Rugby.Service.Store).Fail(422,"PASSWORD","La contraseña debe tener entre 10 y 128 caracteres.")
+    if (action="register")&&(($length(username)<3)||($length(username)>40)||($translate(username,"abcdefghijklmnopqrstuvwxyz0123456789-_.","")'="")) do ##class(Rugby.Service.Store).Fail(422,"USERNAME","El usuario debe tener de 3 a 40 letras, números, puntos o guiones.")
+    if (action="register")&&(($length(password)<10)||($length(password)>128)) do ##class(Rugby.Service.Store).Fail(422,"PASSWORD","La contraseña debe tener entre 10 y 128 caracteres.")
+    if (action="login")&&(($length($zstrip(b.%Get("username"),"<>W"))<1)||($length(b.%Get("username"))>128)||($length(password)<1)||($length(password)>255)) do ##class(Rugby.Service.Store).Fail(401,"LOGIN_FAILED","Usuario o contraseña incorrectos.")
     if $get(^RugbyAuth("attempts",ip,bucket))>=10 do ##class(Rugby.Service.Store).Fail(429,"LOGIN_LIMIT","Demasiados intentos. Espera un minuto.")
     set attempts=$increment(^RugbyAuth("attempts",ip,bucket))
+    if action="login" { if ..IRISExists($zstrip(b.%Get("username"),"<>W")) quit ..IRISLogin(b) }
     if action="register" {
+        if ..IRISExists(username) do ##class(Rugby.Service.Store).Fail(409,"USERNAME_TAKEN","Ese usuario ya está registrado.")
         if $data(^RugbyAuth("names",username)) do ##class(Rugby.Service.Store).Fail(409,"USERNAME_TAKEN","Ese usuario ya está registrado.")
         set uid=$system.Util.CreateGUID(),salt=..Encode($system.Encryption.GenCryptRand(24)),hash=..Encode($system.Encryption.PBKDF2($zcvt(password,"O","UTF8"),600000,salt,32,256)),user={"id":(uid),"username":(username),"salt":(salt),"hash":(hash),"createdAt":(now)}
         set ^RugbyAuth("users",uid)=user.%ToJSON(),^RugbyAuth("names",username)=uid
@@ -85,6 +99,45 @@ ClassMethod Resolve(method As %String, action As %String, b As %DynamicObject) A
     set sid=..Encode($system.Encryption.GenCryptRand(24)),claims={"sub":(uid),"jti":(sid),"iss":"quince","aud":"rugby-manager","iat":(now),"exp":(now+28800)},header={"alg":"HS256","typ":"JWT"},data=..Encode(header.%ToJSON())_"."_..Encode(claims.%ToJSON()),token=data_"."_..Encode($system.Encryption.HMACSHA(256,data,^RugbyAuth("secret")))
     set ^RugbyAuth("sessions",sid)=uid
     do ..Cookie(token,28800)
-    quit {"user":{"id":(uid),"username":(username)},"expiresAt":(now+28800)}
+    quit {"user":{"id":(uid),"username":(username),"role":"manager"},"expiresAt":(now+28800)}
+}
+ClassMethod IRISExists(username As %String) As %Boolean
+{
+    new $namespace
+    set $namespace="%SYS",exists=0
+    try { set sc=##class(Security.Users).Get(username,.properties),exists='$system.Status.IsError(sc) } catch ex { set exists=0 }
+    quit exists
+}
+ClassMethod IRISActive(username As %String) As %Boolean
+{
+    new $namespace
+    set $namespace="%SYS",active=0
+    try {
+        set sc=##class(Security.Users).Get(username,.properties)
+        if $system.Status.IsError(sc) throw ##class(%Exception.General).%New("Unknown user")
+        set active=$get(properties("Enabled"))&&('$get(properties("ChangePassword")))
+        if $get(properties("ExpirationDate"))'="" { if $zdateh(properties("ExpirationDate"),3)<+$horolog set active=0 }
+        if $zcvt(username,"L")="unknownuser" set active=0
+    } catch ex { set active=0 }
+    quit active
+}
+ClassMethod AuthenticateIRIS(username As %String, password As %String) As %String
+{
+    // NEW restores both the native identity and roles when this method returns.
+    new $roles
+    if '$system.Security.Login(username,password) quit ""
+    quit $username
+}
+ClassMethod IRISLogin(b As %DynamicObject) As %DynamicObject
+{
+    set username=$zstrip(b.%Get("username"),"<>W"),password=b.%Get("password"),now=..Now()
+    if ($length(username)<1)||($length(username)>128)||($length(password)<1)||($length(password)>255) do ##class(Rugby.Service.Store).Fail(401,"LOGIN_FAILED","Usuario o contraseña incorrectos.")
+    set identity=..AuthenticateIRIS(username,password)
+    if identity="" do ##class(Rugby.Service.Store).Fail(401,"LOGIN_FAILED","Usuario o contraseña incorrectos.")
+    if '..IRISActive(identity) do ##class(Rugby.Service.Store).Fail(401,"LOGIN_FAILED","Usuario o contraseña incorrectos.")
+    set sid=..Encode($system.Encryption.GenCryptRand(24)),claims={"sub":(identity),"jti":(sid),"role":"admin","iss":"quince","aud":"rugby-manager","iat":(now),"exp":(now+28800)},header={"alg":"HS256","typ":"JWT"},data=..Encode(header.%ToJSON())_"."_..Encode(claims.%ToJSON()),token=data_"."_..Encode($system.Encryption.HMACSHA(256,data,^RugbyAuth("secret")))
+    set ^RugbyAuth("sessions",sid)=identity,^RugbyAuth("admins",sid)=identity
+    do ..Cookie(token,28800)
+    quit {"user":{"id":(identity),"username":(identity),"role":"admin"},"expiresAt":(now+28800)}
 }
 }

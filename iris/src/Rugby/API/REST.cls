@@ -36,12 +36,13 @@ ClassMethod Handle(method As %String, resource As %String, id As %String = "", c
     set %RugbyInputBody={},%RugbyQuery={}
     for name="offset","limit","date","variant","role","afterSequence","correlationId","before" { if $data(%request.Data(name,1)) do %RugbyQuery.%Set(name,%request.Data(name,1)) }
     set request.QueryJSON=%RugbyQuery.%ToJSON()
+    set bodyLimit=$select(resource="admin":800000,1:65536)
     if method'="GET" {
-        if %request.Content.Size>65536 { set request.InputErrorStatus=413,request.InputErrorCode="BODY_TOO_LARGE",request.InputErrorMessage="Solicitud demasiado grande." }
+        if %request.Content.Size>bodyLimit { set request.InputErrorStatus=413,request.InputErrorCode="BODY_TOO_LARGE",request.InputErrorMessage="Solicitud demasiado grande." }
         else {
             if %request.Content.Size {
                 try {
-                    set payload=$zcvt(%request.Content.Read(65536),"I","UTF8"),%RugbyInputBody=##class(%DynamicObject).%FromJSON(payload)
+                    set payload=$zcvt(%request.Content.Read(bodyLimit),"I","UTF8"),%RugbyInputBody=##class(%DynamicObject).%FromJSON(payload)
                     if '%RugbyInputBody.%IsA("%Library.DynamicObject") throw ##class(%Exception.General).%New("JSON")
                 } catch parse { set %RugbyInputBody={},request.InputErrorStatus=400,request.InputErrorCode="INVALID_JSON",request.InputErrorMessage="El cuerpo debe ser un objeto JSON válido." }
             }

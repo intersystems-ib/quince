@@ -4,11 +4,17 @@ Parameter VERSION = "3.0.0";
 Parameter MARKETLIMIT = 3;
 ClassMethod Active() As %Boolean { quit $get(^RugbyWorld(##class(Rugby.Service.Store).Game(),"payrollVersion"))=..#VERSION }
 ClassMethod Budget(club As %String) As %Integer { quit ##class(Rugby.Service.Finance).Funding(##class(Rugby.Service.Store).Get("Club",club)) }
-ClassMethod AnnualCap(club As %String) As %Integer
+ClassMethod BaseAnnualCap(club As %String) As %Integer
 {
     set funding=..Budget(club),reference=##class(Rugby.Service.Finance).Budget(##class(Rugby.Service.Store).Get("Club",club)),room=+$justify((reference*.85)-(funding*.18)-(reference*.03)-1650000,0,0),limit=+$justify(reference*.65,0,0)
     if ##class(Rugby.Service.MonthlyPayroll).Active() { set t=##class(Rugby.Service.MonthlyPayroll).Totals(club),director=$select(t.director>0:t.director,1:##class(Rugby.Service.MonthlyPayroll).DirectorMonthly(35,club)),room=+$justify((reference*.85)-((t.staff+director)*12)-(reference*.03)-1650000,0,0) }
     quit $select(room<limit:room,1:limit)
+}
+ClassMethod AnnualCap(club As %String) As %Integer
+{
+    set base=..BaseAnnualCap(club)
+    if ##class(Rugby.Service.SalaryBudget).Percent(club)=0 quit base
+    quit ##class(Rugby.Service.SalaryBudget).Calculate(club).annualLimit
 }
 ClassMethod WeeklyCap(club As %String) As %Integer { quit (..AnnualCap(club)\$select(##class(Rugby.Service.MonthlyPayroll).Active():5200,1:5300))*100 }
 ClassMethod StaffWage(role As %String, quality As %Numeric, club As %String) As %Integer
@@ -54,19 +60,30 @@ ClassMethod Used(club As %String, excluding As %String = "") As %Integer
 }
 ClassMethod CanPay(club As %String, pid As %String, wage As %Integer) As %Boolean
 {
-    quit (..Used(club,pid)+wage)<=..WeeklyCap(club)
+    if (..Used(club,pid)+wage)>..WeeklyCap(club) quit 0
+    if ##class(Rugby.Service.SalaryBudget).Percent(club)>0 quit ##class(Rugby.Service.SalaryBudget).Affordable(club,pid,wage)
+    quit 1
 }
 ClassMethod MedicalWeeklyCap(club As %String) As %Integer
 {
+    if ##class(Rugby.Service.SalaryBudget).Percent(club)>0 quit ..WeeklyCap(club)
     set c=##class(Rugby.Service.Store).Get("Club",club),budget=##class(Rugby.Service.Finance).Budget(c),t=##class(Rugby.Service.MonthlyPayroll).Totals(club),director=$select(t.director>0:t.director,1:##class(Rugby.Service.MonthlyPayroll).DirectorMonthly(35,club)),room=(budget*.9)-((t.staff+director)*12)-(budget*.03)-1650000,limit=budget*.7,annual=$select(room<limit:room,1:limit)
     quit (annual\5200)*100
 }
 ClassMethod CanPayMedical(club As %String, pid As %String, wage As %Integer) As %Boolean
 {
+    if ##class(Rugby.Service.SalaryBudget).Percent(club)>0 quit ..CanPay(club,pid,wage)
     quit (..Used(club,pid)+wage)<=..MedicalWeeklyCap(club)
 }
-ClassMethod Check(club As %String, pid As %String, wage As %Integer)
+ClassMethod Check(club As %String, pid As %String, wage As %Integer, fee As %Integer = 0)
 {
+    if ##class(Rugby.Service.SalaryBudget).Percent(club)>0 {
+        if '##class(Rugby.Service.SalaryBudget).Affordable(club,pid,wage,fee) do ##class(Rugby.Service.Store).Fail(409,"PAYROLL_LIMIT","La prima y el salario comprometen la reserva prevista. Revisa el margen en Finanzas.")
+    }
+    if (fee>0)&&(##class(Rugby.Service.SalaryBudget).Percent(club)>0) {
+        set plan=##class(Rugby.Service.SalaryBudget).Calculate(club,fee),weeks=$select(##class(Rugby.Service.MonthlyPayroll).Active():52,1:53)
+        if ((..Used(club,pid)+wage)*weeks)>plan.annualLimit do ##class(Rugby.Service.Store).Fail(409,"PAYROLL_LIMIT","La prima y el salario superan la ampliación disponible. Revisa el límite en Finanzas.")
+    }
     if ..Active()&&('..CanPay(club,pid,wage)) do ##class(Rugby.Service.Store).Fail(409,"PAYROLL_LIMIT","El salario supera el margen mensual disponible de "_$justify(..Monthly(..WeeklyCap(club)-..Used(club,pid))/100,0,0)_" €. Reduce la oferta o libera masa salarial.")
 }
 ClassMethod Market(role As %String = "") As %DynamicArray
@@ -102,16 +119,17 @@ ClassMethod Shortlist(all As %DynamicArray) As %DynamicArray
     for i=0:1:all.%Size()-1 { set p=all.%Get(i) if selected.%IsDefined(p.id) { do result.%Push(p),selected.%Remove(p.id) } }
     quit result
 }
-ClassMethod Summary(club As %String) As %DynamicObject
+ClassMethod Summary(club As %String, flexible As %Boolean = 1) As %DynamicObject
 {
+    set cap=$select(flexible:..AnnualCap(club),1:..BaseAnnualCap(club)),weeklyCap=(cap\$select(##class(Rugby.Service.MonthlyPayroll).Active():5200,1:5300))*100
     set all=##class(Rugby.Service.Store).All("Player","clubId",club),senior=0,academy=0
     for i=0:1:all.%Size()-1 { set p=all.%Get(i) if p.category="academy" { set academy=academy+p.weeklyWage } else { set senior=senior+p.weeklyWage } }
     set b=##class(Rugby.Service.Finance).Budget(##class(Rugby.Service.Store).Get("Club",club)),weekly=senior+academy,coaches=##class(Rugby.Service.Staff).View(club),o=##class(Rugby.Service.Finance).Office(club),plan=##class(Rugby.Service.Store).Get("TrainingPlan",club),annual=weekly*53,reference=b,other=(coaches.weeklyWage+o.director.%Get("weeklyWage",0))*53+(reference*.03)+1650000
     if ##class(Rugby.Service.MonthlyPayroll).Active() {
         set t=##class(Rugby.Service.MonthlyPayroll).Totals(club),annual=t.players*12,other=((t.staff+t.director)*12)+(reference*.03)+1650000
-        quit {"budget":(b),"budgetReference":(reference),"weeklyLimit":(..WeeklyCap(club)),"weeklyPlayers":(weekly),"weeklyAvailable":(..WeeklyCap(club)-weekly),"monthlyLimit":(..AnnualCap(club)/12),"monthlyPlayers":(t.players),"monthlyStaff":(t.staff),"monthlyDirector":(t.director),"monthlyAvailable":((..AnnualCap(club)/12)-t.players),"annualPlayers":(annual),"annualSenior":(t.senior*12),"annualAcademy":(t.academy*12),"annualStaff":(t.staff*12),"annualDirector":(t.director*12),"annualTraining":0,"annualRegistrations":(+$justify(reference*.03,0,0)),"annualTravelReserve":1650000,"annualSafetyReserve":(+$justify(b*.15,0,0)),"annualProjectedCosts":(annual+other),"annualMargin":(b-annual-other),"weeks":52,"paymentsPerYear":12,"payPeriod":"monthly","modelVersion":(..#VERSION)}
+        quit {"budget":(b),"budgetReference":(reference),"weeklyLimit":(weeklyCap),"weeklyPlayers":(weekly),"weeklyAvailable":(weeklyCap-weekly),"monthlyLimit":(cap/12),"monthlyPlayers":(t.players),"monthlyStaff":(t.staff),"monthlyDirector":(t.director),"monthlyAvailable":((cap/12)-t.players),"annualPlayers":(annual),"annualSenior":(t.senior*12),"annualAcademy":(t.academy*12),"annualStaff":(t.staff*12),"annualDirector":(t.director*12),"annualTraining":0,"annualRegistrations":(+$justify(reference*.03,0,0)),"annualTravelReserve":1650000,"annualSafetyReserve":(+$justify(b*.15,0,0)),"annualProjectedCosts":(annual+other),"annualMargin":(b-annual-other),"weeks":52,"paymentsPerYear":12,"payPeriod":"monthly","modelVersion":(..#VERSION)}
     }
-    quit {"budget":(b),"budgetReference":(reference),"weeklyLimit":(..WeeklyCap(club)),"weeklyPlayers":(weekly),"weeklyAvailable":(..WeeklyCap(club)-weekly),"annualPlayers":(annual),"annualSenior":(senior*53),"annualAcademy":(academy*53),"annualStaff":(coaches.weeklyWage*53),"annualDirector":(o.director.%Get("weeklyWage",0)*53),"annualTraining":0,"annualRegistrations":(+$justify(reference*.03,0,0)),"annualTravelReserve":1650000,"annualSafetyReserve":(+$justify(b*.15,0,0)),"annualProjectedCosts":(annual+other),"annualMargin":(b-annual-other),"weeks":53,"modelVersion":(..#VERSION)}
+    quit {"budget":(b),"budgetReference":(reference),"weeklyLimit":(weeklyCap),"weeklyPlayers":(weekly),"weeklyAvailable":(weeklyCap-weekly),"annualPlayers":(annual),"annualSenior":(senior*53),"annualAcademy":(academy*53),"annualStaff":(coaches.weeklyWage*53),"annualDirector":(o.director.%Get("weeklyWage",0)*53),"annualTraining":0,"annualRegistrations":(+$justify(reference*.03,0,0)),"annualTravelReserve":1650000,"annualSafetyReserve":(+$justify(b*.15,0,0)),"annualProjectedCosts":(annual+other),"annualMargin":(b-annual-other),"weeks":53,"modelVersion":(..#VERSION)}
 }
 ClassMethod Initialize() As %DynamicObject
 {

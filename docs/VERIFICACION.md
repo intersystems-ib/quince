@@ -1,6 +1,6 @@
 # Verificación
 
-`./scripts/test.ps1` ejecuta los 60 grupos de `Rugby.Test.Suite` y compila el frontend. Los casos de IRIS se ejecutan con reversión de datos al terminar. Las integraciones que crean o avanzan partidas requieren una instancia desechable.
+`./scripts/test.ps1` ejecuta los 62 grupos de `Rugby.Test.Suite` y compila el frontend. Los casos de IRIS se ejecutan con reversión de datos al terminar. Las integraciones que crean o avanzan partidas requieren una instancia desechable.
 
 La suite cubre competición, temporadas, alineación, entrenamiento, moral, lesiones, tarjetas, partidos, salarios, finanzas, mercado, seguridad e idempotencia. Entre sus comprobaciones se incluyen:
 

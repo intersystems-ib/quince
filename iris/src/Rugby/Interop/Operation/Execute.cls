@@ -26,12 +26,15 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             set market=##class(Rugby.Service.StaffMarket).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.staffMarket=market,pResponse.DetailsJSON=details.%ToJSON()
             set contracts=##class(Rugby.Seed.Contracts).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.initialContracts=contracts,pResponse.DetailsJSON=details.%ToJSON()
             set foreignMarket=##class(Rugby.Service.ForeignMarket).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.foreignTransferMarket=foreignMarket,pResponse.DetailsJSON=details.%ToJSON()
+            do ##class(Rugby.Service.Admin).Apply()
             set out={"initialized":true}
         } else {
             if (pRequest.Resource'="auth")&&(pRequest.Resource'="health") {
                 set user=##class(Rugby.Service.Auth).Require(),%RugbyAuditUser=user.id
+                if (user.role="admin")&&(pRequest.Resource'="admin") do ##class(Rugby.Service.Store).Fail(403,"ADMIN_ONLY","Esta sesión sólo permite administrar los datos iniciales.")
+                if (user.role'="admin")&&(pRequest.Resource="admin") do ##class(Rugby.Service.Store).Fail(403,"ADMIN_REQUIRED","Accede con un usuario de IRIS para administrar los datos iniciales.")
             }
-            if (pRequest.Resource'="auth")&&(pRequest.Resource'="health")&&(pRequest.Resource'="games")&&(pRequest.Resource'="game-catalog") do ##class(Rugby.Service.Games).Select(pRequest.GameId)
+            if (pRequest.Resource'="auth")&&(pRequest.Resource'="health")&&(pRequest.Resource'="games")&&(pRequest.Resource'="game-catalog")&&(pRequest.Resource'="admin") do ##class(Rugby.Service.Games).Select(pRequest.GameId)
             lock +^RugbyWrite:3
             if '$test do ##class(Rugby.Service.Store).Fail(409,"BUSY","Operación en curso. Reintenta.")
             set held=1
@@ -44,7 +47,8 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             // InProc: raw HTTP credentials are never properties of a persistent message.
             set body=$select($isobject($get(%RugbyInputBody)):%RugbyInputBody,1:##class(%DynamicObject).%FromJSON(pRequest.BodyJSON))
             set out=##class(Rugby.Service.Router).Resolve(pRequest.Method,pRequest.Resource,pRequest.EntityId,pRequest.Child,pRequest.PlayerId,body,pRequest.IdempotencyKey)
-            if (pRequest.Method'="GET")&&(pRequest.Resource'="auth") { do ##class(Rugby.Service.Games).Touch() tcommit }
+            if (pRequest.Method'="GET")&&(pRequest.Resource'="auth") { if pRequest.Resource'="admin" do ##class(Rugby.Service.Games).Touch()
+                tcommit }
             if (pRequest.Resource="clubs")&&(pRequest.Child="advance-day") {
                 set execution=##class(Rugby.Service.Store).Get("TrainingExecution",pRequest.EntityId_"-day"_out.day,0),movements=##class(Rugby.Service.Store).All("FinancialMovement","clubId",pRequest.EntityId),daily=[]
                 for i=0:1:movements.%Size()-1 { set movement=movements.%Get(i) if movement.day=out.day do daily.%Push(movement) }
@@ -53,6 +57,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             }
             if (pRequest.Resource="clubs")&&(pRequest.Child="training-plan")&&(pRequest.Method="PUT") set pResponse.DetailsJSON={"trainingPlan":(out)}.%ToJSON()
             if (pRequest.Resource="clubs")&&(pRequest.Child="financial-director")&&(pRequest.Method="POST") set pResponse.DetailsJSON={"financialManagement":(out)}.%ToJSON()
+            if (pRequest.Resource="clubs")&&(pRequest.Child="salary-budget")&&(pRequest.Method="PUT") set pResponse.DetailsJSON={"salaryBudget":(out.salaryBudget)}.%ToJSON()
             if (pRequest.Resource="games")&&(pRequest.Method="DELETE") set pResponse.DetailsJSON={"gameDeletion":(out)}.%ToJSON()
             if (pRequest.Resource="matches")&&(pRequest.Child="start")&&(pRequest.Method="POST") set pResponse.DetailsJSON={"tacticalAssessment":(out.%Get("aiTacticalAssessment"))}.%ToJSON()
             if (pRequest.Resource="negotiations")&&(pRequest.Child="sign")&&(pRequest.Method="POST") {

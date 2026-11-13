@@ -166,7 +166,9 @@ schemas['NewFriendly']=obj({'date':{'type':'string','format':'date'},'opponentId
 schemas['Saved']=obj({'saved':B})
 schemas['SignedOut']=obj({'signedOut':B})
 route('/auth/register','post','Crear cuenta e iniciar sesión JWT en cookie HttpOnly','AuthResult','Credentials')
-route('/auth/login','post','Iniciar sesión JWT en cookie HttpOnly','AuthResult','Credentials')
+schemas['LoginCredentials']=obj({'username':{'type':'string','minLength':1,'maxLength':128},'password':{'type':'string','minLength':1,'maxLength':255}},['username','password'])
+route('/auth/login','post','Acceso único: credenciales IRIS a administración y cuentas del juego a partidas','AuthResult','LoginCredentials')
+schemas['User']['properties']['role']=enum('manager','admin')
 route('/auth/me','get','Cuenta autenticada','User')
 route('/auth/logout','post','Revocar sesión y borrar cookie','SignedOut')
 schemas['GameCatalog']=obj({'items':arr(ref('Club'))})
@@ -203,16 +205,32 @@ schemas['MatchEconomy']['properties'].update({'barModel':enum('concession'),'mod
 schemas['HireFinancialDirector']=obj({'candidateId':S,'version':I},['candidateId','version'])
 schemas['TicketPrice']=obj({'ticketPrice':{'type':'integer','minimum':0,'maximum':5000},'version':I},['ticketPrice','version'])
 route('/clubs/{clubId}/finances','get','Tesorería, financiero, acuerdos, campaña y previsión anual','FinancialView')
+schemas['SalaryBudget']=obj({k:N for k in ['year','version','percent','maxPercent','baseAnnualLimit','surplusAtBaseLimit','maxAdditionalAnnual','additionalAnnual','annualLimit','projectedIncome','otherAnnualCosts','currentAnnualPlayers','currentSurplus','surplusAtLimit','minimumReserve']})
+schemas['SalaryBudget']['properties']['provisional']=B
+schemas['FinancialView']['properties']['salaryBudget']=ref('SalaryBudget')
+schemas['SalaryBudgetUpdate']=obj({'version':I,'percent':{'type':'integer','minimum':0,'maximum':90}},['version','percent'])
+route('/clubs/{clubId}/salary-budget','put','Destinar superávit previsto a ampliar el límite salarial de la temporada','FinancialView','SalaryBudgetUpdate',key=True)
 route('/clubs/{clubId}/financial-director','post','Contratar o sustituir al financiero; gestión automática en septiembre','FinancialView','HireFinancialDirector',key=True)
 route('/matches/{matchId}/ticketing','get','Previsión de asistentes, taquilla y bar; disponibilidad de edición','Ticketing')
 schemas['Ticketing']=obj({'forecast':ref('MatchEconomy'),'editable':B})
 route('/matches/{matchId}/ticketing','put','Fijar precio en céntimos, en casa y antes del inicio el día del partido','Match','TicketPrice',key=True)
 paths['/staff-market']['get']['parameters'].append({'name':'role','in':'query','required':False,'schema':enum('head','forwards','backs','defense','attack','skills','fitness','academy'),'description':'Filtra por especialidad antes de ordenar por calidad y paginar.'})
+schemas['Club']['properties']['crestUrl']=S
+schemas['AdminClubList']=obj({'items':arr(ref('Club'))})
+schemas['AdminPlayerList']=obj({'items':arr(ref('Player'))})
+schemas['AdminClubUpdate']=obj({'version':I,'data':ref('Club')},['version','data'])
+schemas['AdminPlayerUpdate']=obj({'version':I,'data':ref('Player')},['version','data'])
+schemas['AdminNewPlayer']=obj({'data':ref('Player')},['data'])
+for entity,model in [('clubs','Club'),('players','Player')]:
+ route('/admin/'+entity,'get','Datos iniciales; sólo sesión administrativa IRIS','Admin'+model+'List')
+ route('/admin/'+entity+'/{id}','get','Registro inicial; sólo sesión administrativa IRIS',model)
+ route('/admin/'+entity+'/{id}','put','Guardar datos iniciales para nuevas partidas',model,'Admin'+model+'Update',key=True)
+route('/admin/players','post','Crear jugador inicial y asignarlo a un club existente','Player','AdminNewPlayer',key=True)
 for path,operations in paths.items():
  for op in operations.values():
   if path=='/health' or path in ['/auth/login','/auth/register']:
    op['security']=[]
-  if not path.startswith(('/auth/','/games','/game-catalog','/health')):
+  if not path.startswith(('/auth/','/admin/','/games','/game-catalog','/health')):
    op['parameters'].append({'name':'X-Game-Id','in':'header','required':True,'schema':S})
   op['responses']['401']={'description':'Sesión JWT ausente, inválida o caducada'}
   op['responses']['429']={'description':'Límite de intentos de acceso'}
@@ -233,7 +251,7 @@ schemas['Training']['properties'].update({'mode':enum('weekly','groups'),'weekly
 schemas['Training']['required']=[k for k in schemas['Training']['required'] if k!='groups']
 schemas['Training']['description']='Plan semanal: mode=weekly y weekly con siete días por categoría. Los grupos manuales se conservan por compatibilidad. Las sesiones se resuelven cada día por posición, edad, energía y calendario.'
 
-doc={'openapi':'3.1.0','info':{'title':'Quince · API local de Rugby Manager','version':'1.0.0','description':'Sesión JWT HS256 en cookie HttpOnly y partidas privadas seleccionadas con X-Game-Id. Importes en céntimos. GET listas con offset/limit, salvo eventos con afterSequence. Los PUT requieren version del GET; las claves de reintento devuelven la primera intención y no comparan cuerpos.'},'servers':[{'url':'http://localhost:5175/api/v1'},{'url':'http://localhost:8085/api/v1'}],'paths':paths,'security':[{'sessionJWT':[]}],'components':{'schemas':schemas,'securitySchemes':{'sessionJWT':{'type':'apiKey','in':'cookie','name':'rugby_session','description':'JWT HS256; también admite Authorization: Bearer para clientes API.'}}}}
+doc={'openapi':'3.1.0','info':{'title':'Quince · API local de Rugby Manager','version':'1.0.0','description':'Sesión JWT HS256 en cookie HttpOnly y partidas privadas seleccionadas con X-Game-Id. Importes en céntimos. GET listas con offset/limit, salvo eventos con afterSequence. Los PUT requieren version del GET; las claves de reintento devuelven la primera intención y no comparan cuerpos, salvo administración, que rechaza claves reutilizadas con otro contenido.'},'servers':[{'url':'http://localhost:5175/api/v1'},{'url':'http://localhost:8085/api/v1'}],'paths':paths,'security':[{'sessionJWT':[]}],'components':{'schemas':schemas,'securitySchemes':{'sessionJWT':{'type':'apiKey','in':'cookie','name':'rugby_session','description':'JWT HS256; también admite Authorization: Bearer para clientes API.'}}}}
 target=Path(__file__).resolve().parents[1]/'docs'/'openapi.json'
 target.write_text(json.dumps(doc,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 print(f'{len(paths)} rutas documentadas en {target}')

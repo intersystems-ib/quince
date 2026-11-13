@@ -45,7 +45,7 @@ Las integraciones que avanzan partidas deben ejecutarse en una instancia desecha
 El volumen `iris-data` conserva las partidas al detener o recrear contenedores. `./scripts/reset.ps1 -ConfirmDeleteAllRugbyData` elimina todos los datos del proyecto.
 
 - [Arquitectura](docs/ARQUITECTURA.md) y [auditoría](docs/INTEROPERABILIDAD.md).
-- [Acceso y partidas](docs/ACCESO-PARTIDAS.md).
+- [Acceso y partidas](docs/ACCESO-PARTIDAS.md) y [administración de datos iniciales](docs/ADMINISTRACION.md).
 - [Reglas](docs/REGLAS.md), [competición](docs/COMPETICION.md) y [temporadas](docs/TEMPORADAS-CONTRATOS.md).
 - [Jugadores](docs/PLANTILLAS-REALES.md), [calidad](docs/CALIDAD-EQUIPOS.md) y [cantera](docs/CANTERA.md).
 - [Entrenamiento](docs/ENTRENAMIENTO.md), [lesiones](docs/LESIONES.md), [estadísticas](docs/ESTADISTICAS.md) y [moral](docs/MORAL.md).

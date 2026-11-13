@@ -11,6 +11,7 @@ ClassMethod Paginate(a As %DynamicArray) As %DynamicObject
 ClassMethod Resolve(method As %String, resource As %String, id As %String, child As %String, pid As %String, b As %DynamicObject, key As %String) As %DynamicObject
 {
     if (resource="health")&&(method="GET") quit {"status":"ok","workerHeartbeat":($get(^RugbyWorkerHeartbeat))}
+    if resource="admin" quit ##class(Rugby.Service.Admin).Resolve(method,id,child,b,key)
     if resource="auth" quit ##class(Rugby.Service.Auth).Resolve(method,id,b)
     if (resource="game-catalog")&&(method="GET") quit {"items":(##class(Rugby.Service.Store).All("Club"))}
     if resource="games" {
@@ -113,6 +114,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
         if (child="friendly-invitations")&&(method="POST") quit ##class(Rugby.Service.FriendlyRequests).Respond(id,b.%Get("invitationId"),b,key)
         if (child="friendlies")&&(method="POST") quit ##class(Rugby.Service.Calendar).Create(id,b,key)
         if (child="training-plan")&&(method="PUT") quit ##class(Rugby.Service.Management).Training(id,b,key)
+        if (child="salary-budget")&&(method="PUT") quit ##class(Rugby.Service.SalaryBudget).Save(id,b,key)
         if (child="financial-director")&&(method="POST") quit ##class(Rugby.Service.Finance).Hire(id,b,key)
         if (child="staff")&&(method="POST") quit ##class(Rugby.Service.Staff).Hire(id,b,key)
         if (child="lineups")&&(method="POST") quit ##class(Rugby.Service.Management).SaveLineup("",b)

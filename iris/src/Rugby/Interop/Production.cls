@@ -12,6 +12,7 @@ XData ProductionDefinition
   <Item Name="Rivals.Process" ClassName="Rugby.Interop.Process.Rivals" PoolSize="0" Enabled="true"/>
   <Item Name="Rivals.Operation" ClassName="Rugby.Interop.Operation.Rivals" PoolSize="0" Enabled="true"/>
   <Item Name="Transfers.Operation" ClassName="Rugby.Interop.Operation.Transfers" PoolSize="0" Enabled="true"/>
+  <Item Name="Admin.Operation" ClassName="Rugby.Interop.Operation.Admin" PoolSize="0" Enabled="true"/>
   <Item Name="Access.Operation" ClassName="Rugby.Interop.Operation.Access" PoolSize="0" Enabled="true"/>
   <Item Name="Games.Operation" ClassName="Rugby.Interop.Operation.Games" PoolSize="0" Enabled="true"/>
   <Item Name="Finance.Operation" ClassName="Rugby.Interop.Operation.Finance" PoolSize="0" Enabled="true"/>
