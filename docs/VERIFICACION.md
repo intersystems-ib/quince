@@ -1,23 +1,17 @@
 # Verificación
 
-`./scripts/test.ps1` ejecuta los grupos de IRIS y compila el frontend. Los casos se revierten al terminar; las integraciones que avanzan partidas requieren una instancia desechable.
+`./scripts/test.ps1` ejecuta los 60 grupos de `Rugby.Test.Suite` y compila el frontend. Los casos de IRIS se ejecutan con reversión de datos al terminar. Las integraciones que crean o avanzan partidas requieren una instancia desechable.
 
-La suite reúne 57 grupos e incluye integración HTTP y revisión visual. La actualización de la partida existente ajusta 920 jugadores y conserva sus datos deportivos y económicos.
+La suite cubre competición, temporadas, alineación, entrenamiento, moral, lesiones, tarjetas, partidos, salarios, finanzas, mercado, seguridad e idempotencia. Entre sus comprobaciones se incluyen:
 
-La suite cubre competición, temporadas, alineación, entrenamiento, moral, lesiones, tarjetas, partidos, salarios, finanzas, mercado, seguridad e idempotencia. TalentScale verifica reducción proporcional, conservación de datos y futuras generaciones. FriendlyRequests verifica fines de semana, límite mensual, aceptación, rechazo, caducidad y reintentos.
+- Alineación: intercambios, disponibilidad, capitán, validación y penalizaciones de moral.
+- Contratos: duración, preferencias por edad, contraofertas, vencimientos iniciales, promociones, renovaciones y reintentos.
+- Competición: grupos de Copa, fechas, localías, bonus, eliminatorias, clasificación y generación de calendarios.
+- Entrenamiento y estadísticas: planes semanales, evolución por edad, acumulados por temporada y conciliación de acciones con el marcador.
+- Mercado: veinte agentes libres, reposición semanal de extranjeros, salidas por media, negociación y competencia entre clubes.
+- Personal: tres candidatos por especialidad, contratación, reposición de vacantes e historial de contratos.
+- Partidos: comandos individuales y múltiples, pausas, lesiones, tarjetas, estadísticas y persistencia del estado.
 
-Las integraciones usan `RUGBY_API_BASE` y guardan resultados en `RUGBY_TEST_ARTIFACTS`. Las capturas y archivos temporales se mantienen fuera del proyecto. La auditoría de acciones se consulta en IRIS.
+Las integraciones HTTP utilizan `RUGBY_API_BASE` y guardan resultados en `RUGBY_TEST_ARTIFACTS`. Las capturas y archivos temporales se almacenan fuera del proyecto. La auditoría de operaciones se consulta en el visor de mensajes de IRIS.
 
-El plan semanal se verificó durante catorce avances diarios: repetición, ejercicios por línea, cantera independiente, recuperación y guardados sin duplicados. La revisión visual cubrió edición, guardado y próximas sesiones.
-
-Alineación: intercambios por dos clics, sustitución segura de lesionados, capitán, validación automática al guardar y moral reversible sin acumulaciones ni cambios de atributos.
-
-Contratos: duración de 1–5 temporadas, preferencias por edad, contraofertas, reintentos y conservación de la fecha acordada al firmar. Verificados también por API y en pantalla.
-
-Copa: grupos y fechas FER, localías, bonus, eliminatorias, doblete, plazas de la siguiente temporada y adopción sin modificar resultados previos. Comprobados el calendario, un partido completo por API y la generación de Copa antes de Liga al cerrar la temporada.
-
-AttributeProgress verifica ganancias, descenso por edad, reintentos, reconstrucción histórica, cambios de club y separación por temporadas.
-
-MatchStatistics comprueba atribución individual, conciliación con marcador y totales, minutos, reintentos, historial tras traspasos y registros antiguos parciales.
-
-StaffMarket comprueba tres candidatos por especialidad, reposición tras contratar, eliminación de despedidos y conservación de contratos y empleados activos.
+Las comprobaciones visuales abarcan alineación, entrenamiento, contratos, calendario, finanzas y controles del partido en escritorio y móvil. Las mediciones de rendimiento y su metodología se encuentran en [RENDIMIENTO-ARTICULO.json](RENDIMIENTO-ARTICULO.json).

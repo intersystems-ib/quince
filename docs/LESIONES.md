@@ -23,4 +23,4 @@ Las bajas ocurren en partidos y entrenamientos; influyen edad, fatiga, intensida
 
 La cruz roja identifica lesionados. Los suplentes de baja pasan automáticamente a «No disponibles»; los titulares deben ser reemplazados. Al recuperarse, el jugador conserva su historial y pasa al banquillo si hay menos de ocho suplentes; si está completo, aparece en «No convocados». Si sigue figurando como titular, conserva su puesto.
 
-Durante la baja recupera energía y no entrena atributos. Una lesión propia pausa el partido; se reanuda eligiendo velocidad. El rival usa las mismas reglas de lesiones y disponibilidad.
+Durante la baja recupera energía y no entrena atributos. Una lesión propia pausa el partido; se reanuda eligiendo velocidad. Durante el encuentro se identifica al lesionado; su diagnóstico y duración de baja se consultan en la ficha y las pantallas de gestión. El rival usa las mismas reglas de lesiones y disponibilidad.

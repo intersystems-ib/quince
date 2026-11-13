@@ -1,8 +1,8 @@
 # Equipaciones
 
-Colores facilitados por el usuario. El visitante usa la segunda camiseta si hay conflicto; los diseños se aplican al campo, marcador y directorio.
+Cada club dispone de primera y segunda equipación. El visitante usa la segunda camiseta si hay conflicto de colores. Los diseños se muestran en el campo, el marcador y el directorio.
 
-| Club | Primera equipación | Segunda equipación elegida |
+| Club | Primera equipación | Segunda equipación |
 |---|---|---|
 | Complutense Cisneros | Azul oscuro y azul claro a franjas | Blanco con ribetes azules |
 | VRAC Quesos Entrepinares | Azul y blanco a franjas horizontales | Rosa |

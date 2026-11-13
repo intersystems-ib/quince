@@ -1,8 +1,8 @@
 # Calidad de jugadores
 
-Se reduce un 25 % cada uno de los diecisiete atributos de todos los jugadores, incluidos cantera y agentes libres. Se mantienen precisión, diferencias entre clubes, energía, moral, salarios y lesiones. La aplicación es única por partida; las futuras generaciones usan la misma escala. Es una calibración del juego para dejar espacio a ligas de mayor nivel.
+La calidad de jugadores utiliza un factor de escala de 0,75 sobre las referencias de los diecisiete atributos. Primer equipo, cantera y agentes libres comparten esa escala y mantienen decimales internos. Energía, moral, salarios y lesiones tienen sus propias reglas.
 
-La referencia por club combina la clasificación actual y, donde existe, un 65 % de peso histórico de 2025/26. Datos y fuentes: `../iris/data/team-quality.json`. Medias iniciales aproximadas tras el ajuste:
+La referencia por club combina la clasificación actual y, donde existe, un 65 % de peso histórico de 2025/26. Datos y fuentes: `../iris/data/team-quality.json`. Medias iniciales aproximadas:
 
 | División | Club | Puesto actual | Puesto histórico Honor | Media primer equipo | Media cantera |
 |---|---|---:|---:|---:|---:|

@@ -13,4 +13,4 @@ Patrocinios y bar duran de una a tres temporadas y se cobran por mensualidades d
 
 Las ayudas completan los otros ingresos previstos para cubrir nóminas, fichas y viajes. El margen objetivo depende del financiero: aproximadamente −0,25 % con calidad 35 y hasta +3 % con 100. Contratar después puede generar déficit; las ayudas concedidas no aumentan con cada fichaje.
 
-Los partidos generan taquilla según precio, asistencia y abonados, limitada al aforo. Los amistosos la reparten al 50 %. Los cobros históricos se conservan. Las correcciones de financiación de partidas antiguas se pagan en vencimientos futuros.
+Los partidos generan taquilla según precio, asistencia y abonados, limitada al aforo. Los amistosos la reparten al 50 %.

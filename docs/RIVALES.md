@@ -2,7 +2,7 @@
 
 Los diecinueve clubes automáticos actúan al avanzar cada día, con decisiones reproducibles por semilla. Gestionan alineaciones, entrenamientos, cansancio, cantera, renovaciones, empleados y agentes libres.
 
-Los planes priorizan posición, carencias y recuperación. La cantera mantiene veinte jóvenes y usa su entrenador. Las revisiones técnicas y de plantilla son periódicas; no se sustituyen equipos completos de una vez.
+Los planes priorizan posición, carencias y recuperación. La cantera mantiene veinte jóvenes y usa su entrenador. Las revisiones técnicas y de plantilla son periódicas.
 
 Límites por temporada: dos fichajes ordinarios, dos promociones y hasta seis recambios médicos; máximo 28 séniores o 30 con cobertura de lesiones. Las bajas largas se revisan diariamente. Las ofertas compiten por salario y clasificación y respetan tesorería y reserva salarial.
 
