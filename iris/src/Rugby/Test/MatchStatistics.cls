@@ -15,7 +15,7 @@ ClassMethod Run()
             do ..Assert(r.complete&&(r.playedSeconds=p.playedSeconds)&&(r.stats.%ToJSON()=##class(Rugby.Service.MatchStatistics).Entry(p,f,m.id).stats.%ToJSON()),"Final player snapshot is persisted exactly")
             for key="metres","tackles","tries","conversions","penaltyGoals","drops","passes","kicks","turnovers" { do sums.%Set(key,sums.%Get(key,0)+p.stats.%Get(key,0)) }
             set score=score+p.stats.points
-            do ..Assert((p.playedSeconds>=0)&&(p.playedSeconds<=4800)&&(p.stats.conversions<=p.stats.conversionAttempts),"Minutes and kick counters are bounded")
+            do ..Assert((p.playedSeconds>=0)&&(p.playedSeconds<=m.clock)&&(p.stats.conversions<=p.stats.conversionAttempts),"Minutes and kick counters are bounded")
             do ##class(Rugby.Service.Store).Put("MatchPlayer",p)
         }
         for key="metres","tackles","tries","conversions","penaltyGoals","drops","passes","kicks","turnovers" { do ..Assert($zabs(sums.%Get(key)-team.%Get(key))<.000001,"Individual counters reconcile to team total: "_side_" "_key) }

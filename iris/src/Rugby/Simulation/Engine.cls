@@ -1,7 +1,7 @@
 Class Rugby.Simulation.Engine Extends %RegisteredObject
 {
 Parameter STEP = 20;
-Parameter VERSION = "1.2.0";
+Parameter VERSION = "1.3.0";
 ClassMethod Clamp(v As %Numeric, low As %Numeric = 0.08, high As %Numeric = 0.92) As %Numeric
 {
     quit $select(v<low:low,v>high:high,1:v)
@@ -42,8 +42,9 @@ ClassMethod Event(m As %DynamicObject, type As %String, side As %String, text As
 ClassMethod Step(m As %DynamicObject)
 {
     if (m.status="finished")||(m.status="scheduled")||(m.%Get("speed",1)=0) quit
-    if $listfind($listbuild("1.0.0","1.1.0"),m.engineVersion) set m.previousEngineVersion=m.engineVersion,m.engineVersion=..#VERSION
+    if $listfind($listbuild("1.0.0","1.1.0","1.2.0"),m.engineVersion) set m.previousEngineVersion=m.engineVersion,m.engineVersion=..#VERSION
     if m.engineVersion'=..#VERSION do ##class(Rugby.Service.Store).Fail(409,"ENGINE_VERSION","La partida requiere una versión distinta del motor.")
+    if m.%Get("periodEndPending",0) { do ##class(Rugby.Simulation.PeriodEnd).Close(m) quit }
     do m.%Remove("actionContext")
     do ##class(Rugby.Simulation.Discipline).Returns(m)
     if m.status="halftime" {
@@ -60,15 +61,18 @@ ClassMethod Step(m As %DynamicObject)
     set side=m.possession,other=$select(side="home":"away",1:"home"),players=m.%Get(side_"Players"),defenders=m.%Get(other_"Players"),t=m.%Get(side_"Tactic"),dt=m.%Get(other_"Tactic"),stats=m.%Get(side_"Stats"),ds=m.%Get(other_"Stats"),p=..Actor(m,players),oldX=m.x,oldY=m.y,points=0
     set direction=$select((side="home")=(m.period=1):1,1:-1),progress=$select(direction=1:m.x,1:100-m.x)
     set phase=m.phase,type="run",text="",pid=p.playerId
-    set end=$select(m.period=1:2400,1:4800)
-    set elapsed=..Clamp(m.clock+..#STEP,0,end)-m.clock,m.clock=m.clock+elapsed,stats.actions=stats.actions+1,stats.possessionSeconds=stats.possessionSeconds+..#STEP,p.stats.actions=p.stats.actions+1
+    set end=##class(Rugby.Simulation.PeriodEnd).Limit(m),expired=m.clock>=end,gap=m.%Get(side_"Score")-m.%Get(other_"Score")
+    set elapsed=..#STEP,m.clock=m.clock+elapsed,stats.actions=stats.actions+1,stats.possessionSeconds=stats.possessionSeconds+..#STEP,p.stats.actions=p.stats.actions+1
     for team="home","away" { set participants=m.%Get(team_"Players") for i=0:1:participants.%Size()-1 { set q=participants.%Get(i) if q.status="field" set q.playedSeconds=q.%Get("playedSeconds",0)+elapsed } }
     set contest=##class(Rugby.Simulation.Performance).Contest(players,defenders,phase,p),m.actionContext=contest,attack=contest.attack,defense=contest.defense
     set localDefense=##class(Rugby.Simulation.Performance).Unit(defenders,"all",p,3)
     if (phase'="scrum")&&(phase'="lineout") set defense=defense+$select(dt.defense="high":5,dt.defense="low":-4,1:0)
     set chance=..Clamp(.59+((attack-defense)/180)+((..Rating(p,"decisions")-55)/350)+$select(t.tempo="fast":.025,t.tempo="slow":-.015,1:0))
     set contest.defense=defense,contest.successChance=chance
-    if phase="conversion" {
+    if expired&&(gap>0)&&$listfind($listbuild("open","ruck","stoppage"),phase) {
+        set type="endKick",m.y=0,m.phase="lineout",text=p.name_" echa el balón fuera para cerrar la parte con ventaja y el tiempo cumplido.",stats.kicks=stats.kicks+1
+        do ##class(Rugby.Service.MatchStatistics).Add(p,"kicks")
+    } elseif phase="conversion" {
         do ##class(Rugby.Service.MatchStatistics).Add(p,"conversionAttempts")
         set type="conversion",contest.successChance=..Clamp(.52+(..Rating(p,"kicking")/250)-($zabs(m.y-35)/180)),success=..Random(m)<contest.successChance
         if success set points=2,stats.conversions=stats.conversions+1
@@ -129,7 +133,8 @@ ClassMethod Step(m As %DynamicObject)
         }
     } else {
         set r=..Random(m),kick=$select(t.style="kicking":.30,t.style="hands":.06,1:.15)
-        if (progress>78)&&(r<.07) {
+        if expired&&(gap<=0) set kick=0
+        if (progress>78)&&(r<.07)&&(('expired)||(gap>=-3)) {
             do ##class(Rugby.Service.MatchStatistics).Add(p,"dropAttempts")
             set type="drop",success=..Random(m)<..Clamp(.12+(..Rating(p,"kicking")/230))
             if success set points=3,stats.drops=stats.drops+1
@@ -183,20 +188,12 @@ ClassMethod Step(m As %DynamicObject)
         }
     }
     do ..Event(m,type,side,text,points,oldX,oldY,pid)
+    set endPart=##class(Rugby.Simulation.PeriodEnd).Dead(m,type)
     do ##class(Rugby.Service.Injuries).MatchTick(m,elapsed)
     do ##class(Rugby.Simulation.Discipline).Returns(m)
-    if (m.clock>=end)&&(m.phase'="conversion") {
-        if m.period=1 {
-            set m.status="halftime",m.phase="stoppage"
-            for team="home","away" { set a=m.%Get(team_"Players") for i=0:1:a.%Size()-1 { set q=a.%Get(i) if q.status="field" set q.energy=..Clamp(q.energy+7,0,100) } }
-            do ..Event(m,"halftime","","Descanso. Recuperación limitada; se completó la última fase del periodo.",0,m.x,m.y,"")
-            do ##class(Rugby.Service.Matches).Pause(m,"halftime","Descanso. Revisa los cambios y la táctica. Selecciona una velocidad para comenzar la segunda parte.")
-        } else {
-            set m.status="finished",m.phase="stoppage"
-            do ##class(Rugby.Service.Matches).PlayoffWinner(m)
-            do ..Event(m,"fulltime","","Final del encuentro. Resultado confirmado.",0,m.x,m.y,"")
-            do ##class(Rugby.Service.Matches).Settle(m)
-        }
+    if endPart {
+        if m.speed=0 { set m.periodEndPending=1 }
+        else { do ##class(Rugby.Simulation.PeriodEnd).Close(m) }
     }
 }
 }

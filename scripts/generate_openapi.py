@@ -231,6 +231,7 @@ schemas['PreparationMeeting']=obj({'fixtureId':S,'date':S,'day':I,'matchDate':S,
 schemas['PreparationMeetings']=obj({'items':arr(ref('PreparationMeeting'))})
 schemas['PreparationReport']=obj({'fixtureId':S,'meeting':ref('PreparationMeeting'),'clubId':S,'ownName':S,'opponentId':S,'opponentName':S,'lineupId':S,'lineupName':S,'lineupVersion':I,'lineupLocked':B,'reportToken':S,'currentTactic':ref('Tactic'),'ready':B,'aspects':arr({'type':'object'}),'groups':{'type':'object'},'advantages':arr(S),'risks':arr(S),'confidence':{'type':'object'},'recommendation':{'type':'object'},'alternative':{'type':'object'},'lastApplied':{'type':'object'},'validationErrors':arr(S)})
 schemas['PreparationApply']=obj({'lineupId':S,'lineupVersion':I,'reportToken':S,'choice':enum('main','alternative','custom'),'tactic':ref('Tactic')},['lineupId','lineupVersion','reportToken','choice'])
+schemas['Match']['properties'].update({'firstHalfAddedSeconds':I,'secondHalfAddedSeconds':I})
 schemas['SeasonEvent']=obj({'id':S,'type':enum('opening','closure'),'seasonYear':I,'date':{'type':'string','format':'date'},'day':I,'title':S,'completed':B},['id','type','seasonYear','date','day','title','completed'])
 schemas['SeasonEvents']=obj({'items':arr(ref('SeasonEvent'))},['items'])
 route('/clubs/{clubId}/season-events','get','Apertura del 1 de septiembre y cierre del 30 de junio','SeasonEvents')

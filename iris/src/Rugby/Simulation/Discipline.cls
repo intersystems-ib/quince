@@ -39,7 +39,7 @@ ClassMethod Card(m As %DynamicObject, side As %String, pid As %String, color As 
 }
 ClassMethod Returns(m As %DynamicObject)
 {
-    if (m.status="finished")||(m.clock>=4800) quit
+    if m.status="finished" quit
     for side="home","away" {
         set players=m.%Get(side_"Players")
         for i=0:1:players.%Size()-1 {

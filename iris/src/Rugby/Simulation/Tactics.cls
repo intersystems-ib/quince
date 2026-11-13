@@ -84,7 +84,7 @@ ClassMethod Decide(own As %DynamicArray, opponent As %DynamicArray, clock As %In
 ClassMethod Adapt(m As %DynamicObject, side As %String, initial As %Boolean = 0)
 {
     if 'initial&&(m.clock<m.%Get("aiNextTacticalReview",0)) quit
-    set other=$select(side="home":"away",1:"home"),decision=..Decide(m.%Get(side_"Players"),m.%Get(other_"Players"),m.clock,m.%Get(side_"Score")-m.%Get(other_"Score"),m.%Get(other_"Tactic")),current=m.%Get(side_"Tactic")
+    set other=$select(side="home":"away",1:"home"),decision=..Decide(m.%Get(side_"Players"),m.%Get(other_"Players"),##class(Rugby.Simulation.PeriodEnd).Display(m),m.%Get(side_"Score")-m.%Get(other_"Score"),m.%Get(other_"Tactic")),current=m.%Get(side_"Tactic")
     set decision.side=side,m.aiTacticalAssessment=decision,m.aiNextTacticalReview=m.clock+600,m.tacticalVersion=..#VERSION
     if initial { do m.%Set(side_"Tactic",decision.tactic) quit }
     set chosen=decision.tactic

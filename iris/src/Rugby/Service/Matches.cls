@@ -116,7 +116,7 @@ ClassMethod Command(id As %String, b As %DynamicObject, key As %String, side As 
     set reason=..CheckCommand(m,b,side)
     if reason'="" do ##class(Rugby.Service.Store).Fail(422,"INVALID_COMMAND",reason)
     set m.commandSequence=m.commandSequence+1
-    set cmd={"id":(cid),"matchId":(id),"clubId":(m.%Get(side_"Id")),"side":(side),"type":(b.type),"parameters":(b),"idempotencyKey":(key),"sequence":(m.commandSequence),"status":"pending","receivedClock":(m.clock),"appliedClock":0,"reason":"","source":(source)}
+    set cmd={"id":(cid),"matchId":(id),"clubId":(m.%Get(side_"Id")),"side":(side),"type":(b.type),"parameters":(b),"idempotencyKey":(key),"sequence":(m.commandSequence),"status":"pending","receivedClock":(m.clock),"receivedPeriod":(m.period),"appliedClock":0,"reason":"","source":(source)}
     do ##class(Rugby.Service.Store).Put("MatchCommand",cmd)
     if '$isobject(current) do ##class(Rugby.Service.Store).Put("Match",m)
     quit cmd
@@ -142,7 +142,7 @@ ClassMethod Commands(m As %DynamicObject, speedOnly As %Boolean = 0)
                 set changes=b.%Get("changes",[{"outId":(b.%Get("outId")),"inId":(b.%Get("inId"))}])
                 for i=0:1:changes.%Size()-1 { do ..Substitute(m,c.side,changes.%Get(i)) }
             }
-            set c.status="applied",c.appliedClock=m.clock
+            set c.status="applied",c.appliedClock=m.clock,c.appliedPeriod=m.period
             set text=$select(c.type="speed":$select(b.speed=0:"Partido en pausa.",1:"Velocidad x"_b.speed),c.type="tactic":"Cambio táctico confirmado.",1:"Sustitución confirmada.")
             if (c.type="substitution")&&b.%IsDefined("changes") set text=$select(b.changes.%Size()=1:"Sustitución confirmada.",1:b.changes.%Size()_" sustituciones confirmadas.")
             if (c.type="tactic")&&(c.source="ai")&&$isobject(b.%Get("assessment")) set text="El rival ajusta su táctica. "_b.assessment.reason

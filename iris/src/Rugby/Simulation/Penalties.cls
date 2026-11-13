@@ -20,7 +20,7 @@ ClassMethod Runner(players As %DynamicArray) As %DynamicObject
 }
 ClassMethod Decide(m As %DynamicObject, kicker As %DynamicObject) As %DynamicObject
 {
-    set side=m.possession,other=$select(side="home":"away",1:"home"),t=m.%Get(side_"Tactic"),priority=t.%Get("penaltyPriority","auto"),shot=..Shot(m,kicker),choice="touch",reason="Ganar territorio y conservar el saque de lateral.",gap=m.%Get(side_"Score")-m.%Get(other_"Score"),remaining=4800-m.clock
+    set side=m.possession,other=$select(side="home":"away",1:"home"),t=m.%Get(side_"Tactic"),priority=t.%Get("penaltyPriority","auto"),shot=..Shot(m,kicker),choice="touch",reason="Ganar territorio y conservar el saque de lateral.",gap=m.%Get(side_"Score")-m.%Get(other_"Score"),remaining=4800+m.%Get("firstHalfAddedSeconds",0)-m.clock
     if priority="posts" {
         if shot.reachable { set choice="posts",reason="Prioridad de asegurar puntos con un tiro alcanzable." }
         else { set reason="El tiro queda fuera del alcance razonable; se busca la touche." }

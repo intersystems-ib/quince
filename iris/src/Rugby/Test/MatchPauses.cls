@@ -25,12 +25,12 @@ ClassMethod Run()
     do ##class(Rugby.Service.Store).Put("Match",m)
     set incoming=m.homePlayers.%Get(15),cmd=##class(Rugby.Service.Matches).Command(m.id,{"type":"substitution","outId":(m.homePlayers.%Get(0).playerId),"inId":(incoming.playerId)},"injury-sub"),ok=##class(Rugby.Job.Worker).Cycle(m.id,10),m=##class(Rugby.Service.Store).Get("Match",m.id)
     do ..Assert((m.speed=0)&&(m.clock=clock)&&(m.homeSubs=1),"Injury substitutions can be confirmed while paused")
-    set m.speed=60,m.pauseReason="",m.credit=150,m.clock=2380,m.phase="stoppage"
+    set m.speed=60,m.pauseReason="",m.credit=150,m.clock=2380,m.phase="conversion"
     do ##class(Rugby.Service.Store).Put("Match",m)
     set ok=##class(Rugby.Job.Worker).Cycle(m.id,2),m=##class(Rugby.Service.Store).Get("Match",m.id)
     do ..Assert((m.status="halftime")&&(m.clock=2400)&&(m.speed=0)&&(m.credit=0),"Halftime stops a fast cycle before any second-half action")
     set cmd=##class(Rugby.Service.Matches).Command(m.id,{"type":"speed","speed":5},"second-half"),ok=##class(Rugby.Job.Worker).Cycle(m.id,100),ok=##class(Rugby.Job.Worker).Cycle(m.id,4),m=##class(Rugby.Service.Store).Get("Match",m.id)
-    do ..Assert((m.status="second")&&(m.period=2)&&(m.clock=2400),"A new speed starts the second half explicitly")
+    do ..Assert((m.status="second")&&(m.period=2)&&(m.clock=(2400+m.%Get("firstHalfAddedSeconds",0))),"A new speed starts the second half explicitly")
     set hit=##class(Rugby.Service.Injuries).Hit(m,"away",m.awayPlayers.%Get(0))
     do ..Assert(hit&&(m.speed=5),"An opponent injury does not pause the managed game")
     set own=##class(Rugby.Service.Store).ManagedClub(),%RugbyManagedClub=m.awayId,hit=##class(Rugby.Service.Injuries).Hit(m,"away",m.awayPlayers.%Get(1)),%RugbyManagedClub=own

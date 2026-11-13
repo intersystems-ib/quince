@@ -9,7 +9,7 @@ ClassMethod Run(only As %String = "")
     lock +^RugbyWrite:15
     if '$test { write "TESTS FAILED: busy",! quit }
     set failures=0
-    for name="FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
+    for name="PeriodEnd","FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
         if (only'="")&&(name'=only) continue
         try {
             if name'="Concurrency" tstart
@@ -25,6 +25,7 @@ ClassMethod Run(only As %String = "")
     lock -^RugbyWrite
     write $select(failures:"TESTS FAILED: "_failures,1:"ALL TESTS PASSED"),!
 }
+ClassMethod PeriodEnd() { do ##class(Rugby.Test.PeriodEnd).Run() }
 ClassMethod FundingReduction() { do ##class(Rugby.Test.FundingReduction).Run() }
 ClassMethod SeasonCalendar() { do ##class(Rugby.Test.SeasonCalendar).Run() }
 ClassMethod PenaltyPriority() { do ##class(Rugby.Test.PenaltyPriority).Run() }
@@ -154,7 +155,7 @@ ClassMethod Commands()
 ClassMethod Finish(m As %DynamicObject) As %DynamicObject
 {
     set last=0
-    for n=1:1:250 {
+    for n=1:1:500 {
         quit:m.status="finished"
         if m.speed=0 set m.speed=20
         do ##class(Rugby.Simulation.Engine).Step(m)
@@ -164,8 +165,8 @@ ClassMethod Finish(m As %DynamicObject) As %DynamicObject
         for side="home","away" { set a=m.%Get(side_"Players"),on=0 for j=0:1:a.%Size()-1 { set p=a.%Get(j) do ..Assert((p.energy>=0)&&(p.energy<=100),"Energy bounds") if $listfind($listbuild("field","sinBin","sentOff"),p.status)||((p.status="injured")&&('p.%Get("substituted",0))) set on=on+1 } do ..Assert(on=15,"Fifteen positions accounted for, including injuries and disciplinary absences") }
         do ##class(Rugby.Service.Store).Put("Match",m)
     }
-    do ..Assert(m.status="finished","Terminates within 250 steps")
-    do ..Assert((m.clock=4800)&&(m.period=2),"Two forty minute periods")
+    do ..Assert(m.status="finished","Terminates within 500 steps")
+    do ..Assert((m.clock>=##class(Rugby.Simulation.PeriodEnd).Limit(m))&&(m.period=2),"Two full periods plus any added time")
     quit m
 }
 ClassMethod Engine()
@@ -198,7 +199,7 @@ ClassMethod Speed()
         tstart
         set m=..Build(593),m.speed=speed
         do ##class(Rugby.Service.Store).Put("Match",m)
-        for n=1:1:250 {
+        for n=1:1:500 {
             quit:m.status="finished"
             if m.speed=0 { set m.speed=speed do ##class(Rugby.Service.Store).Put("Match",m) }
             do ..Assert(##class(Rugby.Job.Worker).Cycle(m.id,20/speed),"Worker obtained lock")

@@ -21651,6 +21651,12 @@
           },
           "venue": {
             "$ref": "#/components/schemas/Stadium"
+          },
+          "firstHalfAddedSeconds": {
+            "type": "integer"
+          },
+          "secondHalfAddedSeconds": {
+            "type": "integer"
           }
         },
         "required": [
