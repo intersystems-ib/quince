@@ -3,7 +3,12 @@ Class Rugby.Service.Payroll Extends %RegisteredObject
 Parameter VERSION = "3.0.0";
 Parameter MARKETLIMIT = 3;
 ClassMethod Active() As %Boolean { quit $get(^RugbyWorld(##class(Rugby.Service.Store).Game(),"payrollVersion"))=..#VERSION }
-ClassMethod Budget(club As %String) As %Integer { quit ##class(Rugby.Service.Finance).Funding(##class(Rugby.Service.Store).Get("Club",club)) }
+ClassMethod Budget(club As %String) As %Integer
+{
+    // Salary calibration keeps its fixed reference when income assumptions change.
+    set budget=##class(Rugby.Service.Finance).Budget(##class(Rugby.Service.Store).Get("Club",club)),grants=(budget*.2425)\1,members=((budget*.1175)\15000)*15000
+    quit 8000000+grants+members
+}
 ClassMethod BaseAnnualCap(club As %String) As %Integer
 {
     set funding=..Budget(club),reference=##class(Rugby.Service.Finance).Budget(##class(Rugby.Service.Store).Get("Club",club)),room=+$justify((reference*.85)-(funding*.18)-(reference*.03)-1650000,0,0),limit=+$justify(reference*.65,0,0)

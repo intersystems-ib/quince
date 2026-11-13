@@ -73,6 +73,6 @@ ClassMethod Run()
     set m=##class(Rugby.Test.Suite).Build(593),m.phase="scrum",m.possession="home",m.engineVersion="1.0.0"
     do ##class(Rugby.Simulation.Engine).Step(m)
     set e=##class(Rugby.Service.Store).Get("MatchEvent",m.id_"-"_$translate($justify(m.sequence,6)," ","0"))
-    do ..Assert((m.engineVersion="1.1.0")&&(e.result.contest.profile="scrum")&&(e.result.contest.attackers.%Size()=8),"Existing checkpoints continue and audit the actual units and values")
+    do ..Assert((m.engineVersion=##class(Rugby.Simulation.Engine).#VERSION)&&(e.result.contest.profile="scrum")&&(e.result.contest.attackers.%Size()=8),"Existing checkpoints continue and audit the actual units and values")
 }
 }

@@ -1,7 +1,7 @@
 Class Rugby.Simulation.Engine Extends %RegisteredObject
 {
 Parameter STEP = 20;
-Parameter VERSION = "1.1.0";
+Parameter VERSION = "1.2.0";
 ClassMethod Clamp(v As %Numeric, low As %Numeric = 0.08, high As %Numeric = 0.92) As %Numeric
 {
     quit $select(v<low:low,v>high:high,1:v)
@@ -42,7 +42,7 @@ ClassMethod Event(m As %DynamicObject, type As %String, side As %String, text As
 ClassMethod Step(m As %DynamicObject)
 {
     if (m.status="finished")||(m.status="scheduled")||(m.%Get("speed",1)=0) quit
-    if m.engineVersion="1.0.0" set m.previousEngineVersion=m.engineVersion,m.engineVersion=..#VERSION
+    if $listfind($listbuild("1.0.0","1.1.0"),m.engineVersion) set m.previousEngineVersion=m.engineVersion,m.engineVersion=..#VERSION
     if m.engineVersion'=..#VERSION do ##class(Rugby.Service.Store).Fail(409,"ENGINE_VERSION","La partida requiere una versión distinta del motor.")
     do m.%Remove("actionContext")
     do ##class(Rugby.Simulation.Discipline).Returns(m)
@@ -75,7 +75,9 @@ ClassMethod Step(m As %DynamicObject)
         if success do ##class(Rugby.Service.MatchStatistics).Add(p,"conversions")
         set text=$select(success:"Transformación entre palos. Dos puntos más.",1:"La transformación se marcha fuera."),m.possession=other,m.x=50,m.y=35,m.phase="restart"
     } elseif phase="restart" {
-        set type="kickoff",m.x=..Clamp(50+(direction*(15+(..Random(m)*12))),0,100),m.y=15+(..Random(m)*40),m.phase="open",m.possession=other,text="Reinicio largo. El receptor asegura la posesión."
+        set drop=m.%Get("restartKind")="drop22",origin=$select(drop:$select(direction=1:22,1:78),1:50)
+        set type=$select(drop:"dropOut22",1:"kickoff"),m.x=..Clamp(origin+(direction*(15+(..Random(m)*12))),0,100),m.y=15+(..Random(m)*40),m.phase="open",m.possession=other,text=$select(drop:"Saque de 22 tras el golpe a palos fallado. El rival recibe.",1:"Reinicio largo. El receptor asegura la posesión.")
+        do m.%Remove("restartKind")
     } elseif (phase="scrum")||(phase="lineout") {
         set skill=$select(phase="scrum":"scrum",1:"lineout"),type=phase
         set contest.successChance=..Clamp(.58+((attack-defense)/160)),win=..Random(m)<contest.successChance
@@ -85,14 +87,46 @@ ClassMethod Step(m As %DynamicObject)
         if 'win do ##class(Rugby.Service.MatchStatistics).Credit(##class(Rugby.Simulation.Performance).Unit(defenders,"forwards"),"turnovers",skill)
         set text=$select(phase="scrum":"Melé",1:"Touche")_$select(win:" ganada por el equipo que introduce.",1:" robada por el rival."),m.phase="open",m.y=35
     } elseif phase="penalty" {
-        set type="penalty",stats.penalties=stats.penalties+1
-        if progress>55 {
+        set type="penalty",stats.penalties=stats.penalties+1,decision=##class(Rugby.Simulation.Penalties).Decide(m,p),contest.penaltyDecision=decision
+        if decision.choice="posts" {
             do ##class(Rugby.Service.MatchStatistics).Add(p,"penaltyAttempts")
-            set contest.successChance=..Clamp(.35+(..Rating(p,"kicking")/170)-((100-progress)/180)),success=..Random(m)<contest.successChance,type="penaltyGoal"
+            set contest.successChance=decision.successChance,success=..Random(m)<contest.successChance,type="penaltyGoal"
             if success set points=3,stats.penaltyGoals=stats.penaltyGoals+1
             if success do ##class(Rugby.Service.MatchStatistics).Add(p,"penaltyGoals")
-            set text=$select(success:"Golpe a palos convertido. Tres puntos.",1:"El golpe a palos no encuentra su objetivo."),m.phase="restart",m.x=50,m.y=35,m.possession=other
-        } else { set m.x=..Clamp(m.x+(direction*22),2,98),m.y=0,m.phase="lineout",text="Golpe de castigo. Patada a touche para ganar terreno." }
+            set text=$select(success:"Golpe a palos convertido. Tres puntos.",1:"El golpe a palos sale fuera por la zona de marca. Saque de 22 para el rival."),m.phase="restart",m.x=$select(success:50,direction=1:78,1:22),m.y=35,m.possession=other
+            if 'success set m.restartKind="drop22"
+        } elseif decision.choice="quick" {
+            set runner=##class(Rugby.Simulation.Penalties).Runner(players)
+            if $isobject(runner) {
+                if p.playerId'=runner.playerId { set p.stats.actions=p.stats.actions-1,runner.stats.actions=runner.stats.actions+1 }
+                set p=runner,pid=p.playerId
+            }
+            set contest=##class(Rugby.Simulation.Performance).Contest(players,defenders,"open",p),contest.penaltyDecision=decision,m.actionContext=contest,contest.successChance=..Clamp(.68+((contest.attack-contest.defense)/180)),success=..Random(m)<contest.successChance
+            do ##class(Rugby.Service.MatchStatistics).Add(p,"carries")
+            if success {
+                set gain=3+(..Random(m)*8)+(##class(Rugby.Simulation.Performance).Skill(p,"carry")/20),m.x=..Clamp(m.x+(direction*gain),0,100),m.y=..Clamp(m.y,1,69),metres=$zabs(m.x-oldX),stats.metres=stats.metres+metres,type="penaltyQuick",m.phase="ruck",text=p.name_" juega rápido el golpe y gana "_(metres\1)_" metros."
+                do ##class(Rugby.Service.MatchStatistics).Add(p,"metres",metres)
+                set ds.tackles=ds.tackles+1
+                do ##class(Rugby.Service.MatchStatistics).Credit(##class(Rugby.Simulation.Performance).Unit(defenders,"all",p,3),"tackles")
+                if $select(direction=1:m.x,1:100-m.x)>=100 {
+                    set type="try",points=5,stats.tries=stats.tries+1,m.phase="conversion",text="¡Ensayo de "_p.name_" tras jugar rápido el golpe!"
+                    do ##class(Rugby.Service.MatchStatistics).Add(p,"tries")
+                }
+            } else {
+                set m.possession=other
+                if ..Random(m)<.35 {
+                    set type="knockOn",m.phase="scrum",text=p.name_" juega rápido, pero comete un avant. Melé para el rival."
+                    do ##class(Rugby.Service.MatchStatistics).Add(p,"knockOns")
+                } else {
+                    set type="turnover",m.phase="ruck",ds.turnovers=ds.turnovers+1,text="El rival recupera el balón tras el golpe jugado rápido."
+                    do ##class(Rugby.Service.MatchStatistics).Credit(##class(Rugby.Simulation.Performance).Unit(defenders,"all",p,3),"turnovers","contact")
+                }
+            }
+        } else {
+            set gain=12+(..Rating(p,"kicking")/4),m.x=..Clamp(m.x+(direction*gain),5,95),m.y=0,m.phase="lineout",text="Golpe de castigo. Patada a touche para buscar el ensayo."
+            do ##class(Rugby.Service.MatchStatistics).Add(p,"kicks")
+            set stats.kicks=stats.kicks+1
+        }
     } else {
         set r=..Random(m),kick=$select(t.style="kicking":.30,t.style="hands":.06,1:.15)
         if (progress>78)&&(r<.07) {

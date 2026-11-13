@@ -7,6 +7,7 @@ ClassMethod Date(club As %String, date As %String) As %Integer
     try { if date?4N1"-"2N1"-"2N set day=$zdateh(date,3),valid=$zdate(day,3)=date } catch ignored { }
     if 'valid do ##class(Rugby.Service.Store).Fail(422,"DATE","Selecciona una fecha válida.")
     if (day<$zdateh(c.date,3))||(day>($zdateh(c.date,3)+365)) do ##class(Rugby.Service.Store).Fail(422,"FRIENDLY_DATE","El amistoso debe estar entre hoy y los próximos doce meses.")
+    if ##class(Rugby.Service.SeasonCalendar).Reserved(date) do ##class(Rugby.Service.Store).Fail(422,"SUMMER_BREAK","No se pueden concertar amistosos durante julio y agosto ni en los días de apertura y cierre de temporada.")
     quit day-$zdateh("2026-11-07",3)
 }
 ClassMethod Busy(club As %String, date As %String) As %Boolean

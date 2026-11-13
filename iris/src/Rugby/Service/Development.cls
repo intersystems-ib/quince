@@ -245,6 +245,7 @@ ClassMethod Process(club As %String, day As %Integer) As %DynamicObject
     set plan=##class(Rugby.Service.Store).Get("TrainingPlan",club),staff=##class(Rugby.Service.Staff).View(club),qualities=##class(Rugby.Service.Staff).Qualities(club),groups={}
     set resolved=plan.groups
     if plan.%Get("mode")="weekly" set resolved=##class(Rugby.Service.WeeklyTraining).Groups(club,plan,day)
+    if ##class(Rugby.Service.SeasonCalendar).Reserved(##class(Rugby.Service.Injuries).Date(day)) set resolved=[]
     for i=0:1:resolved.%Size()-1 {
         set g=resolved.%Get(i)
         for j=0:1:g.playerIds.%Size()-1 { do groups.%Set(g.playerIds.%Get(j),g) }

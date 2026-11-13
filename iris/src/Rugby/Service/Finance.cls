@@ -14,9 +14,9 @@ ClassMethod Budget(c As %DynamicObject) As %Integer
 }
 ClassMethod Funding(c As %DynamicObject) As %Integer
 {
-    set budget=..Budget(c),grants=(budget*.2425)\1,members=((budget*.1175)\15000)*15000
+    set budget=..Budget(c),grants=(budget*.12125)\1,members=((budget*.1175)\15000)*15000
     // Minimum of the seven agreements plus conservative grants and memberships; no tickets.
-    quit 8000000+grants+members
+    quit 6000000+grants+members
 }
 ClassMethod Success(c As %DynamicObject) As %Numeric
 {
@@ -50,13 +50,13 @@ ClassMethod Company(c As %DynamicObject, year As %Integer, slot As %Integer, opt
 ClassMethod OfferTerms(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject, slot As %Integer, option As %Integer, success As %Numeric) As %DynamicObject
 {
     set h=..Hash(c.id_"-agreement-"_s.year_"-"_slot_"-"_option),years=1+(h#3),score=##class(Rugby.Simulation.Engine).Clamp((success*.75)+(o.director.%Get("quality",35)*.0025)+(((h#11)-5)*.005),0,1)
-    set low=$select(slot=1:3000000,slot=7:2500000,1:500000),high=$select(slot=1:8000000,slot=7:4500000,1:1000000),amount=+$justify(low+((high-low)*score),0,0),kind=$select(slot=7:"barConcession",1:"sponsorship"),category=$select(slot=1:"principal",slot=7:"bar",1:"secondary")
+    set low=$select(slot=1:3000000,slot=7:2500000,1:100000),high=$select(slot=1:8000000,slot=7:4500000,1:500000),amount=+$justify(low+((high-low)*score),0,0),kind=$select(slot=7:"barConcession",1:"sponsorship"),category=$select(slot=1:"principal",slot=7:"bar",1:"secondary")
     quit {"years":(years),"annualAmount":(amount),"kind":(kind),"category":(category)}
 }
 ClassMethod Offer(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject, slot As %Integer, option As %Integer, success As %Numeric) As %DynamicObject
 {
     set terms=..OfferTerms(c,s,o,slot,option,success),name=..Company(c,s.year,slot,option)
-    quit {"id":(s.id_"-offer-"_slot_"-"_option),"clubId":(c.id),"slot":(slot),"kind":(terms.kind),"category":(terms.category),"name":(name),"annualAmount":(terms.annualAmount),"years":(terms.years),"startYear":(s.year),"endYear":(s.year+terms.years-1),"offeredOn":(c.date),"quality":(o.director.%Get("quality",35)),"success":(success),"status":"declined","modelVersion":(..#VERSION)}
+    quit {"id":(s.id_"-offer-"_slot_"-"_option),"clubId":(c.id),"slot":(slot),"kind":(terms.kind),"category":(terms.category),"name":(name),"annualAmount":(terms.annualAmount),"years":(terms.years),"startYear":(s.year),"endYear":(s.year+terms.years-1),"offeredOn":(c.date),"quality":(o.director.%Get("quality",35)),"success":(success),"status":"declined","modelVersion":(..#VERSION),"fundingReductionVersion":(##class(Rugby.Service.FundingReduction).#VERSION)}
 }
 ClassMethod SignSlot(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject, slot As %Integer, success As %Numeric)
 {
@@ -79,7 +79,7 @@ ClassMethod Rebase(c As %DynamicObject, o As %DynamicObject) As %DynamicObject
         set a=agreements.%Get(i)
         if (a.endYear<year)||(a.%Get("kind")="grant") continue
         if a.%Get("modelVersion")=..#VERSION continue
-        set offer=..Offer(c,season,o,a.slot,1,success),a.previousAnnualAmount=a.annualAmount,a.previousName=a.name,a.name=offer.name,a.annualAmount=offer.annualAmount,a.kind=offer.kind,a.category=offer.category,a.success=success,a.amendedOn=c.date,a.modelVersion=..#VERSION
+        set offer=..Offer(c,season,o,a.slot,1,success),a.previousAnnualAmount=a.annualAmount,a.previousName=a.name,a.name=offer.name,a.annualAmount=offer.annualAmount,a.kind=offer.kind,a.category=offer.category,a.success=success,a.amendedOn=c.date,a.modelVersion=..#VERSION,a.fundingReductionVersion=offer.fundingReductionVersion
         do ##class(Rugby.Service.Store).Put("FinancialAgreement",a),report.agreements.%Push(a)
         for y=a.startYear:1:a.endYear {
             set paid=0,prefix=a.id_"-payment-"_y_"-"
@@ -175,12 +175,13 @@ ClassMethod Deals(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject)
         do ..SignSlot(c,s,o,7,success),s.%Set("barComplete",1,"boolean")
     }
     if (day>=14)&&('s.grantsComplete) {
-        set financialPlan=##class(Rugby.Service.FinancialPlanning).Forecast(c,s,o),total=financialPlan.requiredGrants
+        set financialPlan=##class(Rugby.Service.FinancialPlanning).Forecast(c,s,o),total=financialPlan.requiredGrants,localShare=##class(Rugby.Service.PublicGrants).Split(c.id,year,total)
         for n=1:1:2 {
-            set h=..Hash(c.id_"-grant-"_year_"-"_n),institution=$select(n=1:"Ayuntamiento",1:$piece("Instituto público de deporte,Agencia pública de actividad física,Fundación pública deportiva",",",1+(h#3)))_" de "_c.city,amount=$select(n=1:total\2,1:total-(total\2))
-            do s.grants.%Push({"id":(s.id_"-grant-"_n),"name":(institution),"amount":(amount),"awardedOn":(c.date),"status":"awarded"})
+            set h=..Hash(c.id_"-grant-"_year_"-"_n),institution=$select(n=1:"Ayuntamiento",1:$piece("Instituto público de deporte,Agencia pública de actividad física,Fundación pública deportiva",",",1+(h#3)))_" de "_c.city,amount=$select(n=1:localShare,1:total-localShare)
+            do s.grants.%Push({"id":(s.id_"-grant-"_n),"name":(institution),"amount":(amount),"awardedOn":(c.date),"status":"awarded","fundingReductionVersion":(##class(Rugby.Service.FundingReduction).#VERSION)})
         }
         do s.%Set("grantsComplete",1,"boolean")
+        set s.grantDistributionVersion=##class(Rugby.Service.PublicGrants).#VERSION
         set s.financingModelVersion=##class(Rugby.Service.FinancialPlanning).#VERSION,s.financingPlan=financialPlan
     }
     if (day>=21)&&('s.campaignComplete) {

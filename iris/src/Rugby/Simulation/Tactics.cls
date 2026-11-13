@@ -74,7 +74,12 @@ ClassMethod Decide(own As %DynamicArray, opponent As %DynamicArray, clock As %In
     if (a.energy>=70)&&(a.all.stamina>=60)&&((style="hands")||(hands>6)) set tempo="fast"
     if (a.energy<50)||((clock>=3000)&&(gap>0)) set tempo="slow"
     if (clock>=3000)&&(gap<0)&&(a.energy>=45) set tempo="fast"
-    quit {"version":(..#VERSION),"clock":(clock),"scoreGap":(gap),"tactic":{"style":(style),"tempo":(tempo),"defense":(pressure)},"reason":(reason),"opportunities":{"hands":(hands),"kicking":(kicking)},"ownProfile":(a),"opponentProfile":(b)}
+    set penalty="auto"
+    if (pack>(otherPack+5)) { set penalty="touch" }
+    elseif (a.kicking>=55)&&(a.kicking>=(a.all.kicking+3)) { set penalty="posts" }
+    elseif (a.energy>=70)&&(a.backs.speed>(b.all.tackling+8)) { set penalty="quick" }
+    if clock>=3600 set penalty="auto"
+    quit {"version":(..#VERSION),"clock":(clock),"scoreGap":(gap),"tactic":{"style":(style),"tempo":(tempo),"defense":(pressure),"penaltyPriority":(penalty)},"reason":(reason),"opportunities":{"hands":(hands),"kicking":(kicking)},"ownProfile":(a),"opponentProfile":(b)}
 }
 ClassMethod Adapt(m As %DynamicObject, side As %String, initial As %Boolean = 0)
 {
@@ -83,7 +88,7 @@ ClassMethod Adapt(m As %DynamicObject, side As %String, initial As %Boolean = 0)
     set decision.side=side,m.aiTacticalAssessment=decision,m.aiNextTacticalReview=m.clock+600,m.tacticalVersion=..#VERSION
     if initial { do m.%Set(side_"Tactic",decision.tactic) quit }
     set chosen=decision.tactic
-    if (chosen.style=current.style)&&(chosen.tempo=current.tempo)&&(chosen.defense=current.defense) quit
+    if (chosen.style=current.style)&&(chosen.tempo=current.tempo)&&(chosen.defense=current.defense)&&(chosen.%Get("penaltyPriority","auto")=current.%Get("penaltyPriority","auto")) quit
     set command=##class(Rugby.Service.Matches).Command(m.id,{"type":"tactic","tactic":(chosen),"assessment":(decision)},"adaptive-"_m.clock,side,"ai",m)
 }
 ClassMethod Modifier(own As %DynamicObject, opponent As %DynamicObject) As %Numeric

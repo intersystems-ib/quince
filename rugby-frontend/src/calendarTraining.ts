@@ -1,6 +1,7 @@
 import type {Fixture,Training} from './types';
 
 export function calendarTraining(date:string,plan:Training|undefined,fixtures:Fixture[]){
+ if(['07','08'].includes(date.slice(5,7))||['06-30','09-01'].includes(date.slice(5)))return;
  if(fixtures.some(f=>f.date===date))return;
  if(!plan?.weeklyConfigured||!plan.weekly)return;
  const day=new Date(`${date}T12:00:00`),weekday=(day.getDay()+6)%7+1;

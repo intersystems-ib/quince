@@ -16,7 +16,7 @@ ClassMethod Run()
             do ..Assert('names.%IsDefined(a.name),"Signed company names are unique across the league")
             do names.%Set(a.name,1)
             if a.category="principal" { set principal=principal+1 do ..Assert((a.annualAmount>=3000000)&&(a.annualAmount<=8000000),"Main sponsor stays in range") }
-            elseif a.category="secondary" { set secondary=secondary+1 do ..Assert((a.annualAmount>=500000)&&(a.annualAmount<=1000000),"Secondary sponsor stays in range") }
+            elseif a.category="secondary" { set secondary=secondary+1 do ..Assert((a.annualAmount>=100000)&&(a.annualAmount<=500000),"Secondary sponsor stays in range") }
             else { set bar=bar+1 do ..Assert((a.kind="barConcession")&&(a.annualAmount>=2500000)&&(a.annualAmount<=4500000),"Bar annual fee stays in range") }
             do ..Assert((a.years>=1)&&(a.years<=3),"One to three season agreement term")
         }

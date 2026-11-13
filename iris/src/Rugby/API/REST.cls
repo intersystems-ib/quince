@@ -34,7 +34,7 @@ ClassMethod Handle(method As %String, resource As %String, id As %String = "", c
     set request.GameId=%request.GetCgiEnv("HTTP_X_GAME_ID"),request.IdempotencyKey=%request.GetCgiEnv("HTTP_IDEMPOTENCY_KEY")
     do %response.SetHeader("X-Request-Id",request.CorrelationId),%response.SetHeader("Cache-Control","no-store")
     set %RugbyInputBody={},%RugbyQuery={}
-    for name="offset","limit","date","variant","role","afterSequence","correlationId","before" { if $data(%request.Data(name,1)) do %RugbyQuery.%Set(name,%request.Data(name,1)) }
+    for name="offset","limit","date","variant","role","afterSequence","correlationId","before","lineupId" { if $data(%request.Data(name,1)) do %RugbyQuery.%Set(name,%request.Data(name,1)) }
     set request.QueryJSON=%RugbyQuery.%ToJSON()
     set bodyLimit=$select(resource="admin":800000,1:65536)
     if method'="GET" {

@@ -9,7 +9,7 @@ ClassMethod Run(only As %String = "")
     lock +^RugbyWrite:15
     if '$test { write "TESTS FAILED: busy",! quit }
     set failures=0
-    for name="SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
+    for name="FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
         if (only'="")&&(name'=only) continue
         try {
             if name'="Concurrency" tstart
@@ -25,6 +25,10 @@ ClassMethod Run(only As %String = "")
     lock -^RugbyWrite
     write $select(failures:"TESTS FAILED: "_failures,1:"ALL TESTS PASSED"),!
 }
+ClassMethod FundingReduction() { do ##class(Rugby.Test.FundingReduction).Run() }
+ClassMethod SeasonCalendar() { do ##class(Rugby.Test.SeasonCalendar).Run() }
+ClassMethod PenaltyPriority() { do ##class(Rugby.Test.PenaltyPriority).Run() }
+ClassMethod OpponentPreparation() { do ##class(Rugby.Test.OpponentPreparation).Run() }
 ClassMethod SalaryBudget() { do ##class(Rugby.Test.SalaryBudget).Run() }
 ClassMethod Admin() { do ##class(Rugby.Test.Admin).Run() }
 ClassMethod InitialContracts() { do ##class(Rugby.Test.InitialContracts).Run() }

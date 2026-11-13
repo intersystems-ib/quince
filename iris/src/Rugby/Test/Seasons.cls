@@ -17,7 +17,7 @@ ClassMethod Complete(year As %Integer)
 }
 ClassMethod Run()
 {
-    set year=##class(Rugby.Service.Seasons).Year(),final=##class(Rugby.Service.Seasons).FinalDay(year),close=final+7,notice=##class(Rugby.Service.Seasons).NoticeDay(year),p=##class(Rugby.Service.Store).Get("Player","c1-p1")
+    set year=##class(Rugby.Service.Seasons).Year(),final=##class(Rugby.Service.Seasons).FinalDay(year),close=##class(Rugby.Service.SeasonCalendar).CloseDay(year),notice=##class(Rugby.Service.Seasons).NoticeDay(year),p=##class(Rugby.Service.Store).Get("Player","c1-p1")
     do ..Assert((p.contractEndDate>=##class(Rugby.Service.Seasons).EndDate(year))&&(p.contractEndDate<=##class(Rugby.Service.Seasons).EndDate(year+3)),"Initial contracts are distributed across the first four season closures")
     // Explicitly expiring fixtures exercise renewals and releases independently of the initial draw.
     for pid="c1-p1","c1-p2","c2-p1" { set p=##class(Rugby.Service.Store).Get("Player",pid),p.contractEndDate=##class(Rugby.Service.Seasons).EndDate(year) do ##class(Rugby.Service.Store).Put("Player",p) }
@@ -57,7 +57,7 @@ ClassMethod Run()
     do ..Assert('before.closed,"An unfinished championship prevents closure")
     do ..Complete(year)
     set early=##class(Rugby.Service.Seasons).Tick(close-1)
-    do ..Assert('early.closed,"Season does not close before the full seven days")
+    do ..Assert('early.closed,"Season does not close before June thirtieth")
     set oldHonor=##class(Rugby.Service.Store).Get("Competition","league-416-"_year),oldElite=##class(Rugby.Service.Store).Get("Competition","league-417-"_year),table=##class(Rugby.Service.Competition).Table(oldHonor),down=table.%Get(9).clubId,up=oldElite.championId
     do ..Assert(up'=oldElite.regularOrder.%Get(0),"Promotion test uses a playoff champion different from the regular winner")
     set p=##class(Rugby.Service.Store).Get("Player","c1-p2"),raw=p.attributes.%ToJSON(),energy=p.energy,beforeFixtures=##class(Rugby.Service.Competition).Fixtures("league-416-"_year).%ToJSON(),result=##class(Rugby.Service.Seasons).Tick(close)
@@ -83,7 +83,7 @@ ClassMethod Run()
     set again=##class(Rugby.Service.Seasons).Tick(close)
     do ..Assert('again.closed,"The next season is not closed again on retry")
     // Complete a second cycle: lifecycle logic must not be limited to the seed year.
-    set nextFinal=##class(Rugby.Service.Seasons).FinalDay(year+1),nextClose=nextFinal+7,announcements=##class(Rugby.Service.Seasons).Announce(##class(Rugby.Service.Seasons).NoticeDay(year+1)),clubs=##class(Rugby.Service.Store).All("Club")
+    set nextFinal=##class(Rugby.Service.Seasons).FinalDay(year+1),nextClose=##class(Rugby.Service.SeasonCalendar).CloseDay(year+1),announcements=##class(Rugby.Service.Seasons).Announce(##class(Rugby.Service.Seasons).NoticeDay(year+1)),clubs=##class(Rugby.Service.Store).All("Club")
     for i=0:1:clubs.%Size()-1 { set c=clubs.%Get(i),c.day=nextClose,c.date=$zdate(nextClose+$zdateh("2026-11-07",3),3) do ##class(Rugby.Service.Store).Put("Club",c) if c.id'="c1" set renewed=##class(Rugby.Service.Seasons).RenewRival(c,nextFinal-1) }
     do ..Complete(year+1)
     set transition=##class(Rugby.Service.Seasons).Tick(nextClose)

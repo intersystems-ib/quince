@@ -6,7 +6,9 @@ ClassMethod Run()
     set oldGame=##class(Rugby.Service.Store).Game(),oldClub=##class(Rugby.Service.Store).ManagedClub(),oldUser=$get(%RugbyUser)
     try {
         set %RugbyUser="deletion-owner",first=##class(Rugby.Service.Games).Create({"name":"Eliminar prueba","clubId":"c1","divisionId":416},"deletion-create-first"),firstId=first.id
-        set c=##class(Rugby.Service.Store).Get("Club","c1"),opts=##class(Rugby.Service.Calendar).Options(c.id,c.date),f=##class(Rugby.Service.Calendar).Create(c.id,{"date":(c.date),"opponentId":(opts.items.%Get(0).id),"venue":"home","version":(c.version)},"deletion-friendly"),m=##class(Rugby.Service.Matches).Create({"fixtureId":(f.id)},"deletion-match"),m=##class(Rugby.Service.Matches).Start(m.id),rows=[],kind=""
+        set c=##class(Rugby.Service.Store).Get("Club","c1"),c.date="2026-09-02",c.day=-66
+        do ##class(Rugby.Service.Store).Put("Club",c)
+        set opts=##class(Rugby.Service.Calendar).Options(c.id,c.date),f=##class(Rugby.Service.Calendar).Create(c.id,{"date":(c.date),"opponentId":(opts.items.%Get(0).id),"venue":"home","version":(c.version)},"deletion-friendly"),m=##class(Rugby.Service.Matches).Create({"fixtureId":(f.id)},"deletion-match"),m=##class(Rugby.Service.Matches).Start(m.id),rows=[],kind=""
         for { set kind=$order(^RugbyWorld(firstId,"catalog",kind)) quit:kind=""  set id="" for { set id=$order(^RugbyWorld(firstId,"catalog",kind,id)) quit:id=""  do rows.%Push({"kind":(kind),"id":(id)}) } }
         set sibling=##class(Rugby.Service.Games).Create({"name":"Conservar propia","clubId":"c2","divisionId":416},"deletion-create-sibling"),siblingId=sibling.id,siblingPlayer=##class(Rugby.Service.Store).Get("Player","c1-p1").%ToJSON()
         set %RugbyUser="deletion-other",foreign=##class(Rugby.Service.Games).Create({"name":"Conservar ajena","clubId":"c11","divisionId":417},"deletion-create-foreign"),foreignId=foreign.id,foreignPlayer=##class(Rugby.Service.Store).Get("Player","c1-p1").%ToJSON(),caught=0

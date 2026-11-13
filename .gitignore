@@ -11,3 +11,7 @@ playwright-report/
 __pycache__/
 *.pyc
 tmp/
+docs/ARTICULO-COMUNIDAD.md
+docs/RENDIMIENTO-ARTICULO.json
+docs/images/arquitectura-quince.png
+docs/images/arquitectura-quince.svg

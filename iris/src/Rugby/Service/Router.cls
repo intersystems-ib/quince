@@ -21,6 +21,10 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
         if (method="POST")&&(child="load") quit ##class(Rugby.Service.Games).Load(id)
         if (method="POST")&&(child="unload") quit ##class(Rugby.Service.Games).Unload(id)
     }
+    if resource="preparations" {
+        if (method="GET")&&(child="") quit ##class(Rugby.Service.OpponentPreparation).Report(id,%RugbyQuery.%Get("lineupId"))
+        if (method="POST")&&(child="apply") quit ##class(Rugby.Service.OpponentPreparation).Apply(id,b,key)
+    }
     if (resource="transfer-market")&&(method="GET") quit ..Paginate(##class(Rugby.Service.Transfers).Market())
     if resource="negotiations" {
         if (method="GET")&&(id="") quit ..Paginate(##class(Rugby.Service.Transfers).List())
@@ -72,6 +76,8 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
                 quit ##class(Rugby.Service.Finance).View(id)
             }
             if child="financial-movements" quit ..Paginate(##class(Rugby.Service.Store).All("FinancialMovement","clubId",id))
+            if child="season-events" quit ##class(Rugby.Service.SeasonCalendar).Events(id)
+            if child="preparations" quit ##class(Rugby.Service.OpponentPreparation).List(id)
             if child="fixtures" {
                 quit ..Paginate(##class(Rugby.Service.Competition).ClubFixtures(id))
             }

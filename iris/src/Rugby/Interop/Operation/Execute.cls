@@ -26,6 +26,8 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             set market=##class(Rugby.Service.StaffMarket).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.staffMarket=market,pResponse.DetailsJSON=details.%ToJSON()
             set contracts=##class(Rugby.Seed.Contracts).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.initialContracts=contracts,pResponse.DetailsJSON=details.%ToJSON()
             set foreignMarket=##class(Rugby.Service.ForeignMarket).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.foreignTransferMarket=foreignMarket,pResponse.DetailsJSON=details.%ToJSON()
+            set grants=##class(Rugby.Service.PublicGrants).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.publicGrantDistribution=grants,pResponse.DetailsJSON=details.%ToJSON()
+            set reduction=##class(Rugby.Service.FundingReduction).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.fundingReduction=reduction,pResponse.DetailsJSON=details.%ToJSON()
             do ##class(Rugby.Service.Admin).Apply()
             set out={"initialized":true}
         } else {
@@ -58,6 +60,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             if (pRequest.Resource="clubs")&&(pRequest.Child="training-plan")&&(pRequest.Method="PUT") set pResponse.DetailsJSON={"trainingPlan":(out)}.%ToJSON()
             if (pRequest.Resource="clubs")&&(pRequest.Child="financial-director")&&(pRequest.Method="POST") set pResponse.DetailsJSON={"financialManagement":(out)}.%ToJSON()
             if (pRequest.Resource="clubs")&&(pRequest.Child="salary-budget")&&(pRequest.Method="PUT") set pResponse.DetailsJSON={"salaryBudget":(out.salaryBudget)}.%ToJSON()
+            if (pRequest.Resource="preparations")&&(pRequest.Child="apply")&&(pRequest.Method="POST") set pResponse.DetailsJSON={"opponentPreparation":(out)}.%ToJSON()
             if (pRequest.Resource="games")&&(pRequest.Method="DELETE") set pResponse.DetailsJSON={"gameDeletion":(out)}.%ToJSON()
             if (pRequest.Resource="matches")&&(pRequest.Child="start")&&(pRequest.Method="POST") set pResponse.DetailsJSON={"tacticalAssessment":(out.%Get("aiTacticalAssessment"))}.%ToJSON()
             if (pRequest.Resource="negotiations")&&(pRequest.Child="sign")&&(pRequest.Method="POST") {

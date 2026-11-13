@@ -1,3 +1,4 @@
+import {PreparationMatchNote} from './OpponentPreparation';
 import VenueInfo from './VenueInfo';
 import MatchTicketing from './MatchTicketing';
 import {useState} from 'react';
@@ -14,6 +15,7 @@ export default function MatchPreview({match:m}:{match:Match}){
  const q=useQuery({queryKey:['match-comparison',m.id],queryFn:()=>api<MatchComparison>(`/matches/${m.id}/comparison`)});
  const comparison=q.data,home=comparison?.home.groups[group],away=comparison?.away.groups[group];
  return <><Heading eyebrow="PREVIA DEL PARTIDO" title="Comparativa de equipos." description={`${m.homeName} frente a ${m.awayName}`} action={<Link className="button secondary" to="/competicion">Volver a Competición</Link>}/>
+ {m.stage&&m.stage!=='friendly'&&<PreparationMatchNote fixtureId={m.fixtureId}/>}
  <VenueInfo venue={m.venue}/><section className="card prematch-panel" aria-label="Entradas y preparación del partido"><MatchTicketing key={`${m.id}-${m.ticketPrice}`} match={m}/><div className="prematch-actions">{(!m.lineupId||m.lineupId===`${getClubId()}-default`)&&<Link className="button secondary" to="/alineacion">Editar mi alineación</Link>}<Action path={`/matches/${m.id}/start`} className="orange" disabled={!comparison?.ready||q.isFetching}>Iniciar partido <ArrowRight size={16}/></Action></div></section>
  {q.isLoading?<Loading/>:q.error?<ErrorBox error={q.error}/>:comparison&&home&&away?<>
  <div className="competition-tabs" role="tablist" aria-label="Jugadores de la comparativa">{([['all','XV titular'],['forwards','Delanteros'],['backs','Tres cuartos']] as const).map(([id,label])=><button id={`comparison-${id}`} key={id} role="tab" aria-selected={group===id} aria-controls="comparison-panel" onClick={()=>setGroup(id)}>{label}</button>)}</div>

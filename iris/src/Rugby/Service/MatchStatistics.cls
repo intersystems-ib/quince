@@ -60,7 +60,7 @@ ClassMethod Aggregate(f As %DynamicObject)
             set kicker="",best=-1
             for i=0:1:eligible.%Size()-1 { set p=eligible.%Get(i) if p.attributes.kicking>best set kicker=p,best=p.attributes.kicking }
             for n=1:1:f.%Get(side_"Tries",0) { set p=eligible.%Get((##class(Rugby.Simulation.Engine).Random(rng)*eligible.%Size())\1) do ..Add(p,"tries"),..Add(p,"points",5) }
-            set kicker.stats.conversionAttempts=f.%Get(side_"Tries",0),kicker.stats.conversions=f.%Get(side_"Conversions",0),kicker.stats.penaltyAttempts=3,kicker.stats.penaltyGoals=f.%Get(side_"PenaltyGoals",0)
+            set kicker.stats.conversionAttempts=f.%Get(side_"Tries",0),kicker.stats.conversions=f.%Get(side_"Conversions",0),kicker.stats.penaltyAttempts=f.%Get(side_"PenaltyAttempts",3),kicker.stats.penaltyGoals=f.%Get(side_"PenaltyGoals",0)
             do ..Add(kicker,"points",(kicker.stats.conversions*2)+(kicker.stats.penaltyGoals*3))
         }
         do ..Save(f,players,"","aggregate")

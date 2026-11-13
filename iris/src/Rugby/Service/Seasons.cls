@@ -8,7 +8,7 @@ ClassMethod Year(club As %String = "") As %Integer
     quit c.%Get("seasonYear",##class(Rugby.Service.Competition).Year(c.date))
 }
 ClassMethod FinalDay(year As %Integer) As %Integer { quit ##class(Rugby.Service.Competition).Nearest((year+1)_"-06-07",0)-$zdateh("2026-11-07",3) }
-ClassMethod EndDate(year As %Integer) As %String { quit $zdate(..FinalDay(year)+6+$zdateh("2026-11-07",3),3) }
+ClassMethod EndDate(year As %Integer) As %String { quit (year+1)_"-06-30" }
 ClassMethod NoticeDay(year As %Integer) As %Integer
 {
     set final=$zdate(..FinalDay(year)+$zdateh("2026-11-07",3),3)
@@ -37,7 +37,7 @@ ClassMethod Announce(day As %Integer) As %DynamicArray
         set age=(final-p.birthDay)\365,chance=..RetirementChance(age),p.retirementDecisionYear=year
         if (##class(Rugby.Service.Rivals).Hash(p.id_"-retirement-"_year,seed)#100)<chance {
             do p.%Set("retirementAnnounced",1,"boolean")
-            set p.retirementSeasonYear=year,p.retirementAnnouncedDate=$zdate(day+$zdateh("2026-11-07",3),3),p.retirementDate=$zdate(final+7+$zdateh("2026-11-07",3),3),p.retirementClubId=p.clubId
+            set p.retirementSeasonYear=year,p.retirementAnnouncedDate=$zdate(day+$zdateh("2026-11-07",3),3),p.retirementDate=..EndDate(year),p.retirementClubId=p.clubId
             do result.%Push({"playerId":(p.id),"name":(p.name),"clubId":(p.clubId),"retirementDate":(p.retirementDate)})
         }
         do ##class(Rugby.Service.Store).Put("Player",p)
@@ -54,7 +54,7 @@ ClassMethod RenewRival(c As %DynamicObject, day As %Integer) As %DynamicArray
         set p=players.%Get(i)
         if p.%Get("retirementAnnounced",0) continue
         set end=$zdateh(p.contractEndDate,3)-$zdateh("2026-11-07",3)
-        if (end<day)||(end>(..FinalDay(year)+6)) continue
+        if (end<day)||(end>##class(Rugby.Service.SeasonCalendar).CloseDay(year)) continue
         // Spread reviews over three months, keeping decisions reproducible.
         set review=..NoticeDay(year)+(##class(Rugby.Service.Rivals).Hash(p.id_"-renew-"_year,seed)#70)
         if day<review continue
@@ -158,7 +158,7 @@ ClassMethod Tick(day As %Integer) As %DynamicObject
     set cup=##class(Rugby.Service.Store).Get("Competition","cup-"_year,0)
     if $isobject(cup) { if cup.phase'="finished" set ready=0 }
     if 'ready quit result
-    if (day<(last+7))||##class(Rugby.Service.Store).Active(##class(Rugby.Service.Store).ManagedClub()) quit result
+    if (day<##class(Rugby.Service.SeasonCalendar).CloseDay(year))||##class(Rugby.Service.Store).Active(##class(Rugby.Service.Store).ManagedClub()) quit result
     if $data(^RugbyWorld(game,"seasonClosures",year)) quit ##class(%DynamicObject).%FromJSON(^RugbyWorld(game,"seasonClosures",year))
     set clubs=##class(Rugby.Service.Store).All("Club"),players=##class(Rugby.Service.Store).All("Player"),released=[],retired=[],reinforcements=[],date=$zdate(day+$zdateh("2026-11-07",3),3)
     for i=0:1:clubs.%Size()-1 { set c=clubs.%Get(i),paid=##class(Rugby.Service.MonthlyPayroll).Tick(c.id,day) }
@@ -169,7 +169,7 @@ ClassMethod Tick(day As %Integer) As %DynamicObject
             if retiring { set p.contractStatus="retired",p.weeklyWage=0 do p.%Set("retired",1,"boolean"),p.%Set("available",0,"boolean"),##class(Rugby.Service.Store).Put("Player",p),retired.%Push(p.id) }
             continue
         }
-        if retiring||($zdateh(p.contractEndDate,3)<$zdateh(date,3)) {
+        if retiring||($zdateh(p.contractEndDate,3)<=$zdateh(date,3)) {
             do ..Depart(p,year,retiring)
             if retiring { do retired.%Push(p.id) } else { do released.%Push(p.id) }
         }

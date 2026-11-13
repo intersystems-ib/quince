@@ -2,6 +2,7 @@ Class Rugby.Service.FriendlyRequests Extends %RegisteredObject
 {
 ClassMethod FreeWeekend(club As %String, date As %String) As %Boolean
 {
+    if ##class(Rugby.Service.SeasonCalendar).Reserved(date) quit 0
     set day=$zdateh(date,3),weekday=(day+4)#7
     if (weekday'=0)&&(weekday'=6) quit 0
     quit ('##class(Rugby.Service.Calendar).Busy(club,date))&&('##class(Rugby.Service.Calendar).Busy(club,$zdate(day-1,3)))&&('##class(Rugby.Service.Calendar).Busy(club,$zdate(day+1,3)))

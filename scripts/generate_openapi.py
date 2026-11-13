@@ -46,6 +46,7 @@ schemas={
  "Version":obj({"version":I},['version']),
  "Health":obj({"status":S,"workerHeartbeat":N}),
 }
+schemas['Tactic']['properties']['penaltyPriority']={**enum('auto','posts','touch','quick'),'default':'auto'}
 schemas['Player']['properties'].update({'signingFee':I,'askingWeeklyWage':I,'nationalityCode':S,'nationality':S,'realIdentity':B,'identityClubId':S,'identitySource':S,'identitySourceId':S,'identitySourceFile':S,'identitySourcePage':I,'identityMatchDate':S,'identityMatchCode':S,'identitySeason':S,'identityRawName':S,'identityCategory':S,'positionSource':S,'frontRowQualifications':arr(S),'nationalitySource':S,'ageSource':S,'attributesSource':S,'wageSource':S})
 schemas['SubstitutionCommand']['oneOf']=[{'required':['outId','inId'],'not':{'required':['changes']}},{'required':['changes'],'not':{'anyOf':[{'required':['outId']},{'required':['inId']}]}}]
 schemas['Negotiation']=obj({'marketExitReason':S,'id':S,'clubId':S,'playerId':S,'player':ref('Player'),'version':I,'playerVersion':I,'kind':enum('signing','promotion','renewal'),'contractEndDate':{'type':'string','format':'date'},'status':enum('open','counteroffer','agreed','signed','rejected','withdrawn','expired','unavailable','changed'),'askingWeeklyWage':I,'counterWeeklyWage':I,'agreedWeeklyWage':I,'signingFee':I,'round':I,'maxRounds':I,'createdDay':I,'updatedDay':I,'expiresDay':I,'contractId':S,'contractYears':I,'counterContractYears':I,'agreedContractYears':I,'preferredMinYears':I,'preferredMaxYears':I,'offers':arr(obj({'round':I,'day':I,'offeredWeeklyWage':I,'offeredContractYears':I,'counterContractYears':I,'agreedContractYears':I,'status':S,'counterWeeklyWage':I}))},['id','playerId','player','version','status','offers'])
@@ -226,6 +227,18 @@ for entity,model in [('clubs','Club'),('players','Player')]:
  route('/admin/'+entity+'/{id}','get','Registro inicial; sólo sesión administrativa IRIS',model)
  route('/admin/'+entity+'/{id}','put','Guardar datos iniciales para nuevas partidas',model,'Admin'+model+'Update',key=True)
 route('/admin/players','post','Crear jugador inicial y asignarlo a un club existente','Player','AdminNewPlayer',key=True)
+schemas['PreparationMeeting']=obj({'fixtureId':S,'date':S,'day':I,'matchDate':S,'matchDay':I,'opponentId':S,'opponentName':S,'stage':S,'lineupId':S,'closed':B,'available':B,'applied':B})
+schemas['PreparationMeetings']=obj({'items':arr(ref('PreparationMeeting'))})
+schemas['PreparationReport']=obj({'fixtureId':S,'meeting':ref('PreparationMeeting'),'clubId':S,'ownName':S,'opponentId':S,'opponentName':S,'lineupId':S,'lineupName':S,'lineupVersion':I,'lineupLocked':B,'reportToken':S,'currentTactic':ref('Tactic'),'ready':B,'aspects':arr({'type':'object'}),'groups':{'type':'object'},'advantages':arr(S),'risks':arr(S),'confidence':{'type':'object'},'recommendation':{'type':'object'},'alternative':{'type':'object'},'lastApplied':{'type':'object'},'validationErrors':arr(S)})
+schemas['PreparationApply']=obj({'lineupId':S,'lineupVersion':I,'reportToken':S,'choice':enum('main','alternative','custom'),'tactic':ref('Tactic')},['lineupId','lineupVersion','reportToken','choice'])
+schemas['SeasonEvent']=obj({'id':S,'type':enum('opening','closure'),'seasonYear':I,'date':{'type':'string','format':'date'},'day':I,'title':S,'completed':B},['id','type','seasonYear','date','day','title','completed'])
+schemas['SeasonEvents']=obj({'items':arr(ref('SeasonEvent'))},['items'])
+route('/clubs/{clubId}/season-events','get','Apertura del 1 de septiembre y cierre del 30 de junio','SeasonEvents')
+route('/clubs/{clubId}/preparations','get','Reuniones de preparación de partidos oficiales','PreparationMeetings')
+route('/preparations/{fixtureId}','get','Análisis del rival disponible desde dos días antes hasta el inicio','PreparationReport')
+paths['/preparations/{fixtureId}']['get']['parameters'].append({'name':'lineupId','in':'query','required':False,'schema':S})
+route('/preparations/{fixtureId}/apply','post','Aplicar propuesta o táctica personalizada a la alineación propia','PreparationReport','PreparationApply',key=True)
+schemas['Fixture']['properties']['preparationLineupId']=S
 for path,operations in paths.items():
  for op in operations.values():
   if path=='/health' or path in ['/auth/login','/auth/register']:

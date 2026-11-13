@@ -179,14 +179,15 @@ ClassMethod Simulate(f As %DynamicObject)
     set rng={"rng":(f.seed)},factors=##class(Rugby.Simulation.Discipline).Aggregate(f,rng),home=..Strength(f.homeId)*factors.home,away=..Strength(f.awayId)*factors.away
     set home=home+##class(Rugby.Simulation.Tactics).Modifier(homePlan,awayPlan),away=away+##class(Rugby.Simulation.Tactics).Modifier(awayPlan,homePlan)
     for side="home","away" {
-        set advantage=$select(side="home":home-away+3,1:away-home-3),tries=0,conversions=0,kicks=0
+        set advantage=$select(side="home":home-away+3,1:away-home-3),tries=0,conversions=0,kicks=0,plan=$select(side="home":homePlan,1:awayPlan),priority=plan.tactic.%Get("penaltyPriority","auto"),attempts=$select(priority="posts":4,(priority="touch")||(priority="quick"):1,1:3),tryBonus=$select(priority="touch":.035,priority="quick":.025,priority="posts":-.015,1:0)
         for n=1:1:6 {
-            if ##class(Rugby.Simulation.Engine).Random(rng)<##class(Rugby.Simulation.Engine).Clamp(.32+(advantage/100),.1,.75) {
+            if ##class(Rugby.Simulation.Engine).Random(rng)<##class(Rugby.Simulation.Engine).Clamp(.32+(advantage/100)+tryBonus,.1,.75) {
                 set tries=tries+1
                 if ##class(Rugby.Simulation.Engine).Random(rng)<.68 set conversions=conversions+1
             }
         }
-        for n=1:1:3 { if ##class(Rugby.Simulation.Engine).Random(rng)<.45 set kicks=kicks+1 }
+        for n=1:1:attempts { if ##class(Rugby.Simulation.Engine).Random(rng)<##class(Rugby.Simulation.Engine).Clamp(.20+(plan.ownProfile.kicking/220),.15,.85) set kicks=kicks+1 }
+        do f.%Set(side_"PenaltyAttempts",attempts)
         do f.%Set(side_"Score",(tries*5)+(conversions*2)+(kicks*3)),f.%Set(side_"Tries",tries)
         do f.%Set(side_"Conversions",conversions),f.%Set(side_"PenaltyGoals",kicks)
     }
@@ -246,6 +247,8 @@ ClassMethod ClubFixtures(club As %String) As %DynamicArray
         if (f.homeId'=club)&&(f.awayId'=club) continue
         if f.%Get("archived",0) continue
         if (f.%Get("competitionKey")'="")&&(f.%Get("competitionKey")'=current)&&(f.%Get("competitionKey")'=("cup-"_##class(Rugby.Service.Seasons).Year(club)))&&(f.status'="live") continue
+        set preparation=##class(Rugby.Service.Store).Get("OpponentPreparation",f.id,0)
+        if $isobject(preparation) set f.preparationLineupId=preparation.lineupId
         set f.classification=..Classification(f),sorted(f.day,f.id)=f
     }
     set day=""

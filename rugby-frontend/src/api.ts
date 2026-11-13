@@ -1,6 +1,7 @@
 import {requestId} from './requestId';
 export class ApiError extends Error { constructor(public status:number, public code:string, message:string) { super(message); } }
 let game:{id:string;clubId:string}|null=null;
+export const getGameId=()=>game?.id??null;
 export const getClubId=()=>game?.clubId??'c1';
 export const setGame=(value:{id:string;clubId:string}|null)=>{game=value;};
 export async function api<T>(path:string, method='GET', body?:unknown, key?:string):Promise<T> {

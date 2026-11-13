@@ -1,6 +1,6 @@
 Class Rugby.Service.FinancialPlanning Extends %RegisteredObject
 {
-Parameter VERSION = "1.0.0";
+Parameter VERSION = "2.0.0";
 ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject) As %DynamicObject
 {
     set payroll=##class(Rugby.Service.Payroll).Summary(c.id,0),managed=o.director.%Get("id")'="",quality=o.director.%Get("quality",35),success=##class(Rugby.Service.Finance).Success(c),agreements=##class(Rugby.Service.Store).All("FinancialAgreement","clubId",c.id),slots={},private=0,bar=0
@@ -28,24 +28,18 @@ ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObje
             set forecast=##class(Rugby.Service.Finance).Forecast(f,ticketPrice,campaignForecast),tickets=tickets+forecast.ticketRevenue
         }
     }
-    set costs=payroll.annualProjectedCosts,targetFactor=.98+(quality*.0005),other=private+bar+campaign+tickets,needed=+$justify((costs*targetFactor)-other,0,0),needed=$select(needed>0:needed,1:0),grants=0
+    set costs=payroll.annualProjectedCosts,targetFactor=.98+(quality*.0005),other=private+bar+campaign+tickets,needed=+$justify((costs*targetFactor)-other,0,0),unsubsidizedGap=$select(needed>0:needed,1:0),needed=unsubsidizedGap\2,grants=0
     for i=0:1:s.grants.%Size()-1 { set grants=grants+s.grants.%Get(i).amount }
     if ('s.%Get("grantsComplete",0))&&managed set grants=needed
     set income=other+grants
-    quit {"modelVersion":(..#VERSION),"projectedCosts":(costs),"projectedIncome":(income),"projectedMargin":(income-costs),"marginPercent":($select(costs>0:(income-costs)*100/costs,1:0)),"targetMarginPercent":((targetFactor-1)*100),"privateSponsors":(private),"barConcession":(bar),"memberships":(campaign),"tickets":(tickets),"publicGrants":(grants),"requiredGrants":(needed),"directorQuality":(quality),"provisional":('s.%Get("grantsComplete",0))}
+    quit {"modelVersion":(..#VERSION),"projectedCosts":(costs),"projectedIncome":(income),"projectedMargin":(income-costs),"marginPercent":($select(costs>0:(income-costs)*100/costs,1:0)),"targetMarginPercent":((targetFactor-1)*100),"privateSponsors":(private),"barConcession":(bar),"memberships":(campaign),"tickets":(tickets),"publicGrants":(grants),"requiredGrants":(needed),"unsubsidizedGap":(unsubsidizedGap),"grantFactor":0.5,"directorQuality":(quality),"provisional":('s.%Get("grantsComplete",0))}
 }
 ClassMethod Adopt(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject) As %DynamicObject
 {
     set result={"clubId":(c.id),"adjusted":false,"additionalGrant":0}
     if (s.%Get("financingModelVersion")=..#VERSION)||('s.%Get("grantsComplete",0))||(o.director.%Get("id")="") quit result
     if c.%Get("seasonYear",s.year)>s.year quit result
-    set plan=..Forecast(c,s,o),extra=plan.requiredGrants-plan.publicGrants
-    if extra>0 {
-        set id=s.id_"-balanced-funding-"_..#VERSION,h=##class(Rugby.Service.Finance).Hash(id),name=$select(h#2:"Programa público de deporte",1:"Instituto público deportivo")_" de "_c.city
-        set agreement={"id":(id),"clubId":(c.id),"slot":0,"kind":"grant","category":"publicFunding","name":(name),"annualAmount":(extra),"years":1,"startYear":(s.year),"endYear":(s.year),"status":"signed","signedOn":(c.date),"quality":(o.director.quality),"modelVersion":(##class(Rugby.Service.Finance).#VERSION)}
-        do ##class(Rugby.Service.Store).Put("FinancialAgreement",agreement),s.grants.%Push({"id":(id),"name":(name),"amount":(extra),"awardedOn":(c.date),"status":"instalments"})
-        set result.adjusted=1,result.additionalGrant=extra,result.agreement=agreement
-    }
+    // Granted funding is fixed; a forecast deficit does not create a new award.
     set s.financingModelVersion=..#VERSION,s.financingPlan=..Forecast(c,s,o),result.plan=s.financingPlan
     do ##class(Rugby.Service.Store).Put("FinancialSeason",s)
     quit result

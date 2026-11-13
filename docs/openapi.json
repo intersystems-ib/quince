@@ -18918,6 +18918,1083 @@
           }
         }
       }
+    },
+    "/clubs/{clubId}/season-events": {
+      "get": {
+        "summary": "Apertura del 1 de septiembre y cierre del 30 de junio",
+        "operationId": "get__clubs_clubId_season-events",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Game-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonEvents"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Entrada o paginación inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Club no gestionable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entidad no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Versión obsoleta, ocupado o partido activo/pendiente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Más de 64 KiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Regla de negocio inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sesión JWT ausente, inválida o caducada",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Límite de intentos de acceso",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Producción de interoperabilidad no disponible; no se ejecuta la operación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/clubs/{clubId}/preparations": {
+      "get": {
+        "summary": "Reuniones de preparación de partidos oficiales",
+        "operationId": "get__clubs_clubId_preparations",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Game-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreparationMeetings"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Entrada o paginación inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Club no gestionable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entidad no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Versión obsoleta, ocupado o partido activo/pendiente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Más de 64 KiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Regla de negocio inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sesión JWT ausente, inválida o caducada",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Límite de intentos de acceso",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Producción de interoperabilidad no disponible; no se ejecuta la operación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/preparations/{fixtureId}": {
+      "get": {
+        "summary": "Análisis del rival disponible desde dos días antes hasta el inicio",
+        "operationId": "get__preparations_fixtureId",
+        "parameters": [
+          {
+            "name": "fixtureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lineupId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Game-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreparationReport"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Entrada o paginación inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Club no gestionable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entidad no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Versión obsoleta, ocupado o partido activo/pendiente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Más de 64 KiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Regla de negocio inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sesión JWT ausente, inválida o caducada",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Límite de intentos de acceso",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Producción de interoperabilidad no disponible; no se ejecuta la operación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/preparations/{fixtureId}/apply": {
+      "post": {
+        "summary": "Aplicar propuesta o táctica personalizada a la alineación propia",
+        "operationId": "post__preparations_fixtureId_apply",
+        "parameters": [
+          {
+            "name": "fixtureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100,
+              "pattern": "^[a-zA-Z0-9_.-]+$"
+            }
+          },
+          {
+            "name": "X-Game-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operación confirmada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreparationReport"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Entrada o paginación inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Club no gestionable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entidad no encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Versión obsoleta, ocupado o partido activo/pendiente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Más de 64 KiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Regla de negocio inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error interno",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sesión JWT ausente, inválida o caducada",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Límite de intentos de acceso",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Identificador de correlación de la petición",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Interop-Session-Id": {
+                "description": "Sesión nativa de interoperabilidad para el visor de mensajes y la traza visual",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Producción de interoperabilidad no disponible; no se ejecuta la operación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreparationApply"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "security": [
@@ -18976,6 +20053,16 @@
               "normal",
               "high"
             ]
+          },
+          "penaltyPriority": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "posts",
+              "touch",
+              "quick"
+            ],
+            "default": "auto"
           }
         },
         "required": [
@@ -20179,6 +21266,9 @@
           },
           "venue": {
             "$ref": "#/components/schemas/Stadium"
+          },
+          "preparationLineupId": {
+            "type": "string"
           }
         },
         "required": [
@@ -23183,6 +24273,229 @@
         },
         "required": [
           "data"
+        ]
+      },
+      "PreparationMeeting": {
+        "type": "object",
+        "properties": {
+          "fixtureId": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "day": {
+            "type": "integer"
+          },
+          "matchDate": {
+            "type": "string"
+          },
+          "matchDay": {
+            "type": "integer"
+          },
+          "opponentId": {
+            "type": "string"
+          },
+          "opponentName": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "lineupId": {
+            "type": "string"
+          },
+          "closed": {
+            "type": "boolean"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "applied": {
+            "type": "boolean"
+          }
+        },
+        "required": []
+      },
+      "PreparationMeetings": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreparationMeeting"
+            }
+          }
+        },
+        "required": []
+      },
+      "PreparationReport": {
+        "type": "object",
+        "properties": {
+          "fixtureId": {
+            "type": "string"
+          },
+          "meeting": {
+            "$ref": "#/components/schemas/PreparationMeeting"
+          },
+          "clubId": {
+            "type": "string"
+          },
+          "ownName": {
+            "type": "string"
+          },
+          "opponentId": {
+            "type": "string"
+          },
+          "opponentName": {
+            "type": "string"
+          },
+          "lineupId": {
+            "type": "string"
+          },
+          "lineupName": {
+            "type": "string"
+          },
+          "lineupVersion": {
+            "type": "integer"
+          },
+          "lineupLocked": {
+            "type": "boolean"
+          },
+          "reportToken": {
+            "type": "string"
+          },
+          "currentTactic": {
+            "$ref": "#/components/schemas/Tactic"
+          },
+          "ready": {
+            "type": "boolean"
+          },
+          "aspects": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "groups": {
+            "type": "object"
+          },
+          "advantages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "risks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "confidence": {
+            "type": "object"
+          },
+          "recommendation": {
+            "type": "object"
+          },
+          "alternative": {
+            "type": "object"
+          },
+          "lastApplied": {
+            "type": "object"
+          },
+          "validationErrors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": []
+      },
+      "PreparationApply": {
+        "type": "object",
+        "properties": {
+          "lineupId": {
+            "type": "string"
+          },
+          "lineupVersion": {
+            "type": "integer"
+          },
+          "reportToken": {
+            "type": "string"
+          },
+          "choice": {
+            "type": "string",
+            "enum": [
+              "main",
+              "alternative",
+              "custom"
+            ]
+          },
+          "tactic": {
+            "$ref": "#/components/schemas/Tactic"
+          }
+        },
+        "required": [
+          "lineupId",
+          "lineupVersion",
+          "reportToken",
+          "choice"
+        ]
+      },
+      "SeasonEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "opening",
+              "closure"
+            ]
+          },
+          "seasonYear": {
+            "type": "integer"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "day": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "seasonYear",
+          "date",
+          "day",
+          "title",
+          "completed"
+        ]
+      },
+      "SeasonEvents": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeasonEvent"
+            }
+          }
+        },
+        "required": [
+          "items"
         ]
       },
       "WeeklyDay": {

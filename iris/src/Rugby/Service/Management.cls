@@ -88,6 +88,7 @@ ClassMethod Tactic(t As %DynamicObject)
     if '$listfind($listbuild("hands","balanced","kicking"),t.%Get("style")) do ##class(Rugby.Service.Store).Fail(422,"TACTIC","Estilo no válido.")
     if '$listfind($listbuild("slow","normal","fast"),t.%Get("tempo")) do ##class(Rugby.Service.Store).Fail(422,"TACTIC","Ritmo no válido.")
     if '$listfind($listbuild("low","normal","high"),t.%Get("defense")) do ##class(Rugby.Service.Store).Fail(422,"TACTIC","Defensa no válida.")
+    if '$listfind($listbuild("auto","posts","touch","quick"),t.%Get("penaltyPriority","auto")) do ##class(Rugby.Service.Store).Fail(422,"TACTIC","Prioridad de golpes de castigo no válida.")
 }
 ClassMethod SaveLineup(id As %String, b As %DynamicObject) As %DynamicObject
 {
@@ -183,11 +184,14 @@ ClassMethod Advance(club As %String, b As %DynamicObject, key As %String) As %Dy
     for i=0:1:fixtures.%Size()-1 {
         set f=fixtures.%Get(i)
         if f.%Get("archived",0) continue
+        if (f.%Get("stage")="friendly")&&##class(Rugby.Service.SeasonCalendar).Summer(f.%Get("date")) continue
         if (f.day<=c.day)&&(f.status'="finished")&&((f.homeId=club)||(f.awayId=club)) do ##class(Rugby.Service.Store).Fail(409,"MATCH_PENDING","Debes disputar el partido pendiente del "_f.%Get("date",c.date)_" antes de avanzar. Consulta el calendario.")
     }
     do ##class(Rugby.Service.Rivals).Initialize()
     set payroll=##class(Rugby.Service.MonthlyPayroll).Tick(club,c.day),c=##class(Rugby.Service.Store).Get("Club",club)
-    set c.day=c.day+1,c.date=$zdate($zdateh("2026-11-07",3)+c.day,3)
+    set nextDay=##class(Rugby.Service.SeasonCalendar).NextDay(c),summer={}
+    if nextDay>(c.day+1) set summer=##class(Rugby.Service.SeasonCalendar).Rest(c.day,nextDay),c=##class(Rugby.Service.Store).Get("Club",club)
+    set c.day=nextDay,c.date=$zdate($zdateh("2026-11-07",3)+c.day,3)
     set execution=##class(Rugby.Service.Development).Process(club,c.day)
     do ##class(Rugby.Service.Store).Put("Club",c)
 
@@ -195,6 +199,7 @@ ClassMethod Advance(club As %String, b As %DynamicObject, key As %String) As %Dy
     do ##class(Rugby.Service.Competition).Sync(c.day)
     set rivals.monthlyPayroll=payroll,rivals.financeExecution=##class(Rugby.Service.Finance).TickAll(c.day)
     set rivals.friendlyInvitations=##class(Rugby.Service.FriendlyRequests).Tick(),rivals.retirementAnnouncements=announcements,rivals.seasonTransition=##class(Rugby.Service.Seasons).Tick(c.day)
+    set rivals.summerBreak=summer,rivals.seasonOpening=##class(Rugby.Service.SeasonCalendar).Open(c.day)
     do ##class(Rugby.Service.Store).Put("RivalExecution",rivals)
     set c=##class(Rugby.Service.Store).Get("Club",club)
     set ^RugbyWorld(##class(Rugby.Service.Store).Game(),"retry","day",club,key)=c.%ToJSON()

@@ -28,8 +28,11 @@ ClassMethod Run()
         set retry=##class(Rugby.Service.Games).Create({"name":"Élite test","divisionId":417,"clubId":"c11"},"new-save-a")
         do ..Assert(firstId=retry.id,"New save request can be retried without creating another game")
         do ..Assert(##class(Rugby.Service.Store).ManagedClub()="c11","Any participant can be managed")
-        set club=##class(Rugby.Service.Store).Get("Club","c11"),options=##class(Rugby.Service.Calendar).Options("c11",club.date),again=##class(Rugby.Service.Calendar).Options("c11",club.date),divisions={}
+        set club=##class(Rugby.Service.Store).Get("Club","c11")
         do ..Assert((club.date="2026-09-01")&&(club.day=-67),"New season begins September 1")
+        set club.date="2026-09-02",club.day=-66
+        do ##class(Rugby.Service.Store).Put("Club",club)
+        set options=##class(Rugby.Service.Calendar).Options("c11",club.date),again=##class(Rugby.Service.Calendar).Options("c11",club.date),divisions={}
         do ..Assert((options.items.%Size()=3)&&(options.%ToJSON()=again.%ToJSON()),"Three stable random opponents per selected day")
         for i=0:1:2 { set opponent=options.items.%Get(i) do divisions.%Set(opponent.competitionId,1) do ..Assert(opponent.id'="c11","Cannot play against own club") }
         do ..Assert(divisions.%Size()=2,"Friendly suggestions cover both divisions")
@@ -52,7 +55,9 @@ ClassMethod Run()
         do ##class(Rugby.Service.Store).Put("Player",p)
         set second=##class(Rugby.Service.Games).Create({"name":"Honor test","divisionId":416,"clubId":"c2"},"new-save-b"),secondId=second.id
         do ..Assert(##class(Rugby.Service.Store).Get("Player","c11-p1").energy=100,"Player state is isolated between saves")
-        set club=##class(Rugby.Service.Store).Get("Club","c2"),options=##class(Rugby.Service.Calendar).Options(club.id,club.date),f=##class(Rugby.Service.Calendar).Create(club.id,{"version":(club.version),"date":(club.date),"opponentId":(options.items.%Get(0).id),"venue":"home"},"test-friendly"),m=##class(Rugby.Service.Matches).Create({"fixtureId":(f.id)},"test-game-match"),m=##class(Rugby.Service.Matches).Start(m.id)
+        set club=##class(Rugby.Service.Store).Get("Club","c2"),club.date="2026-09-02",club.day=-66
+        do ##class(Rugby.Service.Store).Put("Club",club)
+        set options=##class(Rugby.Service.Calendar).Options(club.id,club.date),f=##class(Rugby.Service.Calendar).Create(club.id,{"version":(club.version),"date":(club.date),"opponentId":(options.items.%Get(0).id),"venue":"home"},"test-friendly"),m=##class(Rugby.Service.Matches).Create({"fixtureId":(f.id)},"test-game-match"),m=##class(Rugby.Service.Matches).Start(m.id)
         do ..Assert((m.id=firstMatch)&&(m.homeId="c2"),"Identical match IDs and event sequences coexist in separate saves")
         set loaded=##class(Rugby.Service.Games).Load(firstId)
         do ..Assert(##class(Rugby.Service.Store).Get("Player","c11-p1").energy=42,"Loading a save restores its actual current player state")
