@@ -1,0 +1,37 @@
+{
+  "generator": "OpenAI built-in image generation",
+  "use": "Generic illustrative rugby grounds selected by capacity; not photographs of actual venues.",
+  "prompt": "Landscape realistic 3D architectural illustration of a Spanish rugby union ground, elevated corner view showing whole pitch and both H-shaped goalposts, authentic rugby markings, natural muted green and cream, soft afternoon light, no football markings, branding, lettering or watermark.",
+  "images": [
+    {
+      "file": "small.jpg",
+      "minCapacity": 1,
+      "maxCapacity": 1000,
+      "promptVariant": "Small community ground: grassy banks, small uncovered bleacher and low clubhouse."
+    },
+    {
+      "file": "club.jpg",
+      "minCapacity": 1001,
+      "maxCapacity": 2500,
+      "promptVariant": "Local club: compact covered main grandstand, opposite terrace and clubhouse."
+    },
+    {
+      "file": "regional.jpg",
+      "minCapacity": 2501,
+      "maxCapacity": 5000,
+      "promptVariant": "Regional venue: substantial covered main stand, opposite seating and open ends."
+    },
+    {
+      "file": "city.jpg",
+      "minCapacity": 5001,
+      "maxCapacity": 10000,
+      "promptVariant": "Medium city stadium: two sizeable covered grandstands and low end stands."
+    },
+    {
+      "file": "large.jpg",
+      "minCapacity": 10001,
+      "maxCapacity": null,
+      "promptVariant": "Large stadium: continuous seating on four sides and taller partially roofed main stand."
+    }
+  ]
+}

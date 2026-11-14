@@ -59,7 +59,7 @@ ClassMethod Profile(p As %DynamicObject, club As %DynamicObject, plan As %Dynami
     }
     set days=##class(Rugby.Simulation.Engine).Clamp($zdateh(endDate,3)-$zdateh(club.date,3),0,366)
     // Forecast only: reuse the real development rules on a detached copy, without saving or charging.
-    set weekly=plan.%Get("mode")="weekly",context=""
+    set weekly=(plan.%Get("mode")="weekly")||(p.category="academy"),context=""
     if weekly set context=##class(Rugby.Service.WeeklyTraining).Context(club.id,plan)
     for n=1:1:days { if weekly set group=##class(Rugby.Service.WeeklyTraining).Group(future,club.day+n,context)
         set result=..Apply(future,group,club.day+n,qualities,0) }
@@ -243,9 +243,9 @@ ClassMethod Process(club As %String, day As %Integer) As %DynamicObject
     set eid=club_"-day"_day,previous=##class(Rugby.Service.Store).Get("TrainingExecution",eid,0)
     if $isobject(previous) quit previous
     set plan=##class(Rugby.Service.Store).Get("TrainingPlan",club),staff=##class(Rugby.Service.Staff).View(club),qualities=##class(Rugby.Service.Staff).Qualities(club),groups={}
-    set resolved=plan.groups
-    if plan.%Get("mode")="weekly" set resolved=##class(Rugby.Service.WeeklyTraining).Groups(club,plan,day)
-    if ##class(Rugby.Service.SeasonCalendar).Reserved(##class(Rugby.Service.Injuries).Date(day)) set resolved=[]
+    set resolved=##class(Rugby.Service.WeeklyTraining).Resolve(club,plan,day)
+    set reserved=##class(Rugby.Service.SeasonCalendar).Reserved(##class(Rugby.Service.Injuries).Date(day))
+    if reserved set resolved=[]
     for i=0:1:resolved.%Size()-1 {
         set g=resolved.%Get(i)
         for j=0:1:g.playerIds.%Size()-1 { do groups.%Set(g.playerIds.%Get(j),g) }
@@ -253,13 +253,14 @@ ClassMethod Process(club As %String, day As %Integer) As %DynamicObject
     set players=##class(Rugby.Service.Store).All("Player","clubId",club),results=[],wages=0
     for i=0:1:players.%Size()-1 {
         set p=players.%Get(i),wages=wages+p.weeklyWage
-        set group=groups.%Get(p.id),eligible=p.available&&(p.energy>=25),daily=..Apply(p,group,day,qualities),daily.morale=##class(Rugby.Service.Morale).Daily(p,day)
+        set group=groups.%Get(p.id),eligible=p.available&&(p.energy>=25),daily=..Apply(p,group,day,qualities),daily.morale=##class(Rugby.Service.Morale).Daily(p,day,(daily.focus="recovery")&&('reserved))
         if eligible&&$isobject(group)&&(group.focus'="recovery") set daily.injury=##class(Rugby.Service.Injuries).Training(p,day,..Intensity(group.intensity),qualities.%Get($select(p.category="academy":"academy",1:"fitness"),25))
         do results.%Push(daily)
         do ##class(Rugby.Service.Store).Put("Player",p)
     }
     do ##class(Rugby.Service.Management).RefreshAvailability(club)
     set execution={"id":(eid),"clubId":(club),"day":(day),"seasonYear":(##class(Rugby.Service.Seasons).Year(club)),"attributeScale":(##class(Rugby.Service.TalentScale).Factor()),"modelVersion":(..#VERSION),"mode":(plan.%Get("mode","groups")),"weekly":(plan.%Get("weekly",{})),"groups":(resolved),"staffSnapshot":(staff.coaches),"results":(results),"trainingCost":0,"playerWeeklyWages":(wages),"staffWeeklyWages":(staff.weeklyWage)}
+    set execution.weekly.academy=##class(Rugby.Service.WeeklyTraining).AcademyWeek()
     do ##class(Rugby.Service.Store).Put("TrainingExecution",execution)
     quit execution
 }

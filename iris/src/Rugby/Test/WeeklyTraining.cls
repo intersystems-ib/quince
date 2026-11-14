@@ -15,7 +15,7 @@ ClassMethod Run()
     set g=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,context),gb=##class(Rugby.Service.WeeklyTraining).Group(back,c.day,context),repeat=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day+7,context)
     do ..Assert((g.focus="strength")&&(gb.focus="speed")&&(g.focus=repeat.focus)&&(g.weekday=1),"Monday physical work differs by line and repeats next week")
     set fw.category="academy",ga=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,context)
-    do ..Assert(ga.focus="maul","Academy follows its own weekly theme")
+    do ..Assert(ga.focus="handling","Academy follows the automatic coach plan instead of the submitted theme")
     set fw.category="senior",fw.energy=40,g=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,context)
     do ..Assert(g.focus="recovery","Staff protect low energy")
     set fw.energy=70,g=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,context)
@@ -27,7 +27,7 @@ ClassMethod Run()
     set fw.available=1
     do context.matchDays.%Set(c.day,1)
     set g=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,context),fw.category="academy",ga=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,context)
-    do ..Assert((g.focus="recovery")&&(ga.focus="maul"),"Only seniors rest for first-team fixtures")
+    do ..Assert((g.focus="recovery")&&(ga.focus="handling"),"Only seniors rest for first-team fixtures")
     set fw.category="senior",fw.id="weekly-new-player"
     do ##class(Rugby.Service.Store).Put("Player",fw)
     set groups=##class(Rugby.Service.WeeklyTraining).Groups(club,saved,c.day),found=0,total=0
@@ -45,7 +45,26 @@ ClassMethod Run()
     set fw.category="senior",fw.available=1,fw.energy=100,g=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,ctx),gb=##class(Rugby.Service.WeeklyTraining).Group(back,c.day,ctx),repeat=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day+7,ctx)
     do ..Assert((g.focus="stamina")&&(gb.focus="agility")&&(repeat.focus="stamina"),"Custom exercises persist by line and repeat each week")
     set fw.category="academy",ga=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,ctx)
-    do ..Assert(ga.focus="passing","Academy exercises remain independent")
+    do ..Assert(ga.focus="handling","Manual academy exercises cannot override the automatic coach plan")
+    set fw.energy=40,ga=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,ctx)
+    do ..Assert(ga.focus="recovery","Automatic academy training protects tired youngsters")
+    set legacy={"mode":"groups","groups":[]},legacyContext=##class(Rugby.Service.WeeklyTraining).Context(club,legacy),fw.energy=100,ga=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,legacyContext)
+    do ..Assert(ga.focus="handling","Automatic academy training also works without a saved weekly plan")
+    for cid=club,"c2" {
+        set originalPlan=##class(Rugby.Service.Store).Get("TrainingPlan",cid),recoveryPlan=##class(%DynamicObject).%FromJSON(originalPlan.%ToJSON()),recoveryPlan.mode="weekly",recoveryPlan.weekly=##class(Rugby.Service.WeeklyTraining).Defaults()
+        for i=0:1:6 { set recoveryPlan.weekly.senior.%Get(i).theme="rest" }
+        do ##class(Rugby.Service.Store).Put("TrainingPlan",recoveryPlan)
+        set roster=##class(Rugby.Service.Store).All("Player","clubId",cid)
+        for i=0:1:roster.%Size()-1 {
+            set player=roster.%Get(i),player.morale=70,player.moraleLastDay=c.day,player.lastAppearanceDay=c.day,player.energy=40
+            do ##class(Rugby.Service.Store).Put("Player",player)
+        }
+        set recoveryExecution=##class(Rugby.Service.Development).Process(cid,c.day+2),roster=##class(Rugby.Service.Store).All("Player","clubId",cid)
+        for i=0:1:roster.%Size()-1 { do ..Assert(roster.%Get(i).morale=72,"Recovery restores morale for seniors and academy in managed and rival clubs") }
+        set retryRecovery=##class(Rugby.Service.Development).Process(cid,c.day+2)
+        do ..Assert(retryRecovery.%ToJSON()=recoveryExecution.%ToJSON(),"Training retry preserves morale recovery")
+        do ##class(Rugby.Service.Store).Put("TrainingPlan",originalPlan)
+    }
     set fw.category="senior",fw.energy=30,g=##class(Rugby.Service.WeeklyTraining).Group(fw,c.day,ctx)
     do ..Assert(g.focus="recovery","Custom exercises preserve low-energy recovery")
     for invalid="missing","duplicate","theme","shape","exercise","restExercise","exerciseShape" {
@@ -60,5 +79,12 @@ ClassMethod Run()
         try { set ignore=##class(Rugby.Service.WeeklyTraining).Validate(bad) } catch ex { set failed=ex.Code=422 }
         do ..Assert(failed,"Malformed weekly plan rejected: "_invalid)
     }
+    set fw.id="automatic-academy-player",fw.category="academy",fw.energy=100,fw.available=1,fw.birthDay=c.day-(18*365),fw.attributes.stamina=40
+    do fw.%Remove("injury"),##class(Rugby.Service.Store).Put("Player",fw)
+    set legacy={"id":(club),"clubId":(club),"mode":"groups","groups":[],"dailyCost":0}
+    do ##class(Rugby.Service.Store).Put("TrainingPlan",legacy)
+    set execution=##class(Rugby.Service.Development).Process(club,c.day+1),trained=##class(Rugby.Service.Store).Get("Player",fw.id),found=0
+    for i=0:1:execution.groups.%Size()-1 { set g=execution.groups.%Get(i) if (g.category="academy")&&(g.focus="stamina") set found=1 }
+    do ..Assert((trained.attributes.stamina>40)&&found,"Legacy saves train academy automatically and audit the applied session")
 }
 }

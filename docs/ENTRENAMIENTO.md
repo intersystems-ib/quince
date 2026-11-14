@@ -1,10 +1,12 @@
 # Entrenamiento y cuerpo técnico
 
-En **Planifica la semana**, elige un enfoque para cada día: ataque, defensa, preparación física, destrezas, formaciones, táctica o descanso. Primer equipo y cantera tienen semanas independientes que se repiten hasta guardar cambios.
+El primer equipo usa un plan semanal recurrente. Elige un enfoque general y pulsa «Solicitar planificación» para generar una propuesta. Las siete tarjetas permiten seleccionar un día y ajustar su sesión y los ejercicios de delanteros y tres cuartos. Los cambios se aplican al guardar.
 
-«Solicitar planificación» propone una semana diferente para la categoría abierta. Puedes cambiar el enfoque y los ejercicios de delanteros y tres cuartos antes de guardar. El cuerpo técnico incluye nuevos jugadores, reduce intensidad por edad o cansancio y prioriza recuperación en bajas, energía inferior a 60 y primer equipo con partido ese día o el siguiente. La cantera usa exclusivamente su entrenador.
+La cantera entrena automáticamente sin planificación manual, también en partidas existentes. Su entrenador organiza un ciclo de destrezas, físico, ataque, defensa, formaciones, táctica y descanso. La mejora depende exclusivamente de su calidad.
 
-Al guardar se activa el plan recurrente; pedir una propuesta no lo sustituye hasta confirmarla. La lista de mejoras reúne los jugadores y características que aumentaron durante los últimos siete días de la partida, sin duplicados y separando primer equipo y cantera.
+El cuerpo técnico incorpora nuevos jugadores, reduce la intensidad por edad o cansancio y prioriza recuperación en bajas o energía inferior al 60 %. El primer equipo también recupera el día del partido y el anterior.
+
+«Estado de la plantilla y carga semanal» muestra el siguiente rival, disponibilidad por grupo, carga orientativa del plan y jugadores con bajas, energía inferior al 75 % o moral inferior al 70 %. La recomendación permite añadir recuperación al borrador del primer equipo. La carga resume sesiones y descansos; no predice la energía futura.
 
 Hay diecisiete atributos entre 1 y 100, con decimales internos. Descanso recupera energía y no cuenta como atributo. La cantera usa la calidad de su entrenador; el primer equipo combina principal, especialista y apoyo (15 %, 65 % y 20 %).
 

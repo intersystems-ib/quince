@@ -25,6 +25,15 @@ ClassMethod Run()
     do ..Assert(p.morale=96,"Any actual minutes renew the grace period")
     set r=##class(Rugby.Service.Morale).Daily(p,33)
     do ..Assert(p.morale=95,"Idle loss resumes after the renewed grace")
+    set rested=##class(%DynamicObject).%FromJSON(p.%ToJSON()),rested.morale=70,rested.lastAppearanceDay=33
+    set r=##class(Rugby.Service.Morale).Daily(rested,34,1)
+    do ..Assert((rested.morale=72)&&(r.restGain=2),"Rest restores two morale points")
+    set r=##class(Rugby.Service.Morale).Daily(rested,34,1)
+    do ..Assert((rested.morale=72)&&(r.restGain=0),"Rest reward cannot repeat on the same day")
+    set rested.morale=99,r=##class(Rugby.Service.Morale).Daily(rested,35,1)
+    do ..Assert((rested.morale=100)&&(r.restGain=1),"Rest morale is capped at one hundred")
+    set rested.morale=70,rested.lastAppearanceDay=0,r=##class(Rugby.Service.Morale).Daily(rested,36,1)
+    do ..Assert((rested.morale=71)&&(r.idleDaysCharged=1),"Rest and inactivity retain their separate effects")
     // The rule affects every roster member, not only the match sheet.
     for cid="c1","c2","c11","c12" {
         set roster=##class(Rugby.Service.Store).All("Player","clubId",cid)

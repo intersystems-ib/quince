@@ -23,8 +23,8 @@ ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObje
         for i=0:1:fixtures.%Size()-1 {
             set f=fixtures.%Get(i)
             if (f.homeId'=c.id)||(f.stage'="regular")||(f.status="finished") continue
-            set ticketPrice=1200
-            if f.matchId'="" { set match=##class(Rugby.Service.Store).Get("Match",f.matchId,0) if $isobject(match) set ticketPrice=match.%Get("ticketPrice",1200) }
+            set ticketPrice=-1
+            if f.matchId'="" { set match=##class(Rugby.Service.Store).Get("Match",f.matchId,0) if $isobject(match) set ticketPrice=match.%Get("ticketPrice",-1) }
             set forecast=##class(Rugby.Service.Finance).Forecast(f,ticketPrice,campaignForecast),tickets=tickets+forecast.ticketRevenue
         }
     }

@@ -15,4 +15,6 @@ El reparto de ayudas entre organismos varía según el club, la temporada y la s
 
 Las subvenciones cubren la mitad del importe calculado por el modelo de financiación, con variación según el financiero. Las ayudas concedidas no aumentan con cada fichaje ni se completan automáticamente para compensar un déficit. La previsión refleja los ingresos reducidos. Los ajustes de contratos en curso conservan los cobros ya realizados y reducen los importes pendientes.
 
-Los partidos generan taquilla según precio, asistencia y abonados, limitada al aforo. Los amistosos la reparten al 50 %.
+Los partidos generan taquilla según precio, asistencia y abonados, limitada al aforo. El precio inicial se recomienda según división, fase, clasificación del rival, derbis y duelos decisivos al final de liga. Usa la clasificación tras tres partidos; antes, el nivel de referencia del club. Las recomendaciones van de 5 a 40 €; el local puede fijar entre 0 y 50 € antes del inicio. Los amistosos reparten la taquilla al 50 %.
+
+«Campo y entradas» muestra nombre, aforo e ilustración genérica según capacidad: hasta 1.000, 1.001–2.500, 2.501–5.000, 5.001–10.000 o más de 10.000 espectadores. Las imágenes son orientativas, no fotografías de los estadios reales.

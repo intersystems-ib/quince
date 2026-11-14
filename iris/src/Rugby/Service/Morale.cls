@@ -3,20 +3,26 @@ Class Rugby.Service.Morale Extends %RegisteredObject
 Parameter VERSION = "1.0.0";
 Parameter GRACE = 14;
 Parameter DEFEAT = 5;
+Parameter RESTGAIN = 2;
 ClassMethod Prepare(p As %DynamicObject, day As %Integer)
 {
     if p.%Get("moraleVersion")=..#VERSION quit
     set p.morale=100,p.moraleVersion=..#VERSION,p.moraleStartedDay=day,p.moraleLastDay=day
 }
-ClassMethod Daily(p As %DynamicObject, day As %Integer) As %DynamicObject
+ClassMethod Daily(p As %DynamicObject, day As %Integer, resting As %Boolean = 0) As %DynamicObject
 {
     do ..Prepare(p,day)
     set before=p.morale,last=p.%Get("moraleLastDay",day),reference=p.%Get("lastAppearanceDay",p.moraleStartedDay)
     set reference=$select(reference>p.moraleStartedDay:reference,1:p.moraleStartedDay)
     if p.%Get("signedDay",reference)>reference set reference=p.signedDay
     set threshold=reference+..#GRACE,start=$select(last>threshold:last,1:threshold),days=$select(day>start:day-start,1:0)
-    if day>last set p.morale=##class(Rugby.Simulation.Engine).Clamp(p.morale-days,0,100),p.moraleLastDay=day
-    quit {"before":(before),"after":(p.morale),"idleDaysCharged":(days)}
+    set restGain=0
+    if day>last {
+        set p.morale=##class(Rugby.Simulation.Engine).Clamp(p.morale-days,0,100)
+        if resting { set rested=##class(Rugby.Simulation.Engine).Clamp(p.morale+..#RESTGAIN,0,100),restGain=rested-p.morale,p.morale=rested }
+        set p.moraleLastDay=day
+    }
+    quit {"before":(before),"after":(p.morale),"idleDaysCharged":(days),"restGain":(restGain)}
 }
 ClassMethod Result(club As %String, day As %Integer, key As %String, outcome As %String, participants As %DynamicArray) As %DynamicObject
 {

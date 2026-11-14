@@ -1,6 +1,6 @@
 Class Rugby.Service.WeeklyTraining Extends %RegisteredObject
 {
-Parameter VERSION = "1.0.0";
+Parameter VERSION = "1.1.0";
 ClassMethod Themes() As %DynamicArray
 {
     quit [
@@ -22,6 +22,12 @@ ClassMethod Defaults() As %DynamicObject
         do result.%Set(category,week)
     }
     quit result
+}
+ClassMethod AcademyWeek() As %DynamicArray
+{
+    set week=[]
+    for day=1:1:7 { do week.%Push({"day":(day),"theme":($piece("technique,physical,attack,defense,setPieces,tactics,rest",",",day))}) }
+    quit week
 }
 ClassMethod Weekday(day As %Integer) As %Integer { quit (($zdateh("2026-11-07",3)+day+3)#7)+1 }
 ClassMethod Theme(id As %String) As %DynamicObject
@@ -66,7 +72,8 @@ ClassMethod Validate(weekly) As %DynamicObject
 }
 ClassMethod Context(club As %String, plan As %DynamicObject) As %DynamicObject
 {
-    set context={"weekly":(plan.weekly),"matchDays":{},"themes":{},"labels":{}},themes=..Themes(),catalog=##class(Rugby.Service.Development).Catalog()
+    set weekly=##class(%DynamicObject).%FromJSON(plan.%Get("weekly",..Defaults()).%ToJSON()),weekly.academy=..AcademyWeek()
+    set context={"weekly":(weekly),"matchDays":{},"themes":{},"labels":{}},themes=..Themes(),catalog=##class(Rugby.Service.Development).Catalog()
     for i=0:1:themes.%Size()-1 { set theme=themes.%Get(i) do context.themes.%Set(theme.id,theme) }
     for i=0:1:catalog.%Size()-1 { set type=catalog.%Get(i) do context.labels.%Set(type.id,type.name) }
     set fixtures=##class(Rugby.Service.Competition).ClubFixtures(club)
@@ -92,6 +99,22 @@ ClassMethod Groups(club As %String, plan As %DynamicObject, day As %Integer) As 
     }
     quit groups
 }
+ClassMethod Resolve(club As %String, plan As %DynamicObject, day As %Integer) As %DynamicArray
+{
+    if plan.%Get("mode")="weekly" quit ..Groups(club,plan,day)
+    set resolved=##class(%DynamicArray).%FromJSON(plan.groups.%ToJSON())
+    for i=0:1:resolved.%Size()-1 {
+        set g=resolved.%Get(i),ids=[]
+        for j=0:1:g.playerIds.%Size()-1 {
+            set player=##class(Rugby.Service.Store).Get("Player",g.playerIds.%Get(j),0)
+            if $isobject(player) { if player.category'="academy" do ids.%Push(player.id) }
+        }
+        set g.playerIds=ids
+    }
+    set automatic=..Groups(club,plan,day)
+    for i=0:1:automatic.%Size()-1 { set g=automatic.%Get(i) if g.category="academy" do resolved.%Push(g) }
+    quit resolved
+}
 ClassMethod Save(club As %String, b As %DynamicObject, key As %String = "") As %DynamicObject
 {
     set game=##class(Rugby.Service.Store).Game()
@@ -101,7 +124,9 @@ ClassMethod Save(club As %String, b As %DynamicObject, key As %String = "") As %
     }
     set old=##class(Rugby.Service.Store).Get("TrainingPlan",club)
     do ##class(Rugby.Service.Store).CheckVersion(old,b)
-    set weekly=..Validate(b.%Get("weekly")),plan={"id":(club),"clubId":(club),"mode":"weekly","weekly":(weekly),"groups":[],"rawDailyCost":0,"dailyCost":0,"modelVersion":(##class(Rugby.Service.Development).#VERSION),"weeklyVersion":(..#VERSION)}
+    set requested=b.%Get("weekly")
+    if $isobject(requested) { if requested.%IsA("%Library.DynamicObject") set requested=##class(%DynamicObject).%FromJSON(requested.%ToJSON()),requested.academy=..AcademyWeek() }
+    set weekly=..Validate(requested),plan={"id":(club),"clubId":(club),"mode":"weekly","weekly":(weekly),"groups":[],"rawDailyCost":0,"dailyCost":0,"modelVersion":(##class(Rugby.Service.Development).#VERSION),"weeklyVersion":(..#VERSION)}
     do ##class(Rugby.Service.Store).Put("TrainingPlan",plan)
     set result=..View(club)
     if key'="" set ^RugbyWorld(game,"retry","weeklyTraining",club,key)=result.%ToJSON()
@@ -112,7 +137,10 @@ ClassMethod View(club As %String) As %DynamicObject
     set plan=##class(Rugby.Service.Store).Get("TrainingPlan",club),c=##class(Rugby.Service.Store).Get("Club",club)
     set plan.themes=..Themes(),plan.nextDay=c.day+1,plan.nextWeekday=..Weekday(c.day+1),plan.nextDate=$zdate($zdateh(c.date,3)+1,3)
     do plan.%Set("weeklyConfigured",plan.%Get("mode")="weekly","boolean")
-    if plan.weeklyConfigured { set plan.nextGroups=..Groups(club,plan,c.day+1) } else { set plan.weekly=..Defaults(),plan.nextGroups=plan.groups }
+    set plan.nextGroups=..Resolve(club,plan,c.day+1)
+    if 'plan.weeklyConfigured set plan.weekly=..Defaults()
+    set plan.weekly.academy=..AcademyWeek()
+    do plan.%Set("academyAutomatic",1,"boolean")
     quit plan
 }
 }

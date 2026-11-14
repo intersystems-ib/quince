@@ -22,6 +22,7 @@ ClassMethod Create(b As %DynamicObject, key As %String) As %DynamicObject
     set m={"id":(id),"clubId":(##class(Rugby.Service.Store).ManagedClub()),"fixtureId":(f.id),"homeId":(f.homeId),"awayId":(f.awayId),"homeName":(home.name),"awayName":(away.name),"homeColor":(home.color),"awayColor":(away.color),"lineupId":(lineup.id),"status":"scheduled","period":1,"clock":0,"speed":20,"credit":0,"homeScore":0,"awayScore":0,"possession":"home","x":50,"y":35,"phase":"restart","seed":(seed),"rng":(seed),"engineVersion":(##class(Rugby.Simulation.Engine).#VERSION),"sequence":0,"commandSequence":0,"settled":false,"homeSubs":0,"awaySubs":0,"homePlayers":[],"awayPlayers":[],"homeStats":{},"awayStats":{},"homeTactic":{},"awayTactic":{}}
     do ##class(Rugby.Service.Kits).Apply(m,home,away)
     set m.groupId=f.%Get("groupId"),m.competitionType=f.%Get("competitionType"),m.competitionKey=f.%Get("competitionKey"),m.stage=f.%Get("stage","friendly"),m.round=f.%Get("round",0),m.date=f.%Get("date",club.date)
+    set m.ticketPrice=##class(Rugby.Service.TicketPricing).Recommend(m).price,m.ticketPriceSource="recommended"
     do ##class(Rugby.Service.Store).Put("Match",m)
     set f.matchId=id
     do ##class(Rugby.Service.Store).Put("Fixture",f)
@@ -51,6 +52,7 @@ ClassMethod Start(id As %String) As %DynamicObject
         do m.%Set(side_"Tactic",l.tactic)
         do m.%Set(side_"Stats",{"actions":0,"possessionSeconds":0,"metres":0,"tackles":0,"turnovers":0,"scrums":0,"lineouts":0,"penalties":0,"tries":0,"conversions":0,"penaltyGoals":0,"drops":0,"kicks":0,"passes":0,"yellowCards":0,"redCards":0,"infringements":0})
     }
+    if 'm.%IsDefined("ticketPrice") set m.ticketPrice=##class(Rugby.Service.TicketPricing).Recommend(m).price,m.ticketPriceSource="recommended"
     set m.economySnapshot=##class(Rugby.Service.Finance).Forecast(m)
     set m.status="first",m.disciplineVersion=##class(Rugby.Simulation.Discipline).#VERSION,m.redCardRule="permanent"
     do ##class(Rugby.Simulation.Tactics).Adapt(m,$select(m.homeId=##class(Rugby.Service.Store).ManagedClub():"away",1:"home"),1)

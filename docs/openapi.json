@@ -16569,7 +16569,7 @@
     },
     "/matches/{matchId}/ticketing": {
       "get": {
-        "summary": "Previsión de asistentes, taquilla y bar; disponibilidad de edición",
+        "summary": "Previsión de asistentes y taquilla, precio recomendado según interés y disponibilidad de edición",
         "operationId": "get__matches_matchId_ticketing",
         "parameters": [
           {
@@ -20738,6 +20738,9 @@
           "weeklyConfigured": {
             "type": "boolean"
           },
+          "academyAutomatic": {
+            "type": "boolean"
+          },
           "nextGroups": {
             "type": "array",
             "items": {
@@ -20778,7 +20781,7 @@
         "required": [
           "version"
         ],
-        "description": "Plan semanal: mode=weekly y weekly con siete días por categoría. Los grupos manuales se conservan por compatibilidad. Las sesiones se resuelven cada día por posición, edad, energía y calendario."
+        "description": "Plan semanal del primer equipo. La cantera se planifica automáticamente y no admite cambios manuales. Las sesiones se resuelven cada día por posición, edad, energía y calendario."
       },
       "TrainingSuggestion": {
         "type": "object",
@@ -21651,6 +21654,13 @@
           },
           "venue": {
             "$ref": "#/components/schemas/Stadium"
+          },
+          "ticketPriceSource": {
+            "type": "string",
+            "enum": [
+              "recommended",
+              "manual"
+            ]
           },
           "firstHalfAddedSeconds": {
             "type": "integer"
@@ -23859,6 +23869,9 @@
           },
           "modelVersion": {
             "type": "string"
+          },
+          "pricing": {
+            "$ref": "#/components/schemas/TicketRecommendation"
           }
         },
         "required": []
@@ -24097,6 +24110,39 @@
           },
           "salaryBudget": {
             "$ref": "#/components/schemas/SalaryBudget"
+          }
+        },
+        "required": []
+      },
+      "TicketRecommendation": {
+        "type": "object",
+        "properties": {
+          "price": {
+            "type": "integer"
+          },
+          "basePrice": {
+            "type": "integer"
+          },
+          "interest": {
+            "type": "string"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "homeRank": {
+            "type": "integer"
+          },
+          "awayRank": {
+            "type": "integer"
+          },
+          "factor": {
+            "type": "number"
+          },
+          "modelVersion": {
+            "type": "string"
           }
         },
         "required": []

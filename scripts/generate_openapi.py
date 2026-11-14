@@ -202,7 +202,10 @@ schemas['Club']['properties']['kits']=obj({'primary':ref('KitAppearance'),'secon
 schemas['PayrollSummary']=obj({key:N for key in ['budget','weeklyLimit','weeklyPlayers','weeklyAvailable','budgetReference','annualPlayers','annualSenior','annualAcademy','annualStaff','annualDirector','annualTraining','annualRegistrations','annualTravelReserve','annualSafetyReserve','annualProjectedCosts','annualMargin','weeks','monthlyLimit','monthlyPlayers','monthlyStaff','monthlyDirector','monthlyAvailable','paymentsPerYear']})
 schemas['FinancialPlan']=obj({**{k:N for k in ['projectedCosts','projectedIncome','projectedMargin','marginPercent','targetMarginPercent','privateSponsors','barConcession','memberships','tickets','publicGrants','requiredGrants','directorQuality']},'modelVersion':S,'provisional':B})
 schemas['FinancialView']=obj({'financialPlan':ref('FinancialPlan'),'payroll':ref('PayrollSummary'),'fundingReference':I,'barConcession':{'type':'object'},'office':obj({'version':I,'director':ref('FinancialDirector'),'candidates':arr(ref('FinancialDirector')),'budgetReference':I,'baseAttendance':I}),'season':{'type':'object'},'agreements':arr({'type':'object'}),'balance':I,'income':I,'expenses':I,'securedAnnualIncome':I,'annualWages':I,'annualTraining':I,'monthly':{'type':'object'},'breakdown':{'type':'object'},'movements':arr(ref('Movement'))})
+schemas['TicketRecommendation']=obj({'price':I,'basePrice':I,'interest':S,'reasons':arr(S),'homeRank':I,'awayRank':I,'factor':N,'modelVersion':S})
 schemas['MatchEconomy']['properties'].update({'barModel':enum('concession'),'modelVersion':S})
+schemas['MatchEconomy']['properties']['pricing']=ref('TicketRecommendation')
+schemas['Match']['properties']['ticketPriceSource']=enum('recommended','manual')
 schemas['HireFinancialDirector']=obj({'candidateId':S,'version':I},['candidateId','version'])
 schemas['TicketPrice']=obj({'ticketPrice':{'type':'integer','minimum':0,'maximum':5000},'version':I},['ticketPrice','version'])
 route('/clubs/{clubId}/finances','get','Tesorería, financiero, acuerdos, campaña y previsión anual','FinancialView')
@@ -212,7 +215,7 @@ schemas['FinancialView']['properties']['salaryBudget']=ref('SalaryBudget')
 schemas['SalaryBudgetUpdate']=obj({'version':I,'percent':{'type':'integer','minimum':0,'maximum':90}},['version','percent'])
 route('/clubs/{clubId}/salary-budget','put','Destinar superávit previsto a ampliar el límite salarial de la temporada','FinancialView','SalaryBudgetUpdate',key=True)
 route('/clubs/{clubId}/financial-director','post','Contratar o sustituir al financiero; gestión automática en septiembre','FinancialView','HireFinancialDirector',key=True)
-route('/matches/{matchId}/ticketing','get','Previsión de asistentes, taquilla y bar; disponibilidad de edición','Ticketing')
+route('/matches/{matchId}/ticketing','get','Previsión de asistentes y taquilla, precio recomendado según interés y disponibilidad de edición','Ticketing')
 schemas['Ticketing']=obj({'forecast':ref('MatchEconomy'),'editable':B})
 route('/matches/{matchId}/ticketing','put','Fijar precio en céntimos, en casa y antes del inicio el día del partido','Match','TicketPrice',key=True)
 paths['/staff-market']['get']['parameters'].append({'name':'role','in':'query','required':False,'schema':enum('head','forwards','backs','defense','attack','skills','fitness','academy'),'description':'Filtra por especialidad antes de ordenar por calidad y paginar.'})
@@ -261,9 +264,9 @@ schemas['Player']['properties'].update({'talentScaleVersion':S,'talentScaleFacto
 
 schemas['WeeklyDay']=obj({'day':{'type':'integer','minimum':1,'maximum':7},'theme':enum('attack','defense','physical','technique','setPieces','tactics','rest'),'forwards':S,'backs':S},['day','theme'])
 schemas['TrainingWeek']=obj({c:{'type':'array','minItems':7,'maxItems':7,'items':ref('WeeklyDay')} for c in ['senior','academy']},['senior','academy'])
-schemas['Training']['properties'].update({'mode':enum('weekly','groups'),'weekly':ref('TrainingWeek'),'weeklyConfigured':B,'nextGroups':arr(ref('TrainingGroup')),'nextDay':I,'nextDate':S,'nextWeekday':I,'themes':arr(obj({'id':S,'name':S,'forwards':S,'backs':S}))})
+schemas['Training']['properties'].update({'mode':enum('weekly','groups'),'weekly':ref('TrainingWeek'),'weeklyConfigured':B,'academyAutomatic':B,'nextGroups':arr(ref('TrainingGroup')),'nextDay':I,'nextDate':S,'nextWeekday':I,'themes':arr(obj({'id':S,'name':S,'forwards':S,'backs':S}))})
 schemas['Training']['required']=[k for k in schemas['Training']['required'] if k!='groups']
-schemas['Training']['description']='Plan semanal: mode=weekly y weekly con siete días por categoría. Los grupos manuales se conservan por compatibilidad. Las sesiones se resuelven cada día por posición, edad, energía y calendario.'
+schemas['Training']['description']='Plan semanal del primer equipo. La cantera se planifica automáticamente y no admite cambios manuales. Las sesiones se resuelven cada día por posición, edad, energía y calendario.'
 
 doc={'openapi':'3.1.0','info':{'title':'Quince · API local de Rugby Manager','version':'1.0.0','description':'Sesión JWT HS256 en cookie HttpOnly y partidas privadas seleccionadas con X-Game-Id. Importes en céntimos. GET listas con offset/limit, salvo eventos con afterSequence. Los PUT requieren version del GET; las claves de reintento devuelven la primera intención y no comparan cuerpos, salvo administración, que rechaza claves reutilizadas con otro contenido.'},'servers':[{'url':'http://localhost:5175/api/v1'},{'url':'http://localhost:8085/api/v1'}],'paths':paths,'security':[{'sessionJWT':[]}],'components':{'schemas':schemas,'securitySchemes':{'sessionJWT':{'type':'apiKey','in':'cookie','name':'rugby_session','description':'JWT HS256; también admite Authorization: Bearer para clientes API.'}}}}
 target=Path(__file__).resolve().parents[1]/'docs'/'openapi.json'

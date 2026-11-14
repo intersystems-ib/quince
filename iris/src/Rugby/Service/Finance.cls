@@ -259,12 +259,13 @@ ClassMethod Forecast(f As %DynamicObject, price As %Integer = -1, seasonOverride
 {
     set home=##class(Rugby.Service.Store).Get("Club",f.homeId),away=##class(Rugby.Service.Store).Get("Club",f.awayId),o=..Office(home.id),year=##class(Rugby.Service.Competition).Year(f.%Get("date",home.date)),s=##class(Rugby.Service.Store).Get("FinancialSeason",home.id_"-finance-"_year,0),stage=f.%Get("stage","friendly"),seed=..Hash("attendance-"_f.id_"-"_f.%Get("date",home.date))
     if $isobject(seasonOverride) set s=seasonOverride
-    if price<0 set price=f.%Get("ticketPrice",1200)
-    set multiplier=$select(stage="friendly":.65,(stage="semifinal")||(stage="final"):2.5,home.city=away.city:2.7,1:1),demand=##class(Rugby.Simulation.Engine).Clamp(1+((1200-price)/2500),.25,1.6),attendance=+$justify(o.baseAttendance*multiplier*(.9+((seed#21)*.01))*demand,0,0),members=0
+    set pricing=##class(Rugby.Service.TicketPricing).Recommend(f)
+    if price<0 set price=f.%Get("ticketPrice",pricing.price)
+    set multiplier=$select(stage="friendly":.65,(stage="semifinal")||(stage="final"):2.5,stage="quarterfinal":1.6,home.city=away.city:2.7,1:1),opponentPull=$select(pricing.awayRank<=3:1.15,pricing.awayRank>=8:.9,1:1),multiplier=multiplier*opponentPull,demand=##class(Rugby.Simulation.Engine).Clamp(1+((pricing.price-price)/2500),.25,1.6),attendance=+$justify(o.baseAttendance*multiplier*(.9+((seed#21)*.01))*demand,0,0),members=0
     if $isobject(home.%Get("stadium")) { set capacity=home.stadium.%Get("capacity",0) if capacity>0 set attendance=$select(attendance>capacity:capacity,1:attendance) }
     if (stage="regular")&&$isobject(s) set members=$select(s.members<attendance*.85:s.members,1:+$justify(attendance*.85,0,0))
     set tickets=(attendance-members)*price,bar=0,barCost=0
-    quit {"attendance":(attendance),"seasonTicketHolders":(members),"payingAttendees":(attendance-members),"ticketPrice":(price),"ticketRevenue":(tickets),"barRevenue":(bar),"barCosts":(barCost),"netRevenue":(tickets),"barModel":"concession","seed":(seed),"modelVersion":(..#VERSION)}
+    quit {"attendance":(attendance),"seasonTicketHolders":(members),"payingAttendees":(attendance-members),"ticketPrice":(price),"ticketRevenue":(tickets),"barRevenue":(bar),"barCosts":(barCost),"netRevenue":(tickets),"barModel":"concession","seed":(seed),"pricing":(pricing),"modelVersion":(..#VERSION)}
 }
 ClassMethod Ticketing(id As %String, b As %DynamicObject, key As %String) As %DynamicObject
 {
@@ -277,7 +278,7 @@ ClassMethod Ticketing(id As %String, b As %DynamicObject, key As %String) As %Dy
     set c=##class(Rugby.Service.Store).Get("Club",m.homeId)
     if m.date'=c.date do ##class(Rugby.Service.Store).Fail(409,"MATCH_DAY","El precio se fija el día del partido.")
     if '##class(Rugby.Service.Store).Integer(b.%Get("ticketPrice"),0,5000) do ##class(Rugby.Service.Store).Fail(422,"TICKET_PRICE","El precio debe estar entre 0 y 50 euros, en céntimos.")
-    set m.ticketPrice=b.ticketPrice
+    set m.ticketPrice=b.ticketPrice,m.ticketPriceSource="manual"
     do ##class(Rugby.Service.Store).Put("Match",m)
     set ^RugbyWorld(game,"retry","ticketing",id,key)=m.%ToJSON()
     quit m
