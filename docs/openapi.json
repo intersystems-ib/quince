@@ -19445,7 +19445,7 @@
     },
     "/preparations/{fixtureId}": {
       "get": {
-        "summary": "Análisis del rival disponible desde dos días antes hasta el inicio",
+        "summary": "Análisis del rival disponible desde la reunión hasta el día del partido, ambos inclusive, antes del inicio",
         "operationId": "get__preparations_fixtureId",
         "parameters": [
           {
@@ -24319,6 +24319,15 @@
           },
           "applied": {
             "type": "boolean"
+          },
+          "preparing": {
+            "type": "boolean"
+          },
+          "preparationStartDay": {
+            "type": "integer"
+          },
+          "preparationStartDate": {
+            "type": "string"
           }
         },
         "required": []

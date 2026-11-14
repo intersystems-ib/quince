@@ -48,7 +48,7 @@ export type FinancialView={salaryBudget?:SalaryBudget;financialPlan?:{projectedI
 
 export type CupCompetition=Competition & {exemptTeamIds:string[];groups:{id:string;teamIds:string[];standings:Standing[]}[];groupDates:string[];quarterfinalDate:string;quarterfinals:Fixture[];qualifiedTeamIds:string[]};
 
-export type PreparationMeeting={fixtureId:string;date:string;day:number;matchDate:string;matchDay:number;opponentId:string;opponentName:string;stage:string;lineupId:string;closed:boolean;available:boolean;applied:boolean};
+export type PreparationMeeting={preparing?:boolean;preparationStartDay?:number;preparationStartDate?:string;fixtureId:string;date:string;day:number;matchDate:string;matchDay:number;opponentId:string;opponentName:string;stage:string;lineupId:string;closed:boolean;available:boolean;applied:boolean};
 export type PreparationSummary={count:number;average:number;energy:number;morale:number};
 export type PreparationReport={fixtureId:string;meeting:PreparationMeeting;clubId:string;ownName:string;opponentId:string;opponentName:string;lineupId:string;lineupName:string;lineupVersion:number;lineupLocked:boolean;reportToken:string;currentTactic:Tactic;ready:boolean;validationErrors:string[];aspects:{id:string;name:string;group:'all'|'forwards'|'backs';own:number;opponent:number;delta:number;uncertainty:number}[];groups:{own:Record<'all'|'forwards'|'backs',PreparationSummary>;opponent:Record<'all'|'forwards'|'backs',PreparationSummary>};advantages:string[];risks:string[];confidence:{quality:number;label:string};recommendation:{tactic:Tactic;reason:string;risk:string};alternative:{tactic:Tactic;reason:string;risk:string};lastApplied?:{date:string;lineupId:string;tactic:Tactic;choice:string;outdated:boolean;tacticChanged:boolean}};
 

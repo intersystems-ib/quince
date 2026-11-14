@@ -1,3 +1,4 @@
+import {preparationPath} from './OpponentPreparation';
 import {createContext,useCallback,useContext,useEffect,useId,useRef,useState} from 'react';
 import type {ReactNode} from 'react';
 import {Link,useLocation,useNavigate} from 'react-router-dom';
@@ -41,10 +42,10 @@ export default function DayAdvanceControl({club}:{club:Club}){
     onDay:next=>{if(mounted.current&&getGameId()===gameId){qc.setQueryData(['club'],next);void qc.invalidateQueries({refetchType:'none'});}},
    });
    if(mounted.current&&getGameId()===gameId){
-    const messages={season:result.seasonEvent?.title??'Cambio de temporada.',meeting:'Reunión de preparación del rival.',match:'Día de partido.',cancelled:reasonRef.current??'Avance detenido.',empty:'No hay más eventos programados.',limit:'Avance detenido tras 365 días.'};
+    const messages={season:result.seasonEvent?.title??'Cambio de temporada.',meeting:'',match:'Día de partido.',cancelled:reasonRef.current??'Avance detenido.',empty:'No hay más eventos programados.',limit:'Avance detenido tras 365 días.'};
     setMessage(messages[result.reason]);
     if(result.reason==='season')navigate('/calendario');
-    if(result.reason==='meeting'&&result.fixtureId)navigate(`/preparacion/${result.fixtureId}`);
+    if(result.reason==='meeting'&&result.fixtureId)navigate(preparationPath(result.fixtureId));
    }
   }catch(e){if(mounted.current&&getGameId()===gameId)setAutoError(e);}
   finally{active.current=false;if(mounted.current){setRunning(false);setStopping(false);}if(getGameId()===gameId)void qc.invalidateQueries();}

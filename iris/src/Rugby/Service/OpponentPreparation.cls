@@ -1,6 +1,6 @@
 Class Rugby.Service.OpponentPreparation Extends %RegisteredObject
 {
-Parameter VERSION = "1.1.0";
+Parameter VERSION = "1.3.0";
 ClassMethod Official(f As %DynamicObject) As %Boolean
 {
     quit ('f.%Get("archived",0))&&$listfind($listbuild("regular","cup-group","quarterfinal","semifinal","final"),f.%Get("stage"))&&(f.homeId'="")&&(f.awayId'="")
@@ -11,19 +11,26 @@ ClassMethod Fixture(id As %String) As %DynamicObject
     if ((f.homeId'=own)&&(f.awayId'=own))||('..Official(f)) do ##class(Rugby.Service.Store).Fail(404,"PREPARATION_NOT_FOUND","No hay preparación disponible para este encuentro.")
     quit f
 }
-ClassMethod Meeting(f As %DynamicObject, c As %DynamicObject) As %DynamicObject
+ClassMethod Meeting(f As %DynamicObject, c As %DynamicObject, fixtures = "") As %DynamicObject
 {
     set day=f.day-2,opponent=$select(f.homeId=c.id:f.awayId,1:f.homeId),other=##class(Rugby.Service.Store).Get("Club",opponent),record=##class(Rugby.Service.Store).Get("OpponentPreparation",f.id,0),closed=f.status'="scheduled"
     if f.matchId'="" { set match=##class(Rugby.Service.Store).Get("Match",f.matchId,0) if $isobject(match)&&(match.status'="scheduled") set closed=1 }
-    set result={"fixtureId":(f.id),"date":($zdate(day+$zdateh("2026-11-07",3),3)),"day":(day),"matchDate":(f.date),"matchDay":(f.day),"opponentId":(opponent),"opponentName":(other.name),"stage":(f.stage),"lineupId":($select($isobject(record):record.%Get("lineupId"),1:""))}
+    if '$isobject(fixtures) set fixtures=##class(Rugby.Service.Competition).ClubFixtures(c.id)
+    set start=$zdateh(##class(Rugby.Service.Competition).Year(f.date)_"-09-01",3)-$zdateh("2026-11-07",3),last=start-1,previousFinished=1
+    for i=0:1:fixtures.%Size()-1 {
+        set previous=fixtures.%Get(i)
+        if (previous.id'=f.id)&&(previous.day<f.day)&&(previous.day>last) { set last=previous.day,start=previous.day+1,previousFinished=previous.status="finished" }
+    }
+    set result={"fixtureId":(f.id),"date":($zdate(day+$zdateh("2026-11-07",3),3)),"day":(day),"matchDate":(f.date),"matchDay":(f.day),"preparationStartDay":(start),"preparationStartDate":(##class(Rugby.Service.Injuries).Date(start)),"opponentId":(opponent),"opponentName":(other.name),"stage":(f.stage),"lineupId":($select($isobject(record):record.%Get("lineupId"),1:""))}
     do result.%Set("closed",closed||(c.day>f.day),"boolean"),result.%Set("available",('closed)&&(c.day>=day)&&(c.day<=f.day),"boolean"),result.%Set("applied",$isobject(record),"boolean")
+    do result.%Set("preparing",('closed)&&(c.day<day)&&previousFinished&&(c.day>=start),"boolean")
     quit result
 }
 ClassMethod List(club As %String) As %DynamicObject
 {
     do ##class(Rugby.Service.Store).Managed(club)
     set c=##class(Rugby.Service.Store).Get("Club",club),fixtures=##class(Rugby.Service.Competition).ClubFixtures(club),items=[]
-    for i=0:1:fixtures.%Size()-1 { set f=fixtures.%Get(i) if ..Official(f) do items.%Push(..Meeting(f,c)) }
+    for i=0:1:fixtures.%Size()-1 { set f=fixtures.%Get(i) if ..Official(f) do items.%Push(..Meeting(f,c,fixtures)) }
     quit {"items":(items)}
 }
 ClassMethod Snapshot(p As %DynamicObject, position As %Integer) As %DynamicObject
@@ -85,10 +92,10 @@ ClassMethod Report(id As %String, lineupId As %String = "") As %DynamicObject
 {
     set f=..Fixture(id),club=##class(Rugby.Service.Store).ManagedClub(),c=##class(Rugby.Service.Store).Get("Club",club),meeting=..Meeting(f,c)
     if meeting.closed do ##class(Rugby.Service.Store).Fail(409,"PREPARATION_CLOSED","La preparación se cierra al comenzar el partido.")
-    if 'meeting.available do ##class(Rugby.Service.Store).Fail(409,"PREPARATION_FUTURE","La reunión estará disponible el "_meeting.date_".")
+    if 'meeting.available do ##class(Rugby.Service.Store).Fail(409,"PREPARATION_FUTURE",$select(meeting.preparing:"El cuerpo técnico está trabajando en la elaboración del informe. ",1:"La preparación comenzará después del partido anterior. ")_"El análisis estará disponible el "_meeting.date_".")
     set match="",record=##class(Rugby.Service.Store).Get("OpponentPreparation",id,0)
     if f.matchId'="" set match=##class(Rugby.Service.Store).Get("Match",f.matchId)
-    if lineupId="" set lineupId=$select($isobject(match):match.lineupId,$isobject(record):record.lineupId,1:club_"-default")
+    if lineupId="" set lineupId=$select($isobject(match):match.lineupId,1:club_"-default")
     set l=##class(Rugby.Service.Store).Get("Lineup",lineupId)
     do ##class(Rugby.Service.Store).Managed(l.clubId)
     if $isobject(match)&&(match.lineupId'=lineupId) do ##class(Rugby.Service.Store).Fail(409,"PREPARATION_LINEUP","Elige la alineación seleccionada para este partido.")

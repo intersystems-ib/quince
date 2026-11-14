@@ -6,6 +6,12 @@ ClassMethod Run()
     set club=##class(Rugby.Service.Store).ManagedClub(),c=##class(Rugby.Service.Store).Get("Club",club),fixtures=##class(Rugby.Service.Competition).ClubFixtures(club),f=""
     for i=0:1:fixtures.%Size()-1 { set row=fixtures.%Get(i) if (row.stage="regular")&&(row.status="scheduled") { set f=row quit } }
     do ..Assert($isobject(f),"An official fixture exists")
+    set previous=##class(%DynamicObject).%FromJSON(f.%ToJSON()),previous.id="preparation-previous",previous.day=f.day-7,previous.date=##class(Rugby.Service.Injuries).Date(previous.day),previous.stage="friendly",previous.status="finished",previous.matchId=""
+    do ##class(Rugby.Service.Store).Put("Fixture",previous)
+    set c.day=previous.day,c.date=previous.date,meeting=##class(Rugby.Service.OpponentPreparation).Meeting(f,c)
+    do ..Assert(('meeting.preparing)&&('meeting.available),"Preparation does not begin on the day of the previous completed match")
+    set c.day=previous.day+1,c.date=##class(Rugby.Service.Injuries).Date(c.day),meeting=##class(Rugby.Service.OpponentPreparation).Meeting(f,c)
+    do ..Assert(meeting.preparing&&(meeting.preparationStartDay=(previous.day+1)),"Preparation starts on the day after the previous match, including friendlies")
     set c.day=f.day-3,c.date=$zdate(c.day+$zdateh("2026-11-07",3),3)
     do ##class(Rugby.Service.Store).Put("Club",c)
     set meetings=##class(Rugby.Service.OpponentPreparation).List(club),found=0
@@ -45,12 +51,22 @@ ClassMethod Run()
     set custom=##class(Rugby.Service.Store).Get("Lineup",l.id),custom.id="preparation-custom",custom.name="XV alternativo"
     do ##class(Rugby.Service.Store).Put("Lineup",custom)
     set report=##class(Rugby.Service.OpponentPreparation).Report(f.id,custom.id),chosen={"style":"kicking","tempo":"slow","defense":"low"},result=##class(Rugby.Service.OpponentPreparation).Apply(f.id,{"lineupId":(custom.id),"lineupVersion":(report.lineupVersion),"reportToken":(report.reportToken),"choice":"custom","tactic":(chosen)},"prep-custom")
+    set default=##class(Rugby.Service.OpponentPreparation).Report(f.id)
+    do ..Assert(default.lineupId=(club_"-default"),"Default analysis follows the current matchday lineup instead of an earlier custom report")
+    set current=##class(Rugby.Service.Store).Get("Lineup",default.lineupId),old=current.slots.%Get(0).playerId,current.slots.%Get(0).playerId=current.bench.%Get(0)
+    do current.bench.%Set(0,old),##class(Rugby.Service.Store).Put("Lineup",current)
+    set refreshed=##class(Rugby.Service.OpponentPreparation).Report(f.id)
+    do ..Assert((refreshed.lineupVersion>default.lineupVersion)&&(refreshed.reportToken'=default.reportToken),"Refreshing recomputes the analysis from the current selection")
+    set c=##class(Rugby.Service.Store).Get("Club",club),c.day=f.day-1,c.date=##class(Rugby.Service.Injuries).Date(c.day),caught=0
+    do ##class(Rugby.Service.Store).Put("Club",c)
+    set between=##class(Rugby.Service.OpponentPreparation).Report(f.id)
+    do ..Assert(between.meeting.available,"Report stays available on days between meeting and match")
     set c=##class(Rugby.Service.Store).Get("Club",club),c.day=f.day,c.date=f.date
     do ##class(Rugby.Service.Store).Put("Club",c)
     set match=##class(Rugby.Service.Matches).Create({"fixtureId":(f.id)},"prep-match")
     do ..Assert(match.lineupId=custom.id,"Match creation defaults to the lineup prepared in the meeting")
     set report=##class(Rugby.Service.OpponentPreparation).Report(f.id),caught=0
-    do ..Assert(report.lineupLocked&&(report.currentTactic.%ToJSON()=chosen.%ToJSON()),"Scheduled match preview keeps the chosen plan")
+    do ..Assert(report.meeting.available&&report.lineupLocked&&(report.lineupId=match.lineupId),"Report remains available on match day and uses the selected match lineup")
     set match.status="first"
     do ##class(Rugby.Service.Store).Put("Match",match)
     try { set ignored=##class(Rugby.Service.OpponentPreparation).Report(f.id) } catch ex { set caught=ex.Location="PREPARATION_CLOSED" }

@@ -3,6 +3,7 @@ import {matchSeconds} from './matchClock';
 import type {Match,MatchEvent} from './types';
 
 export default function MatchScorers({match,events,loading}:{match:Match;events:MatchEvent[];loading:boolean}){
+ if(!loading&&!events.some(e=>e.points>0))return null;
  return <div className="match-scorers" aria-label="Resumen de anotadores">
   {(['home','away'] as const).map(side=>{
    const players=match[`${side}Players`];
@@ -16,7 +17,8 @@ export default function MatchScorers({match,events,loading}:{match:Match;events:
       scorer.minutes.push(`${Math.max(1,Math.ceil(matchSeconds(match,e.clock,e.period)/60))}′`);
       scorers.set(key,scorer);
      });
-     return <div className="scorers-category" key={type}><h4>{label}</h4>{scorers.size?<p className="scorers-list">{[...scorers.entries()].map(([id,scorer],index)=><Fragment key={id}>{index>0?', ':''}{scorer.name} <strong>({scorer.minutes.join(', ')})</strong></Fragment>)}</p>:<p className="scorers-empty">Sin {label.toLocaleLowerCase()}</p>}</div>;
+     if(!scorers.size)return null;
+     return <div className="scorers-category" key={type}><h4>{label}</h4><p className="scorers-list">{[...scorers.entries()].map(([id,scorer],index)=><Fragment key={id}>{index>0?', ':''}{scorer.name} <strong>({scorer.minutes.join(', ')})</strong></Fragment>)}</p></div>;
     })}
    </section>;
   })}
