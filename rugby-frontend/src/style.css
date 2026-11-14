@@ -204,3 +204,5 @@
 .club-directory-card>.club-roster-link{align-self:flex-start;margin:16px 0}.club-squad-identity{display:flex;align-items:center;gap:16px;margin-bottom:24px;min-width:0}.club-squad-identity>.directory-crest{flex-shrink:0}.club-squad-identity>div{min-width:0}.club-squad-identity .venue-info{margin:8px 0 0}
 
 .score-team{min-width:0}.score-team h2,.comparison-team h2,.calendar-teams>strong,.club-directory-card h3,.standing-club>span:not(.tiny-tag){white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.comparison-team header>div{min-width:0;flex:1}
+
+.calendar-training{--calendar-session-size:clamp(18px,5vw,30px);width:var(--calendar-session-size);height:var(--calendar-session-size);left:clamp(3px,1vw,9px);bottom:clamp(3px,1vw,9px)}.calendar-training>svg{width:clamp(12px,60%,18px);height:clamp(12px,60%,18px)}@supports(width:1cqi){.calendar-grid{container-type:inline-size}.calendar-training{--calendar-session-size:clamp(18px,7cqi,30px);left:clamp(3px,1.8cqi,9px);bottom:clamp(3px,1.8cqi,9px)}}
