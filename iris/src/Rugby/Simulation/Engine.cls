@@ -1,7 +1,7 @@
 Class Rugby.Simulation.Engine Extends %RegisteredObject
 {
 Parameter STEP = 20;
-Parameter VERSION = "1.3.0";
+Parameter VERSION = "1.4.0";
 ClassMethod Clamp(v As %Numeric, low As %Numeric = 0.08, high As %Numeric = 0.92) As %Numeric
 {
     quit $select(v<low:low,v>high:high,1:v)
@@ -42,7 +42,7 @@ ClassMethod Event(m As %DynamicObject, type As %String, side As %String, text As
 ClassMethod Step(m As %DynamicObject)
 {
     if (m.status="finished")||(m.status="scheduled")||(m.%Get("speed",1)=0) quit
-    if $listfind($listbuild("1.0.0","1.1.0","1.2.0"),m.engineVersion) set m.previousEngineVersion=m.engineVersion,m.engineVersion=..#VERSION
+    if $listfind($listbuild("1.0.0","1.1.0","1.2.0","1.3.0"),m.engineVersion) set m.previousEngineVersion=m.engineVersion,m.engineVersion=..#VERSION
     if m.engineVersion'=..#VERSION do ##class(Rugby.Service.Store).Fail(409,"ENGINE_VERSION","La partida requiere una versión distinta del motor.")
     if m.%Get("periodEndPending",0) { do ##class(Rugby.Simulation.PeriodEnd).Close(m) quit }
     do m.%Remove("actionContext")
@@ -182,7 +182,7 @@ ClassMethod Step(m As %DynamicObject)
         for i=0:1:a.%Size()-1 {
             set q=a.%Get(i)
             if q.status="field" {
-                set loss=(.22+$select(tac.tempo="fast":.10,tac.tempo="slow":-.04,1:0)+$select(tac.defense="high":.06,1:0))*(1.3-(q.attributes.stamina/150))
+                set loss=(.22+$select(tac.tempo="fast":.10,tac.tempo="slow":-.04,1:0)+$select(tac.defense="high":.06,tac.defense="low":-.04,1:0))*(1.3-(q.attributes.stamina/150))
                 set q.energy=..Clamp(q.energy-loss,0,100)
             }
         }

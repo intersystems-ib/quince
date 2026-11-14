@@ -43,6 +43,28 @@ ClassMethod Run()
     do ..Assert(m.awayTactic.tempo="slow","A later dead ball adapts to changed energy without requiring an exact minute")
     set event=##class(Rugby.Service.Store).Get("MatchEvent",m.id_"-"_$translate($justify(m.sequence,6)," ","0"))
     do ..Assert(event.result.%IsDefined("tacticalDecision"),"Applied tactical changes include their assessment in native event audit")
+    set template=##class(Rugby.Test.Suite).Build(593),template.phase="open",template.possession="away",template.clock=20,template.homeTactic.tempo="normal",energies={},defenses={}
+    for pressure="low","normal","high" {
+        set sample=##class(%DynamicObject).%FromJSON(template.%ToJSON()),sample.homeTactic.defense=pressure,sample.engineVersion="1.3.0"
+        do ##class(Rugby.Simulation.Engine).Step(sample)
+        do energies.%Set(pressure,sample.homePlayers.%Get(0).energy),defenses.%Set(pressure,sample.actionContext.defense)
+        do ..Assert((sample.engineVersion=##class(Rugby.Simulation.Engine).#VERSION)&&(sample.previousEngineVersion="1.3.0")&&(sample.clock=40),"Existing matches adopt energy savings without resetting the clock")
+    }
+    do ..Assert((energies.low>energies.normal)&&(energies.normal>energies.high),"Low defensive pressure saves real match energy; high pressure costs more")
+    do ..Assert((defenses.low<defenses.normal)&&(defenses.normal<defenses.high),"Conserving energy retains the defensive strength trade-off")
+    set own=##class(Rugby.Simulation.Tactics).LineupPlayers("c1"),clubs=##class(Rugby.Service.Store).All("Club"),plans={},styles={}
+    for i=0:1:clubs.%Size()-1 {
+        set club=clubs.%Get(i)
+        if (club.id="c1")||(club.competitionId'=416) continue
+        set decision=##class(Rugby.Simulation.Tactics).Decide(own,##class(Rugby.Simulation.Tactics).LineupPlayers(club.id))
+        do plans.%Set(decision.tactic.%ToJSON(),1),styles.%Set(decision.tactic.style,1)
+    }
+    do ..Assert((plans.%Size()>=3)&&(styles.%Size()>=2),"Cisneros receives distinct matchup-based plans against actual Honor opponents")
+    do ..Uniform(template.homePlayers,60),..Uniform(template.awayPlayers,40)
+    set original=##class(Rugby.Simulation.Tactics).Decide(template.homePlayers,template.awayPlayers)
+    for side="home","away" { set players=template.%Get(side_"Players") for i=0:1:players.%Size()-1 { set player=players.%Get(i),iter=player.attributes.%GetIterator() while iter.%GetNext(.key,.value) { do player.attributes.%Set(key,value*.75) } } }
+    set scaled=##class(Rugby.Simulation.Tactics).Decide(template.homePlayers,template.awayPlayers)
+    do ..Assert((original.tactic.%ToJSON()=scaled.tactic.%ToJSON()),"Proportional attribute scaling preserves the same relative tactical matchup")
     // Scheduled comparison must respect a selected custom lineup, not the default.
     set p=##class(Rugby.Service.Store).Get("Player","c1-p16"),iter=p.attributes.%GetIterator()
     while iter.%GetNext(.key,.old) { do p.attributes.%Set(key,99) }

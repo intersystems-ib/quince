@@ -9,7 +9,7 @@ export default function MatchScorers({match,events,loading}:{match:Match;events:
    const players=match[`${side}Players`];
    return <section key={side} aria-label={`Anotadores de ${match[`${side}Name`]}`}>
     <h3>{match[`${side}Name`]}</h3>
-    {loading?<p className="scorers-empty">Cargando anotadores…</p>:([['try','Ensayos'],['conversion','Transformaciones'],['threePoints','Anotaciones de 3 puntos']] as const).map(([type,label])=>{
+    {loading?<p className="scorers-empty">Cargando anotadores…</p>:([['try','Ensayos'],['conversion','Transformaciones'],['threePoints','Penalties']] as const).map(([type,label])=>{
      const scorers=new Map<string,{name:string;minutes:string[]}>();
      events.filter(e=>e.side===side&&(type==='threePoints'?e.points===3:e.type===type&&e.points>0)).sort((a,b)=>a.sequence-b.sequence).forEach(e=>{
       const key=e.playerId||e.id;

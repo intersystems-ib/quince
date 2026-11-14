@@ -1,3 +1,4 @@
+import {useClubName} from './clubNames';
 import FixtureSummary from './FixtureSummary';
 import VenueInfo from './VenueInfo';
 import {useState} from 'react';
@@ -17,24 +18,24 @@ export const tacticText=(t:Tactic)=>`${styleLabels[t.style]} · Ritmo ${tempoLab
 function useMeetings(club:Club){return useQuery({queryKey:['preparations',club.id,club.date],queryFn:()=>api<{items:PreparationMeeting[]}>('/my-club/preparations')});}
 function upcoming(items:PreparationMeeting[],day:number){return items.filter(m=>!m.closed&&m.matchDay>=day).sort((a,b)=>a.day-b.day||a.fixtureId.localeCompare(b.fixtureId))[0];}
 export function PreparationTask({club}:{club:Club}){
- const q=useMeetings(club),meeting=upcoming(q.data?.items??[],club.day);
- return <Link to={preparationPath(meeting?.fixtureId)}><span className="task-icon purple"><CalendarClock size={20}/></span><div><strong>Reunión con el cuerpo técnico</strong><p>{meeting?`${meeting.opponentName} · ${meeting.available?'Informe disponible':meeting.preparing?'Informe en preparación':dateLabel(meeting.date)}`:'Preparación del próximo rival.'}</p></div><ChevronRight size={18}/></Link>;
+ const clubName=useClubName(),q=useMeetings(club),meeting=upcoming(q.data?.items??[],club.day);
+ return <Link to={preparationPath(meeting?.fixtureId)}><span className="task-icon purple"><CalendarClock size={20}/></span><div><strong>Reunión con el cuerpo técnico</strong><p>{meeting?`${clubName(meeting.opponentId,meeting.opponentName)} · ${meeting.available?'Informe disponible':meeting.preparing?'Informe en preparación':dateLabel(meeting.date)}`:'Preparación del próximo rival.'}</p></div><ChevronRight size={18}/></Link>;
 }
 export default function PreparationPanel({club,fixtureId}:{club:Club;fixtureId?:string}){
- const q=useMeetings(club);
+ const clubName=useClubName(),q=useMeetings(club);
  if(q.isLoading)return <Loading/>;
  if(q.error)return <ErrorBox error={q.error}/>;
  const requested=fixtureId?q.data?.items.find(m=>m.fixtureId===fixtureId):undefined;
  const meeting=requested&&(!requested.closed||requested.matchDay>club.day)?requested:upcoming(q.data?.items??[],club.day)??requested;
  if(!meeting)return <section className="card preparation-waiting"><CalendarClock size={26}/><h3>No hay una reunión pendiente</h3><p className="muted">Las reuniones se programan dos días antes de los partidos oficiales.</p></section>;
- if(!meeting.available)return <section className="card preparation-waiting"><CalendarClock size={26}/><h3>Preparación frente a {meeting.opponentName}</h3><p>{meeting.closed?'La reunión de preparación ha finalizado.':meeting.preparing?'El cuerpo técnico está trabajando en la elaboración del informe.':`La preparación del informe comenzará después del partido anterior${meeting.preparationStartDate?`, a partir del ${dateLabel(meeting.preparationStartDate)}`:''}.`}</p><p className="muted">Reunión: {dateLabel(meeting.date)} · Partido: {dateLabel(meeting.matchDate)}</p><Link className="button secondary" to="/calendario">Ver calendario</Link></section>;
+ if(!meeting.available)return <section className="card preparation-waiting"><CalendarClock size={26}/><h3>Preparación frente a {clubName(meeting.opponentId,meeting.opponentName)}</h3><p>{meeting.closed?'La reunión de preparación ha finalizado.':meeting.preparing?'El cuerpo técnico está trabajando en la elaboración del informe.':`La preparación del informe comenzará después del partido anterior${meeting.preparationStartDate?`, a partir del ${dateLabel(meeting.preparationStartDate)}`:''}.`}</p><p className="muted">Reunión: {dateLabel(meeting.date)} · Partido: {dateLabel(meeting.matchDate)}</p><Link className="button secondary" to="/calendario">Ver calendario</Link></section>;
  return <OpponentPreparation key={`${meeting.fixtureId}-${club.date}`} fixtureId={meeting.fixtureId}/>;
 }
 function OpponentPreparation({fixtureId}:{fixtureId:string}){
- const q=useQuery({queryKey:['preparation',fixtureId],queryFn:()=>api<PreparationReport>(`/preparations/${fixtureId}`),retry:false});
+ const clubName=useClubName(),q=useQuery({queryKey:['preparation',fixtureId],queryFn:()=>api<PreparationReport>(`/preparations/${fixtureId}`),retry:false});
  if(q.isLoading)return <Loading/>;
  if(q.error)return <ErrorBox error={q.error}/>;
- const r=q.data!;
+ const r={...q.data!,ownName:clubName(q.data!.clubId,q.data!.ownName),opponentName:clubName(q.data!.opponentId,q.data!.opponentName)};
  return <><div className="preparation-report-heading"><div><div className="eyebrow">REUNIÓN CON EL CUERPO TÉCNICO</div><h2>Preparación del rival</h2><p>Partido del {dateLabel(r.meeting.matchDate)}</p></div><button className="button secondary" disabled={q.isFetching} onClick={()=>void q.refetch()}><RefreshCw size={16}/>Actualizar informe</button></div>
  <PreparationFixture report={r}/>
  {r.lastApplied&&(r.lastApplied.outdated||r.lastApplied.tacticChanged)&&<p className="notice" role="status">La convocatoria o la táctica han cambiado. Actualiza el informe antes de aplicar la recomendación.</p>}

@@ -1,6 +1,6 @@
 Class Rugby.Service.OpponentPreparation Extends %RegisteredObject
 {
-Parameter VERSION = "1.3.0";
+Parameter VERSION = "1.4.0";
 ClassMethod Official(f As %DynamicObject) As %Boolean
 {
     quit ('f.%Get("archived",0))&&$listfind($listbuild("regular","cup-group","quarterfinal","semifinal","final"),f.%Get("stage"))&&(f.homeId'="")&&(f.awayId'="")
@@ -84,6 +84,7 @@ ClassMethod Risk(t As %DynamicObject) As %String
     set text=$select(t.style="hands":"El juego a la mano exige precisión en pase y recepción.",t.style="kicking":"El juego al pie cede posesión y exige perseguir las patadas.",1:"El equilibrio reduce la especialización en nuestras ventajas.")
     if t.tempo="fast" set text=text_" El ritmo alto aumenta el desgaste."
     if t.tempo="slow" set text=text_" El ritmo pausado reduce las oportunidades de acelerar el ataque."
+    if t.defense="low" set text=text_" La presión baja ahorra energía, con menor oposición al avance rival."
     if t.defense="high" set text=text_" La presión alta exige energía y disciplina."
     set text=text_" "_$select(t.%Get("penaltyPriority","auto")="posts":"Se priorizan los tiros a palos alcanzables.",t.%Get("penaltyPriority","auto")="touch":"Se renuncia a tiros a palos para buscar el ensayo.",t.%Get("penaltyPriority","auto")="quick":"Jugar rápido puede provocar pérdidas de balón.",1:"Los golpes se deciden según marcador, tiempo y alcance del pateador.")
     quit text
