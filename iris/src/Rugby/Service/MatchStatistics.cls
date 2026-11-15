@@ -86,4 +86,22 @@ ClassMethod History(pid As %String) As %DynamicObject
     set result=##class(Rugby.Service.Router).Paginate(items),result.summary={"appearances":(appearances),"playedSeconds":(seconds),"stats":(totals),"partialMatches":(partial)}
     quit result
 }
+ClassMethod Scorers(fixtureId As %String) As %DynamicObject
+{
+    set f=##class(Rugby.Service.Store).Get("Fixture",fixtureId),result={"fixtureId":(f.id),"home":[],"away":[]}
+    if f.status'="finished" quit result
+    // Statistics keys start with the fixture id; read only this match's catalog range.
+    set prefix=f.id_"-",id=prefix,game=##class(Rugby.Service.Store).Game()
+    for {
+        set id=$order(^RugbyWorld(game,"catalog","PlayerMatchStats",id))
+        quit:$extract(id,1,$length(prefix))'=prefix
+        set r=##class(Rugby.Service.Store).Get("PlayerMatchStats",id)
+        if r.fixtureId'=f.id continue
+        set tries=r.stats.%Get("tries",0),conversions=r.stats.%Get("conversions",0),penalties=r.stats.%Get("penaltyGoals",0)+r.stats.%Get("drops",0)
+        if (tries+conversions+penalties)=0 continue
+        if (r.side'="home")&&(r.side'="away") continue
+        do result.%Get(r.side).%Push({"playerId":(r.playerId),"name":(r.playerName),"tries":(tries),"conversions":(conversions),"penalties":(penalties)})
+    }
+    quit result
+}
 }

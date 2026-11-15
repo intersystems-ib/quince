@@ -38,6 +38,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
     if (resource="players")&&(method="POST")&&(child="renew") quit ##class(Rugby.Service.Transfers).Open(id,b,key,"renewal")
     if (resource="players")&&(method="POST")&&(child="negotiate") quit ##class(Rugby.Service.Transfers).Open(id,b,key)
     if method="GET" {
+        if (resource="fixtures")&&(child="scorers") quit ##class(Rugby.Service.MatchStatistics).Scorers(id)
         if resource="news" quit ##class(Rugby.Service.News).Recent()
         if resource="competitions" {
             if id="" quit ..Paginate(##class(Rugby.Service.Store).All("Competition"))

@@ -1,6 +1,15 @@
 Class Rugby.Test.MatchStatistics Extends %RegisteredObject
 {
 ClassMethod Assert(ok As %Boolean, text As %String) { do ##class(Rugby.Test.Suite).Assert(ok,text) }
+ClassMethod CheckScorers(f As %DynamicObject)
+{
+    set summary=##class(Rugby.Service.Router).Resolve("GET","fixtures",f.id,"scorers","",{},"")
+    for side="home","away" {
+        set players=summary.%Get(side),points=0,tries=0
+        for i=0:1:players.%Size()-1 { set p=players.%Get(i),points=points+(p.tries*5)+(p.conversions*2)+(p.penalties*3),tries=tries+p.tries do ..Assert((p.name'="")&&((p.tries+p.conversions+p.penalties)>0),"Scorer summaries contain saved names and positive scoring counters") }
+        do ..Assert((points=f.%Get(side_"Score"))&&(tries=f.%Get(side_"Tries")),"Scorer summaries reconcile with the saved scoreboard")
+    }
+}
 ClassMethod Run()
 {
     set m=##class(Rugby.Test.Suite).Build(593)
@@ -22,6 +31,7 @@ ClassMethod Run()
         do ..Assert(score=m.%Get(side_"Score"),"Individual points reconcile to final score")
     }
     do ##class(Rugby.Service.MatchStatistics).Live(m,f),##class(Rugby.Service.Matches).Settle(m)
+    do ..CheckScorers(##class(Rugby.Service.Store).Get("Fixture",f.id))
     do ..Assert(##class(Rugby.Service.Store).All("PlayerMatchStats").%Size()=count,"Settlement retries do not duplicate statistics")
     set pid=m.homePlayers.%Get(0).playerId,%RugbyQuery={"limit":1},history=##class(Rugby.Service.MatchStatistics).History(pid)
     do ..Assert((history.total=1)&&(history.items.%Size()=1)&&(history.summary.appearances=1),"History is paginated without duplicating snapshots")
@@ -41,9 +51,16 @@ ClassMethod Run()
     do ..Assert(partial&&(history.total=2)&&(history.summary.partialMatches=1),"History supports old matches and pagination")
     set c=##class(Rugby.Service.Store).Get("Club","c2"),af={"id":"statistics-ai","homeId":"c2","awayId":"c3","clubId":"c2","matchId":"","stage":"friendly","day":(c.day),"date":(c.date),"seed":593,"status":"scheduled"}
     do ##class(Rugby.Service.Competition).Simulate(af)
+    do ..CheckScorers(af)
     set rows=##class(Rugby.Service.Store).All("PlayerMatchStats"),sums={"home":0,"away":0},found=0
     for i=0:1:rows.%Size()-1 { set r=rows.%Get(i) if r.fixtureId=af.id { set found=found+1 do sums.%Set(r.side,sums.%Get(r.side)+r.stats.points) do ..Assert(r.complete&&(r.source="aggregate"),"Automatic teams persist individual statistics") } }
     do ..Assert((found>0)&&(sums.home=af.homeScore)&&(sums.away=af.awayScore),"Automatic player scores reconcile with the fixture")
     do ..Assert('af.%IsDefined("statisticsPlayers"),"Temporary simulation attributes are not stored in fixtures")
+    set af.stage="regular",af.round=1,af.competitionKey="league-"_c.competitionId_"-"_##class(Rugby.Service.Seasons).Year(c.id)
+    do ##class(Rugby.Service.Store).Put("Fixture",af)
+    set view=##class(Rugby.Service.Competition).View(af.competitionKey),found=0
+    for i=0:1:view.regularFixtures.%Size()-1 { set row=view.regularFixtures.%Get(i) if row.id=af.id { set found=row.%IsDefined("scorers") do ..Assert(row.scorers.%ToJSON()=##class(Rugby.Service.MatchStatistics).Scorers(af.id).%ToJSON(),"The latest round returns the score and all scorers in the same response") } }
+    do ..Assert(found,"Latest round includes scorers without a second request")
+    do ..Assert('##class(Rugby.Service.Store).Get("Fixture",af.id).%IsDefined("scorers"),"Reading scorers does not rewrite stored fixtures")
 }
 }

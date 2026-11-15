@@ -236,6 +236,9 @@ ClassMethod View(id As %String) As %DynamicObject
     set retirees=[],players=##class(Rugby.Service.Store).All("Player")
     for i=0:1:players.%Size()-1 { set p=players.%Get(i) if p.%Get("retirementSeasonYear",-1)=comp.year { set cid=p.%Get("retirementClubId") if (cid'="")&&(##class(Rugby.Service.Store).Get("Club",cid).competitionId=comp.divisionId) do retirees.%Push({"playerId":(p.id),"name":(p.name),"clubId":(cid),"retirementDate":(p.retirementDate)}) } }
     set comp.retiringPlayers=retirees
+    set latestDay=-999999,latestRound=0
+    for i=0:1:regular.%Size()-1 { set f=regular.%Get(i) if (f.status="finished")&&(f.day>latestDay) set latestDay=f.day,latestRound=f.round }
+    for i=0:1:regular.%Size()-1 { set f=regular.%Get(i) if (f.status="finished")&&(f.round=latestRound) set f.scorers=##class(Rugby.Service.MatchStatistics).Scorers(f.id) }
     set comp.standings=..Table(comp),comp.regularFixtures=regular,comp.semifinals=semis,comp.final=final,comp.regularFinished=finished
     quit comp
 }
