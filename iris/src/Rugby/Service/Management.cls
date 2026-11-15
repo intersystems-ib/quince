@@ -196,7 +196,6 @@ ClassMethod Advance(club As %String, b As %DynamicObject, key As %String) As %Dy
     do ##class(Rugby.Service.Store).Put("Club",c)
 
     set announcements=##class(Rugby.Service.Seasons).Announce(c.day),rivals=##class(Rugby.Service.Rivals).Day(c.day)
-    do ##class(Rugby.Service.Competition).Sync(c.day)
     set rivals.monthlyPayroll=payroll,rivals.financeExecution=##class(Rugby.Service.Finance).TickAll(c.day)
     set rivals.friendlyInvitations=##class(Rugby.Service.FriendlyRequests).Tick(),rivals.retirementAnnouncements=announcements,rivals.seasonTransition=##class(Rugby.Service.Seasons).Tick(c.day)
     set rivals.summerBreak=summer,rivals.seasonOpening=##class(Rugby.Service.SeasonCalendar).Open(c.day)

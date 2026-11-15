@@ -40,14 +40,20 @@ ClassMethod SeasonEnd(date As %String) As %String
     if +$piece(date,"-",2)>6 set year=year+1
     quit year_"-06-30"
 }
-ClassMethod Profile(p As %DynamicObject, club As %DynamicObject, plan As %DynamicObject, qualities As %DynamicObject) As %DynamicObject
+ClassMethod Summary(p As %DynamicObject, club As %DynamicObject) As %DynamicObject
 {
     set position=##class(Rugby.Service.Positions).Describe(p.position)
     set p.positionRole=position.id,p.positionName=position.name,p.positionGroup=position.group
     set p.monthlyWage=##class(Rugby.Service.MonthlyPayroll).Value(p)
     if p.%IsDefined("seniorWeeklyWage") set p.seniorMonthlyWage=##class(Rugby.Service.Payroll).Monthly(p.seniorWeeklyWage)
     do ##class(Rugby.Service.Injuries).View(p,club.day)
-    set p.average=..Average(p),future=##class(%DynamicObject).%FromJSON(p.%ToJSON()),group=""
+    set p.average=..Average(p)
+    for field="potential","potentialDate","potentialTrend","developmentCeiling" { do p.%Remove(field) }
+    quit p
+}
+ClassMethod Profile(p As %DynamicObject, club As %DynamicObject, plan As %DynamicObject, qualities As %DynamicObject) As %DynamicObject
+{
+    set p=..Summary(p,club),future=##class(%DynamicObject).%FromJSON(p.%ToJSON()),group=""
     for i=0:1:plan.groups.%Size()-1 {
         set g=plan.groups.%Get(i)
         for j=0:1:g.playerIds.%Size()-1 { if g.playerIds.%Get(j)=p.id set group=g }

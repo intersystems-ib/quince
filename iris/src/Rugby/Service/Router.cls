@@ -52,8 +52,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
             if child="" quit c
             if (child="players")||(child="academy") {
                 set a=##class(Rugby.Service.Store).All("Player","clubId",id),items=[]
-                set plan=##class(Rugby.Service.Store).Get("TrainingPlan",id),qualities=##class(Rugby.Service.Staff).Qualities(id)
-                for i=0:1:a.%Size()-1 { set p=a.%Get(i) if (child="players")||(p.category="academy") do items.%Push(##class(Rugby.Service.Development).Profile(p,c,plan,qualities)) }
+                for i=0:1:a.%Size()-1 { set p=a.%Get(i) if (child="players")||(p.category="academy") do items.%Push(##class(Rugby.Service.Development).Summary(p,c)) }
                 quit ..Paginate(items)
             }
             if child="lineups" {

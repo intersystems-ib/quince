@@ -172,7 +172,7 @@ ClassMethod Simulate(f As %DynamicObject)
     for cid=f.homeId,f.awayId {
         set c=##class(Rugby.Service.Store).Get("Club",cid),roster=##class(Rugby.Service.Store).All("Player","clubId",cid)
         for i=0:1:roster.%Size()-1 { set p=roster.%Get(i) if ##class(Rugby.Service.Injuries).Recover(p,f.day) do ##class(Rugby.Service.Store).Put("Player",p) }
-        do ##class(Rugby.Service.Rivals).Lineup(c)
+        do ##class(Rugby.Service.Rivals).Lineup(c,f.day)
     }
     set homePlayers=##class(Rugby.Simulation.Tactics).LineupPlayers(f.homeId),awayPlayers=##class(Rugby.Simulation.Tactics).LineupPlayers(f.awayId),homePlan=##class(Rugby.Simulation.Tactics).Decide(homePlayers,awayPlayers),awayPlan=##class(Rugby.Simulation.Tactics).Decide(awayPlayers,homePlayers)
     set f.homeTactic=homePlan.tactic,f.awayTactic=awayPlan.tactic,f.tacticalAssessments={"home":(homePlan),"away":(awayPlan)}
@@ -213,12 +213,13 @@ ClassMethod Sync(day As %Integer)
         if comp.phase="finished" continue
         // Regular results, then semis, then final. Never simulate the managed club.
         for pass=1:1:4 {
-            set fixtures=..Fixtures(comp.id)
+            set fixtures=..Fixtures(comp.id),before=##class(Rugby.Service.Store).Get("Competition",comp.id).version
             for j=0:1:fixtures.%Size()-1 {
                 set f=fixtures.%Get(j)
                 if (f.day<=day)&&(f.status="scheduled")&&(f.homeId'=##class(Rugby.Service.Store).ManagedClub())&&(f.awayId'=##class(Rugby.Service.Store).ManagedClub()) do ..Simulate(f)
             }
             do ..Progress(comp.id)
+            if (##class(Rugby.Service.Store).Get("Competition",comp.id).version=before)&&(..Fixtures(comp.id).%Size()=fixtures.%Size()) quit
         }
     }
 }

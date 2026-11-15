@@ -19,6 +19,8 @@ ClassMethod Create(b As %DynamicObject, key As %String) As %DynamicObject
     set seed=b.%Get("seed",f.%Get("seed",17341))
     if '##class(Rugby.Service.Store).Integer(seed,1,2147483646) do ##class(Rugby.Service.Store).Fail(422,"SEED","La semilla debe estar entre 1 y 2147483646.")
     set id="m"_$increment(^RugbyWorld(##class(Rugby.Service.Store).Game(),"ids","Match")),home=##class(Rugby.Service.Store).Get("Club",f.homeId),away=##class(Rugby.Service.Store).Get("Club",f.awayId)
+    set rival=$select(home.id=club.id:away,1:home)
+    do ##class(Rugby.Service.Rivals).EnsureLineup(rival,club.day)
     set m={"id":(id),"clubId":(##class(Rugby.Service.Store).ManagedClub()),"fixtureId":(f.id),"homeId":(f.homeId),"awayId":(f.awayId),"homeName":(home.name),"awayName":(away.name),"homeColor":(home.color),"awayColor":(away.color),"lineupId":(lineup.id),"status":"scheduled","period":1,"clock":0,"speed":20,"credit":0,"homeScore":0,"awayScore":0,"possession":"home","x":50,"y":35,"phase":"restart","seed":(seed),"rng":(seed),"engineVersion":(##class(Rugby.Simulation.Engine).#VERSION),"sequence":0,"commandSequence":0,"settled":false,"homeSubs":0,"awaySubs":0,"homePlayers":[],"awayPlayers":[],"homeStats":{},"awayStats":{},"homeTactic":{},"awayTactic":{}}
     do ##class(Rugby.Service.Kits).Apply(m,home,away)
     set m.groupId=f.%Get("groupId"),m.competitionType=f.%Get("competitionType"),m.competitionKey=f.%Get("competitionKey"),m.stage=f.%Get("stage","friendly"),m.round=f.%Get("round",0),m.date=f.%Get("date",club.date)
@@ -35,6 +37,8 @@ ClassMethod Start(id As %String) As %DynamicObject
     if m.status'="scheduled" quit m
     if ##class(Rugby.Service.Store).Active(##class(Rugby.Service.Store).ManagedClub()) do ##class(Rugby.Service.Store).Fail(409,"MATCH_ACTIVE","Ya hay un partido activo.")
     for side="home","away" {
+        set cid=m.%Get(side_"Id")
+        if cid'=##class(Rugby.Service.Store).ManagedClub() do ##class(Rugby.Service.Rivals).Lineup(##class(Rugby.Service.Store).Get("Club",cid))
         set cid=m.%Get(side_"Id"),l=##class(Rugby.Service.Store).Get("Lineup",$select(cid=##class(Rugby.Service.Store).ManagedClub():m.lineupId,1:cid_"-default")),v=##class(Rugby.Service.Management).Validate(l)
         if 'v.valid do ##class(Rugby.Service.Store).Fail(422,"INVALID_LINEUP",v.errors.%ToJSON())
         set snapshots=[]

@@ -57,9 +57,10 @@ ClassMethod Market(year As %Integer)
     do ##class(Rugby.Service.Transfers).SeedMarket(year)
 }
 
-ClassMethod Focus(p As %DynamicObject, day As %Integer, seed As %Integer) As %String
+ClassMethod Focus(p As %DynamicObject, day As %Integer, seed As %Integer, catalog As %DynamicArray = "") As %String
 {
-    set catalog=##class(Rugby.Service.Development).Catalog(),best=-1,focus="strength",general=(..Hash(p.id_"-"_day,seed)#7)=0
+    if '$isobject(catalog) set catalog=##class(Rugby.Service.Development).Catalog()
+    set best=-1,focus="strength",general=(..Hash(p.id_"-"_day,seed)#7)=0
     for i=0:1:16 {
         set attr=catalog.%Get(i).id,weight=1
         if 'general {
@@ -77,19 +78,32 @@ ClassMethod MatchNear(club As %String, day As %Integer) As %Boolean
     for i=0:1:fixtures.%Size()-1 { set f=fixtures.%Get(i) if (f.day>=day)&&(f.day<=(day+1))&&(f.status'="finished") set near=1 }
     quit near
 }
+ClassMethod RosterSignature(players As %DynamicArray, availability As %Boolean = 0) As %String
+{
+    set signature=""
+    for i=0:1:players.%Size()-1 {
+        set p=players.%Get(i)
+        if p.category'="senior" continue
+        set signature=signature_"|"_p.id_":"_p.position
+        if availability set signature=signature_":"_p.available
+    }
+    quit signature
+}
 ClassMethod Plan(c As %DynamicObject, day As %Integer) As %DynamicObject
 {
-    set old=##class(Rugby.Service.Store).Get("TrainingPlan",c.id),players=##class(Rugby.Service.Store).All("Player","clubId",c.id),groups=[],buckets={},seed=..Seed(),weekday=($zdateh("2026-11-07",3)+day+4)#7,near=..MatchNear(c.id,day)
+    set old=##class(Rugby.Service.Store).Get("TrainingPlan",c.id),players=##class(Rugby.Service.Store).All("Player","clubId",c.id),signature=..RosterSignature(players),weekStart=day-(##class(Rugby.Service.WeeklyTraining).Weekday(day)-1),seed=..Seed()
+    if (old.%Get("aiWeeklyVersion")="1.0.0")&&(old.%Get("aiWeekStart",day-8)=weekStart)&&(old.%Get("aiRosterSignature")=signature) quit old
+    set sessions={},catalog=##class(Rugby.Service.Development).Catalog()
     for i=0:1:players.%Size()-1 {
-        set p=players.%Get(i),focus="recovery",intensity="low"
-        if p.available&&(p.energy>=65)&&(weekday'=0)&&(weekday'=6)&&((p.category="academy")||('near)) {
-            set focus=..Focus(p,day,seed),intensity=$select((p.energy>=85)&&((..Hash(p.id_"-"_day,seed)#3)=0):"high",1:"normal")
-        }
-        set key=focus_"-"_intensity
-        if 'buckets.%IsDefined(key) { set t=##class(Rugby.Service.Development).Type(focus),g={"id":("ai-"_key),"name":(t.name),"focus":(focus),"intensity":(intensity),"playerIds":[]} do buckets.%Set(key,g),groups.%Push(g) }
-        do buckets.%Get(key).playerIds.%Push(p.id)
+        set p=players.%Get(i)
+        if p.category'="senior" continue
+        set days=[]
+        for offset=0:1:6 { do days.%Push($select(offset<5:..Focus(p,weekStart+offset,seed,catalog),1:"recovery")) }
+        do sessions.%Set(p.id,days)
     }
-    quit ##class(Rugby.Service.Development).SavePlan(c.id,{"version":(old.version),"groups":(groups)})
+    set plan={"id":(c.id),"clubId":(c.id),"mode":"weekly","weekly":(##class(Rugby.Service.WeeklyTraining).Defaults()),"groups":[],"rawDailyCost":0,"dailyCost":0,"aiWeeklyVersion":"1.0.0","aiWeekStart":(weekStart),"aiRosterSignature":(signature),"aiSeed":(seed),"aiSessions":(sessions)}
+    do ##class(Rugby.Service.Store).Put("TrainingPlan",plan)
+    quit plan
 }
 ClassMethod Coach(c As %DynamicObject, day As %Integer) As %DynamicObject
 {
@@ -264,9 +278,20 @@ ClassMethod Pick(players As %DynamicArray, used As %DynamicObject, pos As %Integ
     }
     quit id
 }
-ClassMethod Lineup(c As %DynamicObject)
+ClassMethod EnsureLineup(c As %DynamicObject, day As %Integer) As %DynamicObject
 {
+    set game=##class(Rugby.Service.Store).Game(),signature=..RosterSignature(##class(Rugby.Service.Store).All("Player","clubId",c.id),1),saved=$get(^RugbyWorld(game,"aiLineupState",c.id)),state={"signature":"","day":(day-1)},reason=""
+    if saved'="" set state=##class(%DynamicObject).%FromJSON(saved)
+    if state.signature'=signature { set reason="rosterOrAvailability" }
+    elseif (state.day'=day)&&..MatchNear(c.id,day) { set reason="matchPreparation" }
+    if reason'="" do ..Lineup(c,day)
+    quit {"updated":(reason'=""),"reason":(reason)}
+}
+ClassMethod Lineup(c As %DynamicObject, day As %Integer = "")
+{
+    if day="" set day=c.day
     set players=##class(Rugby.Service.Store).All("Player","clubId",c.id),l=##class(Rugby.Service.Store).Get("Lineup",c.id_"-default"),slots=[],bench=[],used={}
+    set previous=##class(%DynamicObject).%FromJSON(l.%ToJSON())
     for pos=1:1:15 {
         set id=..Pick(players,used,pos,1)
         if id="" set id=..Pick(players,used,pos)
@@ -278,8 +303,14 @@ ClassMethod Lineup(c As %DynamicObject)
     for pos=4,8,9,10,15 { quit:bench.%Size()>=maxBench  set id=..Pick(players,used,pos) if id'="" { do used.%Set(id,1),bench.%Push(id) } }
     set l.slots=slots,l.bench=bench,l.captainId=slots.%Get(8).playerId,l.tactic={"style":"balanced","tempo":"normal","defense":"normal"},valid=##class(Rugby.Service.Management).Validate(l)
     if 'valid.valid do ##class(Rugby.Service.Store).Fail(409,"AI_LINEUP",valid.errors.%ToJSON())
-    do ##class(Rugby.Service.Store).Put("Lineup",l)
-    for i=0:1:14 { set slot=slots.%Get(i),slot.id=l.id_"-"_(i+1),slot.clubId=c.id do ##class(Rugby.Service.Store).Put("LineupSlot",slot) }
+    set changed=(previous.bench.%ToJSON()'=bench.%ToJSON())||(previous.captainId'=l.captainId)||(previous.tactic.%ToJSON()'=l.tactic.%ToJSON())||(previous.slots.%Size()'=15)
+    for i=0:1:14 { if previous.slots.%Get(i).playerId'=slots.%Get(i).playerId set changed=1 }
+    if changed {
+        do ##class(Rugby.Service.Store).Put("Lineup",l)
+        for i=0:1:14 { set slot=slots.%Get(i),slot.id=l.id_"-"_(i+1),slot.clubId=c.id do ##class(Rugby.Service.Store).Put("LineupSlot",slot) }
+    }
+    set state={"signature":(..RosterSignature(players,1)),"day":(day)}
+    set ^RugbyWorld(##class(Rugby.Service.Store).Game(),"aiLineupState",c.id)=state.%ToJSON()
 }
 ClassMethod Day(day As %Integer) As %DynamicObject
 {
@@ -324,7 +355,8 @@ ClassMethod Day(day As %Integer) As %DynamicObject
     set auction=##class(Rugby.Service.TransferPool).Compete(report,day)
     for i=0:1:report.%Size()-1 {
         set r=report.%Get(i),c=##class(Rugby.Service.Store).Get("Club",r.clubId),r.recruitment=auction.results.%Get(c.id,{"signed":false}),plan=..Plan(c,day),execution=##class(Rugby.Service.Development).Process(c.id,day),c.aiLastDay=day
-        do ##class(Rugby.Service.Store).Put("Club",c),..Lineup(c)
+        do ##class(Rugby.Service.Store).Put("Club",c)
+        set r.lineupSelection=..EnsureLineup(c,day)
         set r.trainingExecutionId=execution.id,r.trainingCost=execution.trainingCost,r.playersTrained=execution.results.%Size(),r.results=execution.results
     }
     do ##class(Rugby.Service.Competition).Sync(day)

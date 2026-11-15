@@ -74,6 +74,7 @@ ClassMethod Context(club As %String, plan As %DynamicObject) As %DynamicObject
 {
     set weekly=##class(%DynamicObject).%FromJSON(plan.%Get("weekly",..Defaults()).%ToJSON()),weekly.academy=..AcademyWeek()
     set context={"weekly":(weekly),"matchDays":{},"themes":{},"labels":{}},themes=..Themes(),catalog=##class(Rugby.Service.Development).Catalog()
+    if plan.%IsDefined("aiSessions") set context.aiSessions=plan.aiSessions,context.aiSeed=plan.aiSeed
     for i=0:1:themes.%Size()-1 { set theme=themes.%Get(i) do context.themes.%Set(theme.id,theme) }
     for i=0:1:catalog.%Size()-1 { set type=catalog.%Get(i) do context.labels.%Set(type.id,type.name) }
     set fixtures=##class(Rugby.Service.Competition).ClubFixtures(club)
@@ -83,7 +84,11 @@ ClassMethod Context(club As %String, plan As %DynamicObject) As %DynamicObject
 ClassMethod Group(p As %DynamicObject, day As %Integer, context As %DynamicObject) As %DynamicObject
 {
     set weekday=..Weekday(day),category=p.category,week=context.weekly.%Get(category),entry=week.%Get(weekday-1),theme=context.themes.%Get(entry.theme),line=$select(p.position<=8:"forwards",1:"backs"),focus=entry.%Get(line,$piece(theme.%Get(line),",",weekday)),intensity=$select((p.energy<75)||(((day-p.birthDay)\365)>=33):"low",1:"normal"),reason="scheduled"
-    if ('p.available)||(p.energy<60) set focus="recovery",reason=$select('p.available:"unavailable",1:"lowEnergy")
+    set rival=(category="senior")&&context.%IsDefined("aiSessions")
+    if rival {
+        set days=context.aiSessions.%Get(p.id,[]),focus=days.%Get(weekday-1,"recovery"),intensity=$select((p.energy>=85)&&((##class(Rugby.Service.Rivals).Hash(p.id_"-"_day,context.aiSeed)#3)=0):"high",1:"normal")
+    }
+    if ('p.available)||(p.energy<$select(rival:65,1:60)) set focus="recovery",reason=$select('p.available:"unavailable",1:"lowEnergy")
     if (category="senior")&&context.matchDays.%IsDefined(day) set focus="recovery",reason="matchPreparation"
     if focus="recovery" set intensity="low"
     set id=category_"-"_line_"-"_focus_"-"_intensity

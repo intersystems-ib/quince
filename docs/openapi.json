@@ -1605,7 +1605,7 @@
     },
     "/clubs/{clubId}/players": {
       "get": {
-        "summary": "Plantilla y cantera del club",
+        "summary": "Plantilla y cantera con media actual, sin proyección de potencial",
         "operationId": "get__clubs_clubId_players",
         "parameters": [
           {
@@ -1886,7 +1886,7 @@
     },
     "/players/{playerId}": {
       "get": {
-        "summary": "Ficha de jugador",
+        "summary": "Ficha de jugador con proyección de potencial al final de temporada",
         "operationId": "get__players_playerId",
         "parameters": [
           {
@@ -2712,7 +2712,7 @@
     },
     "/clubs/{clubId}/academy": {
       "get": {
-        "summary": "Jugadores juveniles",
+        "summary": "Jugadores juveniles con media actual, sin proyección de potencial",
         "operationId": "get__clubs_clubId_academy",
         "parameters": [
           {
