@@ -101,6 +101,8 @@ schemas['NewsPage']['properties'].update({'fromDate':S,'toDate':S})
 schemas['AdvanceSchedule']=obj({'fixtures':arr(ref('Fixture')),'meetings':arr(ref('PreparationMeeting')),'seasonEvents':arr(ref('SeasonEvent'))},['fixtures','meetings','seasonEvents'])
 schemas['AdvanceSnapshot']=obj({'club':ref('Club'),'schedule':ref('AdvanceSchedule'),'resultsRevision':S,'results':ref('RecentResults')},['club','schedule','resultsRevision'])
 schemas['AutoAdvanceInput']=obj({'version':I,'day':I,'resultsRevision':S},['version'])
+schemas['TrainingExecution']['description']='Recibo mínimo diario para idempotencia y nóminas; la variación de atributos se consulta en la ficha del jugador.'
+schemas['TrainingExecution']['properties'].update({'playersTrained':I,'results':{'type':'array','maxItems':0,'items':{}},'detailsCompacted':B})
 paths={}
 pagination=[{'name':'offset','in':'query','schema':{'type':'integer','minimum':0,'default':0}},{'name':'limit','in':'query','schema':{'type':'integer','minimum':1,'maximum':500,'default':100}}]
 def route(path,method,summary,response,request=None,key=False,paged=False,created=False):

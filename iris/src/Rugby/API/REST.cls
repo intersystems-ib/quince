@@ -56,13 +56,13 @@ ClassMethod Handle(method As %String, resource As %String, id As %String = "", c
         if $system.Status.IsError(sc) throw ##class(%Exception.StatusException).CreateFromStatus(sc)
         set %response.Status=response.HTTPStatus_" "_$select(response.HTTPStatus<400:"OK",1:"Error")
         do %response.SetHeader("X-Interop-Session-Id",response.SessionId)
-        write response.BodyJSON
+        write response.Payload()
     } catch ex {
         set %response.Status="503 Service Unavailable"
         set ^RugbyAPIError(request.CorrelationId)=ex.DisplayString()
         write {"code":"INTEROP_UNAVAILABLE","message":"El motor de operaciones no está disponible. Reintenta en unos instantes.","requestId":(request.CorrelationId)}.%ToJSON()
     }
-    kill %RugbyInputBody,%RugbyQuery,%RugbyAuditCorrelation,%RugbyAuditSession,%RugbyAuditUser
+    kill %RugbyWireId,%RugbyWireJSON,%RugbyInputBody,%RugbyQuery,%RugbyAuditCorrelation,%RugbyAuditSession,%RugbyAuditUser
     quit $$$OK
 }
 }

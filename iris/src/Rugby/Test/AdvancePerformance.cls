@@ -61,7 +61,7 @@ ClassMethod Run()
         set journal=##class(Rugby.Service.Store).Get("RivalExecution","rivals-day-"_next.club.day)
         for i=0:1:journal.clubs.%Size()-1 {
             set report=journal.clubs.%Get(i),training=##class(Rugby.Service.Store).Get("TrainingExecution",report.trainingExecutionId)
-            do ..Assert(('report.%IsDefined("results"))&&('report.%IsDefined("staffSnapshot"))&&(training.results.%Size()>0),"Daily audit references complete immutable training records")
+            do ..Assert(('report.%IsDefined("results"))&&('report.%IsDefined("staffSnapshot"))&&(training.playersTrained>0)&&(training.results.%Size()=0),"Daily audit references a minimal training receipt")
         }
         set office=##class(Rugby.Service.Finance).Office(c.id),season=##class(Rugby.Service.Finance).Season(next.club)
         do ##class(Rugby.Service.Finance).Tick(c.id)

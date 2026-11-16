@@ -42,6 +42,8 @@ ClassMethod Venue(kind As %String, d As %DynamicObject)
 ClassMethod Put(kind As %String, d As %DynamicObject)
 {
     do ..Venue(kind,d)
+    set original=d
+    if kind="TrainingExecution" set d=##class(Rugby.Service.StorageMaintenance).Training(d)
     set previousSalary=""
     if (kind="Player")||(kind="Coach") set previousSalary=..Get(kind,d.id,0)
     if (kind="Player")&&('$isobject(previousSalary))&&(##class(Rugby.Service.TalentScale).Factor()<1) do ##class(Rugby.Service.TalentScale).Player(d)
@@ -73,7 +75,7 @@ ClassMethod Put(kind As %String, d As %DynamicObject)
         set revision=$increment(^RugbyWorld(..Game(),"resultsRevision"))
         kill ^RugbyWorld(..Game(),"recentResultsCache")
     }
-    if kind="TrainingExecution" do ##class(Rugby.Service.AttributeProgress).Record(d)
+    if kind="TrainingExecution" { set original.version=d.version do ##class(Rugby.Service.AttributeProgress).Record(original) }
     if (kind="Player")&&$isobject(previousSalary) {
         if ('previousSalary.%Get("available",1))&&d.available&&(previousSalary.clubId=d.clubId) do ##class(Rugby.Service.Management).ReturnToBench(d)
     }

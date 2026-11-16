@@ -34,7 +34,7 @@ ClassMethod Run()
     for i=0:1:groups.%Size()-1 { set g=groups.%Get(i) for j=0:1:g.playerIds.%Size()-1 { set total=total+1 if g.playerIds.%Get(j)=fw.id set found=found+1 } }
     do ..Assert((found=1)&&(total=##class(Rugby.Service.Store).All("Player","clubId",club).%Size()),"New arrivals and every squad member receive exactly one session")
     set before=fw.attributes.strength,balance=c.balance,execution=##class(Rugby.Service.Development).Process(club,c.day),fw=##class(Rugby.Service.Store).Get("Player",fw.id),snapshot=fw.%ToJSON(),count=##class(Rugby.Service.Store).All("TrainingExecution").%Size(),retry=##class(Rugby.Service.Development).Process(club,c.day)
-    do ..Assert((fw.attributes.strength>before)&&(execution.mode="weekly")&&(execution.groups.%Size()>0),"Daily execution uses resolved weekly drills")
+    do ..Assert((fw.attributes.strength>before)&&(execution.mode="weekly")&&(execution.playersTrained>0),"Daily execution uses resolved weekly drills")
     do ..Assert((snapshot=##class(Rugby.Service.Store).Get("Player",fw.id).%ToJSON())&&(retry.%ToJSON()=execution.%ToJSON())&&(count=##class(Rugby.Service.Store).All("TrainingExecution").%Size())&&(balance=##class(Rugby.Service.Store).Get("Club",club).balance),"Retry never repeats training or charges daily fees")
     set p=##class(Rugby.Service.Store).Get("Player",club_"-p1"),p.available=1,p.energy=100,p.age=22,p.birthDay=c.day-(22*365),q=##class(Rugby.Service.Staff).Qualities(club),rest=##class(%DynamicObject).%FromJSON(saved.%ToJSON())
     for i=0:1:6 { set rest.weekly.senior.%Get(i).theme="rest" }
@@ -84,7 +84,6 @@ ClassMethod Run()
     set legacy={"id":(club),"clubId":(club),"mode":"groups","groups":[],"dailyCost":0}
     do ##class(Rugby.Service.Store).Put("TrainingPlan",legacy)
     set execution=##class(Rugby.Service.Development).Process(club,c.day+1),trained=##class(Rugby.Service.Store).Get("Player",fw.id),found=0
-    for i=0:1:execution.groups.%Size()-1 { set g=execution.groups.%Get(i) if (g.category="academy")&&(g.focus="stamina") set found=1 }
-    do ..Assert((trained.attributes.stamina>40)&&found,"Legacy saves train academy automatically and audit the applied session")
+    do ..Assert((trained.attributes.stamina>40)&&(execution.playersTrained>0),"Legacy saves train academy automatically without retaining daily player details")
 }
 }

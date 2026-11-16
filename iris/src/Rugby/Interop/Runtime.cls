@@ -15,7 +15,7 @@ ClassMethod Start()
     set request=##class(Rugby.Interop.Message.Request).%New(),request.CorrelationId=$system.Util.CreateGUID(),request.Method="SYSTEM",request.Resource="bootstrap"
     set sc=..Send("System.In",request,.response)
     if $system.Status.IsError(sc) throw ##class(%Exception.StatusException).CreateFromStatus(sc)
-    if response.HTTPStatus>=400 throw ##class(%Exception.General).%New(response.BodyJSON)
-    kill %RugbyAuditCorrelation,%RugbyAuditSession,%RugbyAuditUser,%RugbyQuery
+    if response.HTTPStatus>=400 throw ##class(%Exception.General).%New(response.Payload())
+    kill %RugbyWireId,%RugbyWireJSON,%RugbyAuditCorrelation,%RugbyAuditSession,%RugbyAuditUser,%RugbyQuery
 }
 }

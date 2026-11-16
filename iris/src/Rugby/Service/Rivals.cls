@@ -357,7 +357,7 @@ ClassMethod Day(day As %Integer, deferSave As %Boolean = 0) As %DynamicObject
         set r=report.%Get(i),c=##class(Rugby.Service.Store).Get("Club",r.clubId),r.recruitment=auction.results.%Get(c.id,{"signed":false}),plan=..Plan(c,day),execution=##class(Rugby.Service.Development).Process(c.id,day),c.aiLastDay=day
         do ##class(Rugby.Service.Store).Put("Club",c)
         set r.lineupSelection=..EnsureLineup(c,day)
-        set r.trainingExecutionId=execution.id,r.trainingCost=execution.trainingCost,r.playersTrained=execution.results.%Size()
+        set r.trainingExecutionId=execution.id,r.trainingCost=execution.trainingCost,r.playersTrained=execution.%Get("playersTrained",execution.results.%Size())
     }
     do ##class(Rugby.Service.Competition).Sync(day)
     for i=0:1:report.%Size()-1 {

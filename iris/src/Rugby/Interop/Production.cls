@@ -2,7 +2,7 @@ Class Rugby.Interop.Production Extends Ens.Production
 {
 XData ProductionDefinition
 {
-<Production Name="Rugby.Interop.Production" LogGeneralTraceEvents="true">
+<Production Name="Rugby.Interop.Production" LogGeneralTraceEvents="false">
   <Description>Operaciones de Quince con trazabilidad de peticiones, procesos y cambios de datos.</Description>
   <Item Name="HTTP.In" ClassName="Rugby.Interop.Service.HTTP" PoolSize="0" Enabled="true"/>
   <Item Name="System.In" ClassName="Rugby.Interop.Service.HTTP" PoolSize="0" Enabled="true"/>

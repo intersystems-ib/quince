@@ -6,7 +6,7 @@ ClassMethod Run()
     set own=##class(Rugby.Service.Store).Get("Club","c1"),day=own.day+1,originalPlayers=##class(Rugby.Service.Store).All("Player","clubId","c1").%ToJSON(),originalPlan=##class(Rugby.Service.Store).Get("TrainingPlan","c1").%ToJSON(),originalStaff=##class(Rugby.Service.Staff).View("c1").%ToJSON(),fingerprint=""
     for pass=1:1:2 {
         tstart
-        set tired=##class(Rugby.Service.Store).Get("Player","c2-p1"),tired.energy=15
+        set tired=##class(Rugby.Service.Store).Get("Player","c2-p1"),tired.energy=15,beforeTired=tired.attributes.%ToJSON(),beforeYouth=##class(Rugby.Service.Development).Average(##class(Rugby.Service.Store).Get("Player","c2-academy-1"))
         do ##class(Rugby.Service.Store).Put("Player",tired)
         set injured=##class(Rugby.Service.Store).Get("Player","c2-p2"),injured.available=0,injured.recoveryDay=day+2
         do ##class(Rugby.Service.Store).Put("Player",injured)
@@ -32,10 +32,11 @@ ClassMethod Run()
             set l=##class(Rugby.Service.Store).Get("Lineup",r.clubId_"-default"),valid=##class(Rugby.Service.Management).Validate(l)
             do ..Assert(valid.valid,"AI chooses a legal lineup by position")
             set training=##class(Rugby.Service.Store).Get("TrainingExecution",r.trainingExecutionId)
-            for j=0:1:training.results.%Size()-1 {
-                set e=training.results.%Get(j),p=##class(Rugby.Service.Store).Get("Player",e.playerId)
-                if (p.category="academy")&&(e.attributeGain>0)&&(e.energyDelta<0) set youthTraining=youthTraining+1
-                if e.playerId="c2-p1" { set recovered=e.focus="recovery" do ..Assert((e.energyDelta=18)&&(e.attributeGain=0),"Exhausted players rest instead of training") }
+            do ..Assert((training.playersTrained>0)&&(training.results.%Size()=0),"Daily receipts keep counts without unobservable player details")
+            if c.id="c2" {
+                set youth=##class(Rugby.Service.Store).Get("Player","c2-academy-1"),rested=##class(Rugby.Service.Store).Get("Player",tired.id)
+                if ##class(Rugby.Service.Development).Average(youth)>beforeYouth set youthTraining=1
+                set recovered=(rested.energy=33)&&(rested.attributes.%ToJSON()=beforeTired)
             }
         }
         do ..Assert((hired>0)&&(signed>0)&&(youthTraining>0)&&recovered,"AI recruits players and staff and develops tired academies")

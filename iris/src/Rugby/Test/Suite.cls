@@ -9,7 +9,7 @@ ClassMethod Run(only As %String = "")
     lock +^RugbyWrite:15
     if '$test { write "TESTS FAILED: busy",! quit }
     set failures=0
-    for name="YouthIntake","AdvancePerformance","DayOptimization","TicketPricing","PeriodEnd","FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
+    for name="StorageMaintenance","YouthIntake","AdvancePerformance","DayOptimization","TicketPricing","PeriodEnd","FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
         if (only'="")&&(name'=only) continue
         try {
             if (name'="Concurrency")&&(name'="AdvancePerformance") tstart
@@ -32,6 +32,7 @@ ClassMethod AdvancePerformance()
     tstart
     do ##class(Rugby.Test.AdvancePerformance).Run()
 }
+ClassMethod StorageMaintenance() { do ##class(Rugby.Test.StorageMaintenance).Run() }
 ClassMethod YouthIntake() { do ##class(Rugby.Test.YouthIntake).Run() }
 ClassMethod DayOptimization() { do ##class(Rugby.Test.DayOptimization).Run() }
 ClassMethod PeriodEnd() { do ##class(Rugby.Test.PeriodEnd).Run() }
@@ -122,7 +123,7 @@ ClassMethod Management()
     for i=0:1:movements.%Size()-1 { set sum=sum+movements.%Get(i).amount }
     do ..Assert(sum=c.balance,"Ledger agrees with balance")
     set ex=##class(Rugby.Service.Store).Get("TrainingExecution","c1-day"_c.day)
-    do ..Assert(ex.results.%Size()=beforeAll,"Training results persisted")
+    do ..Assert((ex.playersTrained=beforeAll)&&(ex.results.%Size()=0),"Training receipt retains the player count without unused daily details")
 }
 ClassMethod Commands()
 {

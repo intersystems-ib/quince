@@ -5,6 +5,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
 {
     set pResponse=##class(Rugby.Interop.Message.Response).%New(),pResponse.CorrelationId=pRequest.CorrelationId,held=0
     set %RugbyGame="template",%RugbyManagedClub="c1",%RugbyUser="",%RugbySession=""
+    kill %RugbyWireId,%RugbyWireJSON
     set cacheStarted=0
     if pRequest.Channel'="system" { do ##class(Rugby.Service.Store).BeginRequest() set cacheStarted=1 }
     try {
@@ -15,10 +16,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             set before=##class(Rugby.Service.Store).Get("Match",pRequest.EntityId),input=##class(%DynamicObject).%FromJSON(pRequest.BodyJSON)
             set processed=##class(Rugby.Job.Worker).Cycle(pRequest.EntityId,input.elapsed),after=##class(Rugby.Service.Store).Get("Match",pRequest.EntityId)
             set out={"gameId":(game.id),"matchId":(after.id),"processed":(processed),"clockBefore":(before.clock),"clockAfter":(after.clock),"sequenceBefore":(before.sequence),"sequenceAfter":(after.sequence),"status":(after.status),"homeScore":(after.homeScore),"awayScore":(after.awayScore),"version":(after.version)}
-            set events=[]
-            for seq=before.sequence+1:1:after.sequence { do events.%Push(##class(Rugby.Service.Store).Get("MatchEvent",after.id_"-"_$translate($justify(seq,6)," ","0"))) }
-            set movements=##class(Rugby.Service.Store).All("FinancialMovement","source","match-"_after.id)
-            set pResponse.DetailsJSON={"events":(events),"tacticalAssessment":(after.%Get("aiTacticalAssessment")),"matchEconomy":(after.%Get("economy")),"pause":{"speed":(after.speed),"reason":(after.%Get("pauseReason")),"message":(after.%Get("pauseMessage")),"clock":(after.clock)},"settled":(after.settled),"playerStatistics":(##class(Rugby.Service.Store).All("PlayerMatchStats","matchId",after.id)),"moraleResults":(after.%Get("moraleResults")),"financialMovements":(movements),"classification":(after.%Get("classification"))}.%ToJSON()
+            set pResponse.DetailsJSON={"matchId":(after.id),"clockBefore":(before.clock),"clockAfter":(after.clock),"eventsFrom":(before.sequence+1),"eventsThrough":(after.sequence),"status":(after.status),"homeScore":(after.homeScore),"awayScore":(after.awayScore),"speed":(after.speed),"pauseReason":(after.%Get("pauseReason")),"settled":(after.settled)}.%ToJSON()
         } elseif (pRequest.Channel="system")&&(pRequest.Resource="bootstrap") {
             set %RugbyAuditUser="system:startup"
             do ##class(Rugby.Service.Auth).Init(),##class(Rugby.Service.Games).Initialize(),##class(Rugby.Service.Rivals).InitializeAll(),##class(Rugby.Service.Transfers).InitializeAll()
@@ -58,6 +56,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
                 tcommit }
             if (pRequest.Resource="clubs")&&$listfind($listbuild("advance-day","auto-advance"),pRequest.Child) {
                 set advanced=$select(pRequest.Child="auto-advance":out.club,1:out)
+                do ##class(Rugby.Service.StorageMaintenance).RequestGame(##class(Rugby.Service.Store).Game(),advanced.day)
                 set pResponse.DetailsJSON={"day":(advanced.day),"trainingExecutionId":(pRequest.EntityId_"-day"_advanced.day),"rivalsExecutionId":("rivals-day-"_advanced.day),"financialMovements":(##class(Rugby.Service.Finance).DailyMovements(pRequest.EntityId,advanced.day))}.%ToJSON()
             }
             if (pRequest.Resource="clubs")&&(pRequest.Child="training-plan")&&(pRequest.Method="PUT") set pResponse.DetailsJSON={"trainingPlan":(out)}.%ToJSON()
@@ -73,7 +72,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             if (pRequest.Method="POST")&&(((pRequest.Resource="matches")&&(pRequest.EntityId=""))||((pRequest.Resource="clubs")&&(pRequest.Child="lineups"))) set pResponse.HTTPStatus=201
             if held { lock -@lockName set held=0 }
         }
-        set pResponse.BodyJSON=out.%ToJSON()
+        do pResponse.SetBody(out.%ToJSON())
         if (pRequest.Resource="auth")&&out.%IsDefined("user") set %RugbyAuditUser=out.user.id
     } catch ex {
         if $tlevel trollback
@@ -85,10 +84,12 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             try { set errors=##class(%DynamicArray).%FromJSON(message),details.errors=errors,message="Alineación inválida. " for i=0:1:errors.%Size()-1 { set message=message_errors.%Get(i)_" " } } catch ignored { }
         }
         set ^RugbyAPIError(pRequest.CorrelationId)=ex.DisplayString(),pResponse.HTTPStatus=status,pResponse.ErrorCode=code
-        set pResponse.BodyJSON={"code":(code),"message":(message),"details":(details),"requestId":(pRequest.CorrelationId)}.%ToJSON()
+        set errorBody={"code":(code),"message":(message),"details":(details),"requestId":(pRequest.CorrelationId)}
+        do pResponse.SetBody(errorBody.%ToJSON())
     }
     if $get(%RugbyAuditUser)="" set %RugbyAuditUser=$get(%RugbyUser)
     set pResponse.UserId=$get(%RugbyAuditUser),pResponse.GameId=$select(##class(Rugby.Service.Store).Game()="template":"",1:##class(Rugby.Service.Store).Game())
+    set pResponse.DetailsJSON=##class(Rugby.Interop.Audit).Summary(pResponse.DetailsJSON,8192)
     if cacheStarted do ##class(Rugby.Service.Store).EndRequest()
     quit $$$OK
 }

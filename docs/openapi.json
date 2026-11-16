@@ -22078,10 +22078,14 @@
           },
           "results": {
             "type": "array",
-            "items": {
-              "type": "object",
-              "description": "playerId, groupId, focus, age, energyDelta, attributeGain, averageBefore, averageAfter, averageDelta, annualTarget, changes[{attribute,before,after,delta,reason}]"
-            }
+            "maxItems": 0,
+            "items": {}
+          },
+          "playersTrained": {
+            "type": "integer"
+          },
+          "detailsCompacted": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -22089,7 +22093,8 @@
           "clubId",
           "day",
           "results"
-        ]
+        ],
+        "description": "Recibo mínimo diario para idempotencia y nóminas; la variación de atributos se consulta en la ficha del jugador."
       },
       "Movement": {
         "type": "object",
