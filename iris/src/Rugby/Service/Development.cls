@@ -3,7 +3,8 @@ Class Rugby.Service.Development Extends %RegisteredObject
 Parameter VERSION = "3.0.0";
 ClassMethod Catalog() As %DynamicArray
 {
-    quit [
+    if $get(%RugbyCacheDepth)&&$data(%RugbyCache("catalog")) quit %RugbyCache("catalog")
+    set catalog=[
         {"id":"speed","name":"Velocidad","coachRole":"fitness","supportRole":"backs"},
         {"id":"strength","name":"Fuerza","coachRole":"fitness","supportRole":"forwards"},
         {"id":"stamina","name":"Resistencia","coachRole":"fitness","supportRole":"head"},
@@ -23,6 +24,8 @@ ClassMethod Catalog() As %DynamicArray
         {"id":"defensiveReading","name":"Lectura defensiva","coachRole":"defense","supportRole":"head"},
         {"id":"recovery","name":"Descanso y recuperación","coachRole":"fitness","supportRole":"head"}
     ]
+    if $get(%RugbyCacheDepth) set %RugbyCache("catalog")=catalog
+    quit catalog
 }
 ClassMethod Average(p As %DynamicObject) As %Numeric
 {

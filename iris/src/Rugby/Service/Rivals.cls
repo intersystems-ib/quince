@@ -312,7 +312,7 @@ ClassMethod Lineup(c As %DynamicObject, day As %Integer = "")
     set state={"signature":(..RosterSignature(players,1)),"day":(day)}
     set ^RugbyWorld(##class(Rugby.Service.Store).Game(),"aiLineupState",c.id)=state.%ToJSON()
 }
-ClassMethod Day(day As %Integer) As %DynamicObject
+ClassMethod Day(day As %Integer, deferSave As %Boolean = 0) As %DynamicObject
 {
     do ..Initialize()
     set eid="rivals-day-"_day,old=##class(Rugby.Service.Store).Get("RivalExecution",eid,0)
@@ -357,20 +357,19 @@ ClassMethod Day(day As %Integer) As %DynamicObject
         set r=report.%Get(i),c=##class(Rugby.Service.Store).Get("Club",r.clubId),r.recruitment=auction.results.%Get(c.id,{"signed":false}),plan=..Plan(c,day),execution=##class(Rugby.Service.Development).Process(c.id,day),c.aiLastDay=day
         do ##class(Rugby.Service.Store).Put("Club",c)
         set r.lineupSelection=..EnsureLineup(c,day)
-        set r.trainingExecutionId=execution.id,r.trainingCost=execution.trainingCost,r.playersTrained=execution.results.%Size(),r.results=execution.results
+        set r.trainingExecutionId=execution.id,r.trainingCost=execution.trainingCost,r.playersTrained=execution.results.%Size()
     }
     do ##class(Rugby.Service.Competition).Sync(day)
     for i=0:1:report.%Size()-1 {
-        set r=report.%Get(i),c=##class(Rugby.Service.Store).Get("Club",r.clubId),movements=##class(Rugby.Service.Store).All("FinancialMovement","clubId",r.clubId),daily=[]
-        for j=0:1:movements.%Size()-1 { set m=movements.%Get(j) if m.day=day do daily.%Push(m) }
-        set r.moraleResults=##class(Rugby.Service.Morale).Reports(r.clubId,day),r.financialMovements=daily,r.balanceAfter=c.balance,r.lineup=##class(Rugby.Service.Store).Get("Lineup",r.clubId_"-default"),execution=##class(Rugby.Service.Store).Get("TrainingExecution",r.trainingExecutionId),r.groups=execution.groups,r.staffSnapshot=execution.staffSnapshot
+        set r=report.%Get(i),c=##class(Rugby.Service.Store).Get("Club",r.clubId),daily=##class(Rugby.Service.Finance).DailyMovements(r.clubId,day)
+        set r.moraleResults=##class(Rugby.Service.Morale).Reports(r.clubId,day),r.financialMovements=daily,r.balanceAfter=c.balance,r.lineup=##class(Rugby.Service.Store).Get("Lineup",r.clubId_"-default")
     }
-    set fixtures=##class(Rugby.Service.Store).All("Fixture"),played=[]
-    for i=0:1:fixtures.%Size()-1 { set f=fixtures.%Get(i) if (f.day=day)&&(f.status="finished")&&('f.%Get("archived",0)) do played.%Push(f) }
+    set fixtures=##class(Rugby.Service.Store).All("Fixture","day",day),played=[]
+    for i=0:1:fixtures.%Size()-1 { set f=fixtures.%Get(i) if (f.day=day)&&(f.status="finished")&&('f.%Get("archived",0)) do played.%Push(##class(Rugby.Service.MatchStatistics).Compact(f,0)) }
     set weeklyMarket=##class(Rugby.Service.ForeignMarket).Tick(day)
     set marketPool=##class(Rugby.Service.TransferPool).Refresh(day)
     set result={"weeklyTransferMarket":(weeklyMarket),"transferCompetition":(auction),"marketPool":(marketPool),"id":(eid),"clubId":(own),"day":(day),"date":(date),"modelVersion":(..#VERSION),"seed":(..Seed()),"clubs":(report),"finishedFixtures":(played)}
-    do ##class(Rugby.Service.Store).Put("RivalExecution",result)
+    if 'deferSave do ##class(Rugby.Service.Store).Put("RivalExecution",result)
     quit result
 }
 ClassMethod SettleFixture(f As %DynamicObject)

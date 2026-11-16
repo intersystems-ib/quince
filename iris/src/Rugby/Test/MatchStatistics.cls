@@ -62,5 +62,34 @@ ClassMethod Run()
     for i=0:1:view.regularFixtures.%Size()-1 { set row=view.regularFixtures.%Get(i) if row.id=af.id { set found=row.%IsDefined("scorers") do ..Assert(row.scorers.%ToJSON()=##class(Rugby.Service.MatchStatistics).Scorers(af.id).%ToJSON(),"The latest round returns the score and all scorers in the same response") } }
     do ..Assert(found,"Latest round includes scorers without a second request")
     do ..Assert('##class(Rugby.Service.Store).Get("Fixture",af.id).%IsDefined("scorers"),"Reading scorers does not rewrite stored fixtures")
+    do ..RecentCases(af)
+}
+ClassMethod RecentCases(source As %DynamicObject)
+{
+    set own=##class(Rugby.Service.Store).Get("Club",##class(Rugby.Service.Store).ManagedClub()),year=##class(Rugby.Service.Seasons).Year(),seen={}
+    for i=1:1:11 {
+        set f=##class(%DynamicObject).%FromJSON(source.%ToJSON()),f.id="recent-test-"_i,f.day=own.day,f.date=own.date,f.stage="regular",f.status="finished",f.matchId="",f.competitionKey="league-416-"_year
+        if i=2 set f.competitionKey="league-417-"_year
+        if i=3 set f.competitionKey="cup-"_year,f.competitionType="cup",f.stage="cup-group"
+        if i=4 set f.competitionKey="",f.stage="friendly"
+        if i=5 set f.day=own.day-7
+        if i=6 set f.day=own.day+1
+        if i=7 set f.status="scheduled"
+        if i=8 set f.archived=1
+        if i>=9 set f.stage=$select(i=9:"quarterfinal",i=10:"semifinal",1:"final"),f.competitionKey=$select(i=9:"cup-"_year,i=10:"league-416-"_year,1:"league-417-"_year)
+        do ##class(Rugby.Service.Store).Put("Fixture",f)
+    }
+    set result=##class(Rugby.Service.Router).Resolve("GET","fixtures","recent","","",{},""),previous=own.day+1
+    for i=0:1:result.items.%Size()-1 {
+        set f=result.items.%Get(i)
+        do ..Assert(f.day<=previous,"Recent results are ordered from newest to oldest")
+        set previous=f.day
+        if $extract(f.id,1,12)'="recent-test-" continue
+        do seen.%Set(f.id,1)
+        do ..Assert(f.%IsDefined("scorers")&&(f.competitionName'=""),"Recent scores include competition and authors together")
+        if f.id="recent-test-4" do ..Assert(f.competitionName="Amistoso","Friendlies are identified independently of league")
+    }
+    for i=1:1:11 { do ..Assert(seen.%IsDefined("recent-test-"_i)=((i<=4)||(i>=9)),"Both leagues, Cup, friendlies and knockout rounds are included; old, future, pending and archived fixtures are excluded") }
+    do ..Assert(result.clubs.%Size()=20,"Short names are provided for clubs in both divisions")
 }
 }

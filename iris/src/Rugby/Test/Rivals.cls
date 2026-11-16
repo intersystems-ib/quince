@@ -31,8 +31,9 @@ ClassMethod Run()
             }
             set l=##class(Rugby.Service.Store).Get("Lineup",r.clubId_"-default"),valid=##class(Rugby.Service.Management).Validate(l)
             do ..Assert(valid.valid,"AI chooses a legal lineup by position")
-            for j=0:1:r.results.%Size()-1 {
-                set e=r.results.%Get(j),p=##class(Rugby.Service.Store).Get("Player",e.playerId)
+            set training=##class(Rugby.Service.Store).Get("TrainingExecution",r.trainingExecutionId)
+            for j=0:1:training.results.%Size()-1 {
+                set e=training.results.%Get(j),p=##class(Rugby.Service.Store).Get("Player",e.playerId)
                 if (p.category="academy")&&(e.attributeGain>0)&&(e.energyDelta<0) set youthTraining=youthTraining+1
                 if e.playerId="c2-p1" { set recovered=e.focus="recovery" do ..Assert((e.energyDelta=18)&&(e.attributeGain=0),"Exhausted players rest instead of training") }
             }

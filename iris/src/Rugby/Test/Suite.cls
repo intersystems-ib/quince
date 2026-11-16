@@ -9,10 +9,10 @@ ClassMethod Run(only As %String = "")
     lock +^RugbyWrite:15
     if '$test { write "TESTS FAILED: busy",! quit }
     set failures=0
-    for name="DayOptimization","TicketPricing","PeriodEnd","FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
+    for name="YouthIntake","AdvancePerformance","DayOptimization","TicketPricing","PeriodEnd","FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
         if (only'="")&&(name'=only) continue
         try {
-            if name'="Concurrency" tstart
+            if (name'="Concurrency")&&(name'="AdvancePerformance") tstart
             do $classmethod($classname(),name)
             if $tlevel trollback
             write "PASS ",name,!
@@ -26,6 +26,13 @@ ClassMethod Run(only As %String = "")
     write $select(failures:"TESTS FAILED: "_failures,1:"ALL TESTS PASSED"),!
 }
 ClassMethod TicketPricing() { do ##class(Rugby.Test.TicketPricing).Run() }
+ClassMethod AdvancePerformance()
+{
+    do ##class(Rugby.Test.AdvancePerformance).Locks()
+    tstart
+    do ##class(Rugby.Test.AdvancePerformance).Run()
+}
+ClassMethod YouthIntake() { do ##class(Rugby.Test.YouthIntake).Run() }
 ClassMethod DayOptimization() { do ##class(Rugby.Test.DayOptimization).Run() }
 ClassMethod PeriodEnd() { do ##class(Rugby.Test.PeriodEnd).Run() }
 ClassMethod FundingReduction() { do ##class(Rugby.Test.FundingReduction).Run() }

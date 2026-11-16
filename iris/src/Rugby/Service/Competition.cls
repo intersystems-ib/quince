@@ -244,7 +244,7 @@ ClassMethod View(id As %String) As %DynamicObject
 }
 ClassMethod ClubFixtures(club As %String) As %DynamicArray
 {
-    set c=##class(Rugby.Service.Store).Get("Club",club),current="league-"_c.competitionId_"-"_##class(Rugby.Service.Seasons).Year(club),all=##class(Rugby.Service.Store).All("Fixture"),result=[]
+    set c=##class(Rugby.Service.Store).Get("Club",club),current="league-"_c.competitionId_"-"_##class(Rugby.Service.Seasons).Year(club),all=##class(Rugby.Service.Store).ParticipantFixtures(club),result=[]
     kill sorted
     for i=0:1:all.%Size()-1 {
         set f=all.%Get(i)

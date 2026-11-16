@@ -8,10 +8,12 @@ import {Action,ErrorBox} from './components';
 import {api,getGameId} from './api';
 import {requestId} from './requestId';
 import {advanceUntilEvent} from './advanceUntilEvent';
+import type {AdvanceSchedule} from './advanceUntilEvent';
 import {advanceWithRefresh} from './advanceDay';
 import {pendingFixture} from './matchDay';
-import type {Club,Fixture,Match,Page,PreparationMeeting,SeasonEvent} from './types';
+import type {Club,Fixture,Match,Page} from './types';
 
+type AutoSnapshot={club:Club;schedule:AdvanceSchedule;resultsRevision:string;results?:unknown};
 type AdvanceState={running:boolean;setRunning:(value:boolean)=>void;blocks:Record<string,string>;setBlock:(id:string,reason:string|null)=>void};
 const AdvanceContext=createContext<AdvanceState>({running:false,setRunning:()=>{},blocks:{},setBlock:()=>{}});
 export function DayAdvanceProvider({children}:{children:ReactNode}){
@@ -36,10 +38,24 @@ export default function DayAdvanceControl({club}:{club:Club}){
   if(active.current||running||manualPending||reason)return;
   const gameId=getGameId();active.current=true;setRunning(true);setStopping(false);setAutoError(undefined);setMessage('');
   try{
-   const result=await advanceUntilEvent(club,{
+   let snapshot:AutoSnapshot|undefined;
+   const publish=(next:AutoSnapshot)=>{
+    snapshot=next;
+    if(mounted.current&&getGameId()===gameId&&next.results)qc.setQueryData(['advancing-results',gameId],next.results);
+   };
+   publish(await api<AutoSnapshot>('/my-club/advance-state'));
+   const result=await advanceUntilEvent(snapshot!.club,{
     cancelled:()=>!active.current||!mounted.current||getGameId()!==gameId||!!reasonRef.current,
-    readSchedule:async()=>{const [f,m,s]=await Promise.all([api<Page<Fixture>>('/my-club/fixtures?limit=500'),api<{items:PreparationMeeting[]}>('/my-club/preparations'),api<{items:SeasonEvent[]}>('/my-club/season-events')]);return {fixtures:f.items,meetings:m.items,seasonEvents:s.items};},
-    advance:current=>{const key=requestId();return advanceWithRefresh(current,version=>api<Club>('/my-club/advance-day','POST',{version,day:current.day},key),()=>api<Club>('/my-club'));},
+    readSchedule:async()=>{if(!snapshot)publish(await api<AutoSnapshot>('/my-club/advance-state'));return snapshot!.schedule;},
+    advance:async current=>{
+     const key=requestId();
+     const advanced=await advanceWithRefresh(current,async version=>{
+      const next=await api<AutoSnapshot>('/my-club/auto-advance','POST',{version,day:current.day,resultsRevision:snapshot?.resultsRevision},key);
+      publish(next);return next.club;
+     },()=>api<Club>('/my-club'));
+     if(snapshot?.club.day!==advanced.day||snapshot.club.version!==advanced.version)publish(await api<AutoSnapshot>('/my-club/advance-state'));
+     return snapshot!.club;
+    },
     onDay:next=>{if(mounted.current&&getGameId()===gameId){qc.setQueryData(['club'],next);void qc.invalidateQueries({refetchType:'none'});}},
    });
    if(mounted.current&&getGameId()===gameId){

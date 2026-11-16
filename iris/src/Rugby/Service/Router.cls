@@ -38,6 +38,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
     if (resource="players")&&(method="POST")&&(child="renew") quit ##class(Rugby.Service.Transfers).Open(id,b,key,"renewal")
     if (resource="players")&&(method="POST")&&(child="negotiate") quit ##class(Rugby.Service.Transfers).Open(id,b,key)
     if method="GET" {
+        if (resource="fixtures")&&(id="recent")&&(child="") quit ##class(Rugby.Service.MatchStatistics).Recent()
         if (resource="fixtures")&&(child="scorers") quit ##class(Rugby.Service.MatchStatistics).Scorers(id)
         if resource="news" quit ##class(Rugby.Service.News).Recent()
         if resource="competitions" {
@@ -76,6 +77,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
                 quit ##class(Rugby.Service.Finance).View(id)
             }
             if child="financial-movements" quit ..Paginate(##class(Rugby.Service.Store).All("FinancialMovement","clubId",id))
+            if child="advance-state" quit ##class(Rugby.Service.AutoAdvance).State(id)
             if child="season-events" quit ##class(Rugby.Service.SeasonCalendar).Events(id)
             if child="preparations" quit ##class(Rugby.Service.OpponentPreparation).List(id)
             if child="fixtures" {
@@ -116,6 +118,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
     }
     if (resource="clubs")&&(method'="GET") {
         do ##class(Rugby.Service.Store).Managed(id)
+        if (child="auto-advance")&&(method="POST") quit ##class(Rugby.Service.AutoAdvance).Step(id,b,key)
         if (child="advance-day")&&(method="POST") quit ##class(Rugby.Service.Management).Advance(id,b,key)
         if (child="friendly-invitations")&&(method="POST") quit ##class(Rugby.Service.FriendlyRequests).Respond(id,b.%Get("invitationId"),b,key)
         if (child="friendlies")&&(method="POST") quit ##class(Rugby.Service.Calendar).Create(id,b,key)

@@ -160,7 +160,7 @@ ClassMethod Tick(day As %Integer) As %DynamicObject
     if 'ready quit result
     if (day<##class(Rugby.Service.SeasonCalendar).CloseDay(year))||##class(Rugby.Service.Store).Active(##class(Rugby.Service.Store).ManagedClub()) quit result
     if $data(^RugbyWorld(game,"seasonClosures",year)) quit ##class(%DynamicObject).%FromJSON(^RugbyWorld(game,"seasonClosures",year))
-    set clubs=##class(Rugby.Service.Store).All("Club"),players=##class(Rugby.Service.Store).All("Player"),released=[],retired=[],reinforcements=[],date=$zdate(day+$zdateh("2026-11-07",3),3)
+    set clubs=##class(Rugby.Service.Store).All("Club"),players=##class(Rugby.Service.Store).All("Player"),released=[],retired=[],reinforcements=[],youthIntakes=[],date=$zdate(day+$zdateh("2026-11-07",3),3)
     for i=0:1:clubs.%Size()-1 { set c=clubs.%Get(i),paid=##class(Rugby.Service.MonthlyPayroll).Tick(c.id,day) }
     set clubs=##class(Rugby.Service.Store).All("Club")
     for i=0:1:players.%Size()-1 {
@@ -183,9 +183,10 @@ ClassMethod Tick(day As %Integer) As %DynamicObject
     for i=0:1:clubs.%Size()-1 {
         set c=clubs.%Get(i),c.seasonYear=year+1,c.season=(year+1)_"/"_(year+2),c.seasonStartDate=(year+1)_"-09-01"
         do ##class(Rugby.Service.Store).Put("Club",c)
+        do youthIntakes.%Push(##class(Rugby.Service.YouthIntake).Arrive(c,year+1,day))
         if c.id'=##class(Rugby.Service.Store).ManagedClub() do reinforcements.%Push({"clubId":(c.id),"contracts":(..Replenish(c,year+1))})
     }
-    set result={"closed":true,"seasonYear":(year),"closedDate":(date),"nextSeasonYear":(year+1),"nextSeasonStartDate":((year+1)_"-09-01"),"releasedPlayerIds":(released),"retiredPlayerIds":(retired),"reinforcements":(reinforcements),"divisionExchange":(exchange)},^RugbyWorld(game,"seasonClosures",year)=result.%ToJSON()
+    set result={"closed":true,"seasonYear":(year),"closedDate":(date),"nextSeasonYear":(year+1),"nextSeasonStartDate":((year+1)_"-09-01"),"releasedPlayerIds":(released),"retiredPlayerIds":(retired),"reinforcements":(reinforcements),"youthIntakes":(youthIntakes),"divisionExchange":(exchange)},^RugbyWorld(game,"seasonClosures",year)=result.%ToJSON()
     quit result
 }
 ClassMethod Initialize() As %DynamicObject

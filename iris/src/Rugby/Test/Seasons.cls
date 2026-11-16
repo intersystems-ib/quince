@@ -62,6 +62,7 @@ ClassMethod Run()
     do ..Assert(up'=oldElite.regularOrder.%Get(0),"Promotion test uses a playoff champion different from the regular winner")
     set p=##class(Rugby.Service.Store).Get("Player","c1-p2"),raw=p.attributes.%ToJSON(),energy=p.energy,beforeFixtures=##class(Rugby.Service.Competition).Fixtures("league-416-"_year).%ToJSON(),result=##class(Rugby.Service.Seasons).Tick(close)
     do ..Assert(result.closed&&(result.nextSeasonStartDate=((year+1)_"-09-01")),"Both divisions close and the next season starts September first")
+    do ..Assert(result.youthIntakes.%Size()=20,"Closing the season delivers an annual youth cohort to every club")
     do ..Assert((result.divisionExchange.relegatedClubId=down)&&(result.divisionExchange.promotedClubId=up),"Last Honor regular club and Elite playoff champion are exchanged")
     do ..Assert((##class(Rugby.Service.Store).Get("Club",down).competitionId=417)&&(##class(Rugby.Service.Store).Get("Club",up).competitionId=416),"Club division and its lookup are updated before the next draw")
     for division=416,417 { set teams=##class(Rugby.Service.Store).All("Club","competitionId",division) do ..Assert(teams.%Size()=10,"Both divisions retain ten clubs") }
@@ -88,5 +89,6 @@ ClassMethod Run()
     do ..Complete(year+1)
     set transition=##class(Rugby.Service.Seasons).Tick(nextClose)
     do ..Assert(transition.closed&&(transition.nextSeasonYear=(year+2)),"A second season closes and generates a third without resetting the world")
+    do ..Assert((transition.youthIntakes.%Size()=20)&&(transition.youthIntakes.%Get(0).seasonYear=(year+2)),"Annual youth arrivals repeat in subsequent seasons")
 }
 }

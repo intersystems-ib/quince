@@ -104,4 +104,57 @@ ClassMethod Scorers(fixtureId As %String) As %DynamicObject
     }
     quit result
 }
+ClassMethod Compact(f As %DynamicObject, includeScorers As %Boolean = 1) As %DynamicObject
+{
+    set d={}
+    for field="id","clubId","homeId","awayId","day","date","status","stage","round","slot","groupId","competitionType","competitionKey","divisionId","homeScore","awayScore","homeTries","awayTries","homeShootout","awayShootout","winnerId","matchId" { if f.%IsDefined(field) do d.%Set(field,f.%Get(field)) }
+    if includeScorers set d.scorers=..Scorers(f.id)
+    quit d
+}
+ClassMethod LastFinishedDay(through As %Integer) As %Integer
+{
+    do ##class(Rugby.Service.Store).EnsureFixtureDays()
+    set day=through+.1,latest=-999999,game=##class(Rugby.Service.Store).Game()
+    for {
+        set day=$order(^RugbyWorld(game,"fixtureDays",day),-1)
+        quit:day=""
+        set id=""
+        for { set id=$order(^RugbyWorld(game,"fixtureDays",day,id)) quit:id=""  set f=##class(Rugby.Service.Store).Get("Fixture",id) if (f.status="finished")&&('f.%Get("archived",0)) { set latest=day quit } }
+        quit:latest'=-999999
+    }
+    quit latest
+}
+ClassMethod Revision() As %String
+{
+    set own=##class(Rugby.Service.Store).Get("Club",##class(Rugby.Service.Store).ManagedClub())
+    quit "2-"_$get(^RugbyWorld(##class(Rugby.Service.Store).Game(),"resultsRevision"),0)_"-"_..LastFinishedDay(own.day)
+}
+ClassMethod Recent() As %DynamicObject
+{
+    set token=..Revision(),game=##class(Rugby.Service.Store).Game()
+    if $get(^RugbyWorld(game,"recentResultsCache","revision"))=token quit ##class(%DynamicObject).%FromJSON(^RugbyWorld(game,"recentResultsCache","payload"))
+    set own=##class(Rugby.Service.Store).Get("Club",##class(Rugby.Service.Store).ManagedClub()),latest=..LastFinishedDay(own.day),items=[],names=[],competitions={},day=latest+.1
+    for {
+        set day=$order(^RugbyWorld(game,"fixtureDays",day),-1)
+        quit:(day="")||(day<(latest-6))
+        set id=""
+        for {
+            set id=$order(^RugbyWorld(game,"fixtureDays",day,id))
+            quit:id=""
+            set f=##class(Rugby.Service.Store).Get("Fixture",id)
+            if (f.status'="finished")||f.%Get("archived",0) continue
+            set key=f.%Get("competitionKey"),label="Amistoso"
+            if key'="" {
+                if 'competitions.%IsDefined(key) { set comp=##class(Rugby.Service.Store).Get("Competition",key,0) do competitions.%Set(key,$select($isobject(comp):comp.name,1:"Competición")) }
+                set label=competitions.%Get(key)
+            }
+            set d=..Compact(f),d.competitionName=label
+            do items.%Push(d)
+        }
+    }
+    set clubs=##class(Rugby.Service.Store).All("Club")
+    for i=0:1:clubs.%Size()-1 { set c=clubs.%Get(i) do names.%Push({"id":(c.id),"name":(c.%Get("shortName",c.name))}) }
+    set result={"revision":(token),"items":(items),"clubs":(names)},^RugbyWorld(game,"recentResultsCache","revision")=token,^RugbyWorld(game,"recentResultsCache","payload")=result.%ToJSON()
+    quit result
+}
 }

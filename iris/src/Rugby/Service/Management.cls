@@ -174,13 +174,21 @@ ClassMethod Money(club As %DynamicObject, amount As %Integer, type As %String, c
 }
 ClassMethod Advance(club As %String, b As %DynamicObject, key As %String) As %DynamicObject
 {
+    do ##class(Rugby.Service.Store).BeginRequest()
+    try { set result=..AdvanceCore(club,b,key) }
+    catch ex { do ##class(Rugby.Service.Store).EndRequest() throw ex }
+    do ##class(Rugby.Service.Store).EndRequest()
+    quit result
+}
+ClassMethod AdvanceCore(club As %String, b As %DynamicObject, key As %String) As %DynamicObject
+{
     do ##class(Rugby.Service.Store).Managed(club)
     do ##class(Rugby.Service.Store).Key(key)
     if $data(^RugbyWorld(##class(Rugby.Service.Store).Game(),"retry","day",club,key)) quit ##class(%DynamicObject).%FromJSON(^RugbyWorld(##class(Rugby.Service.Store).Game(),"retry","day",club,key))
     if ##class(Rugby.Service.Store).Active(club) do ##class(Rugby.Service.Store).Fail(409,"MATCH_ACTIVE","No puedes avanzar días con un partido en curso.")
     set c=##class(Rugby.Service.Store).Get("Club",club)
     do ##class(Rugby.Service.Store).CheckVersion(c,b)
-    set fixtures=##class(Rugby.Service.Store).All("Fixture")
+    set fixtures=##class(Rugby.Service.Store).ParticipantFixtures(club)
     for i=0:1:fixtures.%Size()-1 {
         set f=fixtures.%Get(i)
         if f.%Get("archived",0) continue
@@ -195,7 +203,7 @@ ClassMethod Advance(club As %String, b As %DynamicObject, key As %String) As %Dy
     set execution=##class(Rugby.Service.Development).Process(club,c.day)
     do ##class(Rugby.Service.Store).Put("Club",c)
 
-    set announcements=##class(Rugby.Service.Seasons).Announce(c.day),rivals=##class(Rugby.Service.Rivals).Day(c.day)
+    set announcements=##class(Rugby.Service.Seasons).Announce(c.day),rivals=##class(Rugby.Service.Rivals).Day(c.day,1)
     set rivals.monthlyPayroll=payroll,rivals.financeExecution=##class(Rugby.Service.Finance).TickAll(c.day)
     set rivals.friendlyInvitations=##class(Rugby.Service.FriendlyRequests).Tick(),rivals.retirementAnnouncements=announcements,rivals.seasonTransition=##class(Rugby.Service.Seasons).Tick(c.day)
     set rivals.summerBreak=summer,rivals.seasonOpening=##class(Rugby.Service.SeasonCalendar).Open(c.day)

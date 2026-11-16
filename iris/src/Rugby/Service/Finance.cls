@@ -192,7 +192,7 @@ ClassMethod Deals(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject)
 }
 ClassMethod Tick(club As %String)
 {
-    set c=##class(Rugby.Service.Store).Get("Club",club),o=..Office(club),s=..Season(c),month=+$piece(c.date,"-",2)
+    set c=##class(Rugby.Service.Store).Get("Club",club),o=..Office(club),s=..Season(c),month=+$piece(c.date,"-",2),beforeOffice=o.%ToJSON(),beforeSeason=s.%ToJSON()
     if month=9 do ..Deals(c,s,o)
     set planning=##class(Rugby.Service.FinancialPlanning).Adopt(c,s,o)
     // New obligations start at adoption; earlier instalments are never credited retroactively.
@@ -220,18 +220,25 @@ ClassMethod Tick(club As %String)
         }
         if +$piece(c.date,"-",3)>=7 do ##class(Rugby.Service.Management).Money(c,+$justify(-s.budgetReference*.03,0,0),"registration","Fichas y participación federativa "_s.season,s.id_"-registration")
     }
-    do ##class(Rugby.Service.Store).Put("FinancialOffice",o),##class(Rugby.Service.Store).Put("FinancialSeason",s)
+    if o.%ToJSON()'=beforeOffice do ##class(Rugby.Service.Store).Put("FinancialOffice",o)
+    if s.%ToJSON()'=beforeSeason do ##class(Rugby.Service.Store).Put("FinancialSeason",s)
 }
 ClassMethod TickAll(day As %Integer) As %DynamicArray
 {
     set clubs=##class(Rugby.Service.Store).All("Club"),result=[]
-    for i=0:1:clubs.%Size()-1 { set c=clubs.%Get(i) do ..Tick(c.id) set s=..Season(##class(Rugby.Service.Store).Get("Club",c.id)) do result.%Push({"clubId":(c.id),"seasonId":(s.id),"members":(s.members),"sponsorsComplete":(s.sponsorsComplete),"grantsComplete":(s.grantsComplete),"season":(s),"office":(..Office(c.id)),"agreements":(##class(Rugby.Service.Store).All("FinancialAgreement","clubId",c.id)),"movements":(..DailyMovements(c.id,day))}) }
+    for i=0:1:clubs.%Size()-1 {
+        set c=clubs.%Get(i)
+        do ..Tick(c.id)
+        set s=..Season(##class(Rugby.Service.Store).Get("Club",c.id)),o=..Office(c.id),agreements=##class(Rugby.Service.Store).All("FinancialAgreement","clubId",c.id),ids=[]
+        for j=0:1:agreements.%Size()-1 { do ids.%Push(agreements.%Get(j).id) }
+        do result.%Push({"clubId":(c.id),"seasonId":(s.id),"seasonVersion":(s.version),"officeVersion":(o.version),"members":(s.members),"sponsorsComplete":(s.sponsorsComplete),"grantsComplete":(s.grantsComplete),"agreementIds":(ids),"movements":(..DailyMovements(c.id,day))})
+    }
     quit result
 }
 ClassMethod DailyMovements(club As %String, day As %Integer) As %DynamicArray
 {
-    set all=##class(Rugby.Service.Store).All("FinancialMovement","clubId",club),items=[]
-    for i=0:1:all.%Size()-1 { set m=all.%Get(i) if m.day=day do items.%Push(m) }
+    set all=##class(Rugby.Service.Store).All("FinancialMovement","day",day),items=[]
+    for i=0:1:all.%Size()-1 { set m=all.%Get(i) if m.clubId=club do items.%Push(m) }
     quit items
 }
 ClassMethod View(club As %String) As %DynamicObject

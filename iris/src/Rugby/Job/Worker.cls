@@ -7,11 +7,11 @@ ClassMethod Now() As %Numeric
 }
 ClassMethod Cycle(id As %String, elapsed As %Numeric) As %Boolean
 {
-    lock +^RugbyWrite:0
+    lock +^RugbyWrite(##class(Rugby.Service.Store).Game()):0
     if '$test quit 0
-    if $data(^RugbyGames(##class(Rugby.Service.Store).Game())) { set game=##class(%DynamicObject).%FromJSON(^RugbyGames(##class(Rugby.Service.Store).Game())) if 'game.%Get("active",0) { lock -^RugbyWrite quit 0 } }
-    lock +^RugbyMatch(id):0
-    if '$test { lock -^RugbyWrite quit 0 }
+    if $data(^RugbyGames(##class(Rugby.Service.Store).Game())) { set game=##class(%DynamicObject).%FromJSON(^RugbyGames(##class(Rugby.Service.Store).Game())) if 'game.%Get("active",0) { lock -^RugbyWrite(##class(Rugby.Service.Store).Game()) quit 0 } }
+    lock +^RugbyMatch(##class(Rugby.Service.Store).Game(),id):0
+    if '$test { lock -^RugbyWrite(##class(Rugby.Service.Store).Game()) quit 0 }
     try {
         tstart
         set m=##class(Rugby.Service.Store).Get("Match",id),version=m.version
@@ -35,12 +35,12 @@ ClassMethod Cycle(id As %String, elapsed As %Numeric) As %Boolean
         tcommit
     } catch ex {
         if $tlevel trollback
-        lock -^RugbyMatch(id)
-        lock -^RugbyWrite
+        lock -^RugbyMatch(##class(Rugby.Service.Store).Game(),id)
+        lock -^RugbyWrite(##class(Rugby.Service.Store).Game())
         throw ex
     }
-    lock -^RugbyMatch(id)
-    lock -^RugbyWrite
+    lock -^RugbyMatch(##class(Rugby.Service.Store).Game(),id)
+    lock -^RugbyWrite(##class(Rugby.Service.Store).Game())
     quit 1
 }
 }

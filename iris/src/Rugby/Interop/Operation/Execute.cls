@@ -5,6 +5,8 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
 {
     set pResponse=##class(Rugby.Interop.Message.Response).%New(),pResponse.CorrelationId=pRequest.CorrelationId,held=0
     set %RugbyGame="template",%RugbyManagedClub="c1",%RugbyUser="",%RugbySession=""
+    set cacheStarted=0
+    if pRequest.Channel'="system" { do ##class(Rugby.Service.Store).BeginRequest() set cacheStarted=1 }
     try {
         if (pRequest.Channel="simulation")&&(pRequest.Resource="simulation") {
             set %RugbyAuditUser="system:simulation"
@@ -37,9 +39,12 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
                 if (user.role'="admin")&&(pRequest.Resource="admin") do ##class(Rugby.Service.Store).Fail(403,"ADMIN_REQUIRED","Accede con un usuario de IRIS para administrar los datos iniciales.")
             }
             if (pRequest.Resource'="auth")&&(pRequest.Resource'="health")&&(pRequest.Resource'="games")&&(pRequest.Resource'="game-catalog")&&(pRequest.Resource'="admin") do ##class(Rugby.Service.Games).Select(pRequest.GameId)
-            lock +^RugbyWrite:3
-            if '$test do ##class(Rugby.Service.Store).Fail(409,"BUSY","Operación en curso. Reintenta.")
-            set held=1
+            set lockName=##class(Rugby.Service.Store).LockName(pRequest.Resource="games")
+            if pRequest.Resource'="health" {
+                lock +@lockName:3
+                if '$test do ##class(Rugby.Service.Store).Fail(409,"BUSY","Operación en curso. Reintenta.")
+                set held=1
+            }
             if pRequest.InputErrorStatus do ##class(Rugby.Service.Store).Fail(pRequest.InputErrorStatus,pRequest.InputErrorCode,pRequest.InputErrorMessage)
             if pRequest.Method'="GET" {
                 set origin=%request.GetCgiEnv("HTTP_ORIGIN")
@@ -51,11 +56,9 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             set out=##class(Rugby.Service.Router).Resolve(pRequest.Method,pRequest.Resource,pRequest.EntityId,pRequest.Child,pRequest.PlayerId,body,pRequest.IdempotencyKey)
             if (pRequest.Method'="GET")&&(pRequest.Resource'="auth") { if pRequest.Resource'="admin" do ##class(Rugby.Service.Games).Touch()
                 tcommit }
-            if (pRequest.Resource="clubs")&&(pRequest.Child="advance-day") {
-                set execution=##class(Rugby.Service.Store).Get("TrainingExecution",pRequest.EntityId_"-day"_out.day,0),movements=##class(Rugby.Service.Store).All("FinancialMovement","clubId",pRequest.EntityId),daily=[]
-                for i=0:1:movements.%Size()-1 { set movement=movements.%Get(i) if movement.day=out.day do daily.%Push(movement) }
-                set rivals=##class(Rugby.Service.Store).Get("RivalExecution","rivals-day-"_out.day,0)
-                set pResponse.DetailsJSON={"trainingExecution":(execution),"financialMovements":(daily),"rivalsExecution":(rivals),"financeExecution":(rivals.%Get("financeExecution"))}.%ToJSON()
+            if (pRequest.Resource="clubs")&&$listfind($listbuild("advance-day","auto-advance"),pRequest.Child) {
+                set advanced=$select(pRequest.Child="auto-advance":out.club,1:out)
+                set pResponse.DetailsJSON={"day":(advanced.day),"trainingExecutionId":(pRequest.EntityId_"-day"_advanced.day),"rivalsExecutionId":("rivals-day-"_advanced.day),"financialMovements":(##class(Rugby.Service.Finance).DailyMovements(pRequest.EntityId,advanced.day))}.%ToJSON()
             }
             if (pRequest.Resource="clubs")&&(pRequest.Child="training-plan")&&(pRequest.Method="PUT") set pResponse.DetailsJSON={"trainingPlan":(out)}.%ToJSON()
             if (pRequest.Resource="clubs")&&(pRequest.Child="financial-director")&&(pRequest.Method="POST") set pResponse.DetailsJSON={"financialManagement":(out)}.%ToJSON()
@@ -68,13 +71,13 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
                 set pResponse.DetailsJSON={"contract":(contract),"financialMovements":(movements)}.%ToJSON()
             }
             if (pRequest.Method="POST")&&(((pRequest.Resource="matches")&&(pRequest.EntityId=""))||((pRequest.Resource="clubs")&&(pRequest.Child="lineups"))) set pResponse.HTTPStatus=201
-            if held { lock -^RugbyWrite set held=0 }
+            if held { lock -@lockName set held=0 }
         }
         set pResponse.BodyJSON=out.%ToJSON()
         if (pRequest.Resource="auth")&&out.%IsDefined("user") set %RugbyAuditUser=out.user.id
     } catch ex {
         if $tlevel trollback
-        if held lock -^RugbyWrite
+        if held lock -@lockName
         set status=+ex.Code
         if (status<400)||(status>599) set status=500
         set code=$select(status=500:"INTERNAL_ERROR",1:ex.Location),message=$select(status=500:"Error del servidor. Consulta los registros con el identificador de solicitud.",1:ex.Name),details={}
@@ -86,6 +89,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
     }
     if $get(%RugbyAuditUser)="" set %RugbyAuditUser=$get(%RugbyUser)
     set pResponse.UserId=$get(%RugbyAuditUser),pResponse.GameId=$select(##class(Rugby.Service.Store).Game()="template":"",1:##class(Rugby.Service.Store).Game())
+    if cacheStarted do ##class(Rugby.Service.Store).EndRequest()
     quit $$$OK
 }
 XData MessageMap
