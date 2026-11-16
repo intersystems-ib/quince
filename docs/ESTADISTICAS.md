@@ -1,7 +1,13 @@
-# Estadísticas por jugador
+# Estadísticas
 
-La ficha incluye historial paginado por partido y totales: minutos, metros, placajes, ensayos, transformaciones y puntos. «Ver detalle» amplía pases, patadas, recuperaciones, avants, intentos a palos, formaciones, infracciones y tarjetas. El resumen del encuentro también muestra ambos equipos por jugador.
+La ficha del jugador incluye historial paginado por partido, totales y detalle de acciones. El resumen del encuentro permite consultar a ambos equipos. Los partidos en directo atribuyen las acciones a sus protagonistas; los automáticos guardan estadísticas del modelo resumido, ponderadas por atributos y minutos. Se conserva el club representado y los reintentos no duplican registros.
 
-Los partidos en directo atribuyen acciones a sus protagonistas; los automáticos guardan estadísticas del modelo resumido, ponderadas por atributos y minutos. Los puntos individuales cuadran con el marcador. Se conserva el club representado aunque el jugador cambie de equipo y los reintentos no duplican registros.
+`GET /players/{playerId}/match-stats` consulta el historial; `GET /competitions/{competitionId}/statistics`, los Top 10. Ambas consultas están restringidas a la partida privada y pasan por interoperabilidad.
 
-Las estadísticas muestran los contadores registrados en cada encuentro; «—» indica un dato no disponible. La consulta es `GET /players/{playerId}/match-stats`, dentro de la partida privada y su auditoría de interoperabilidad.
+Competición separa Clasificación, Calendario y Estadísticas en Liga y Copa. Los Top 10 acumulan partidos terminados de la competición y temporada seleccionadas, incluidas fases finales. Cada jugador aparece una vez aunque cambie de club; se muestra el último club representado en esa competición.
+
+Las métricas se consultan por ataque, defensa, juego al pie, formaciones, disciplina y participación. Se ordenan de mayor a menor, sin incluir totales cero ni suplentes que no jugaron. Disciplina muestra los mayores recuentos de infracciones y tarjetas. Los registros históricos incompletos se señalan.
+
+`Rugby.Analytics.PlayerMatch` almacena las métricas y sus claves en columnas, con clave única por registro original. No duplica los documentos JSON. Las consultas SQL agrupan por partida, competición y jugador. La migración inicial es automática e idempotente; los partidos nuevos actualizan su proyección en la misma transacción. Al eliminar una partida se elimina también su proyección analítica.
+
+[Almacenamiento columnar de IRIS](https://docs.intersystems.com/irislatest/csp/docbook/DocBook.UI.Page.cls?KEY=GOBJ_storageglobals#GOBJ_storageglobals_columnar).

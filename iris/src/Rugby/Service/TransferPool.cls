@@ -17,7 +17,7 @@ ClassMethod Select(day As %Integer) As %DynamicArray
     set free=##class(Rugby.Service.Store).All("Player","clubId",""),pending=..Pending(day),selected={},positions={},ids=[],ordered=""
     for i=0:1:free.%Size()-1 {
         set p=free.%Get(i)
-        if '..Eligible(p) continue
+        if ('..Eligible(p))||('##class(Rugby.Service.PlayerSales).Generated(p)) continue
         set age=(day-p.birthDay)\365
         if age>36 continue
         set quality=##class(Rugby.Service.Development).Average(p),score=quality-$select(age>30:(age-30)*.3,1:0),rank(-score,p.id)=p
@@ -39,12 +39,16 @@ ClassMethod Refresh(day As %Integer) As %DynamicObject
     set ^RugbyWorld(game,"transferPoolIds")=json
     quit {"version":(..#VERSION),"limit":(..#LIMIT),"playerIds":(ids),"changed":(old'=json)}
 }
-ClassMethod Players() As %DynamicArray
+ClassMethod Players(includeClubPlayers As %Boolean = 1) As %DynamicArray
 {
     set json=$get(^RugbyWorld(##class(Rugby.Service.Store).Game(),"transferPoolIds")),items=[]
     if json="" { set c=##class(Rugby.Service.Store).Get("Club",##class(Rugby.Service.Store).ManagedClub()),ids=..Select(c.day) }
     else { set ids=##class(%DynamicArray).%FromJSON(json) }
     for i=0:1:ids.%Size()-1 { set p=##class(Rugby.Service.Store).Get("Player",ids.%Get(i),0) if $isobject(p)&&..Eligible(p) do items.%Push(p) }
+    if includeClubPlayers {
+        set players=##class(Rugby.Service.Store).All("Player")
+        for i=0:1:players.%Size()-1 { set p=players.%Get(i) if ##class(Rugby.Service.PlayerSales).Listed(p)||(..Eligible(p)&&('##class(Rugby.Service.PlayerSales).Generated(p))) do items.%Push(p) }
+    }
     quit items
 }
 ClassMethod Contains(id As %String) As %Boolean
@@ -71,7 +75,7 @@ ClassMethod HumanPreferred(proposal As %DynamicObject, day As %Integer, ranks As
         set club=##class(Rugby.Service.Store).Get("Club",own)
         set cover=##class(Rugby.Service.Rivals).InjuryNeed(club,day),medical=(cover.position>0)&&((cover.position<=8)=(p.position<=8)),affordable=##class(Rugby.Service.Payroll).CanPay(own,p.id,n.agreedWeeklyWage)
         if medical set affordable=affordable||##class(Rugby.Service.Payroll).CanPayMedical(own,p.id,n.agreedWeeklyWage)
-        if (club.balance<n.signingFee)||('affordable) continue
+        if (club.balance<(n.signingFee+n.%Get("transferFee",0)))||('affordable) continue
         set salary=n.%Get("agreedMonthlyWage",##class(Rugby.Service.Payroll).Monthly(n.agreedWeeklyWage))
         if (salary>proposal.monthlyWage)||((salary=proposal.monthlyWage)&&(ranks.%Get(own,100)<=ranks.%Get(proposal.clubId,100))) set preferred=1
     }
@@ -105,7 +109,7 @@ ClassMethod Compete(clubs As %DynamicArray, day As %Integer) As %DynamicObject
                 for {
                     set cid=$order(ordered(salary,rank,cid)) quit:cid=""
                     set bid=ordered(salary,rank,cid),p=##class(Rugby.Service.Store).Get("Player",bid.playerId),outcome="outbid"
-                    if p.clubId="" {
+                    if ##class(Rugby.Service.PlayerSales).CanBuy(p,cid) {
                         if ..HumanPreferred(bid,day,ranks) { do blocked.%Set(p.id,1) set outcome="preferredHumanOffer",progress=1 }
                         elseif 'blocked.%IsDefined(p.id) {
                             set c=##class(Rugby.Service.Store).Get("Club",cid),result=##class(Rugby.Service.Rivals).AcceptRecruitment(c,bid,day)

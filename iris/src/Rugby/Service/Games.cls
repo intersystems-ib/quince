@@ -104,6 +104,7 @@ ClassMethod Delete(id As %String, b As %DynamicObject, key As %String) As %Dynam
         }
         do counts.%Set(kind,count)
     }
+    do ##class(Rugby.Service.CompetitionStatistics).RemoveGame(id)
     kill ^RugbyWorld(id),^RugbyGames(id)
     // Small owner-scoped receipt makes retries safe without retaining the game data.
     set result={"deleted":true,"gameId":(id),"name":(game.name),"deletedAt":(##class(Rugby.Service.Auth).Now()),"recordsDeleted":(total),"entities":(counts)}

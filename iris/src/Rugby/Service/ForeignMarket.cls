@@ -7,19 +7,14 @@ ClassMethod Refresh(day As %Integer, includeReleased As %Boolean = 1) As %Dynami
     set game=##class(Rugby.Service.Store).Game(),old=$get(^RugbyWorld(game,"transferPoolIds"),"[]"),source=##class(%DynamicArray).%FromJSON(old),ids=[],seen={}
     for i=0:1:source.%Size()-1 {
         set id=source.%Get(i),p=##class(Rugby.Service.Store).Get("Player",id,0)
-        if $isobject(p)&&##class(Rugby.Service.TransferPool).Eligible(p)&&('seen.%IsDefined(id)) { do ids.%Push(id),seen.%Set(id,1) }
+        if $isobject(p)&&##class(Rugby.Service.TransferPool).Eligible(p)&&##class(Rugby.Service.PlayerSales).Generated(p)&&('seen.%IsDefined(id)) { do ids.%Push(id),seen.%Set(id,1) }
     }
-    // Released players can use vacant places; the weekly intake supplies new foreign agents.
-    set free=##class(Rugby.Service.Store).All("Player","clubId","")
-    for i=0:1:free.%Size()-1 { set p=free.%Get(i) if includeReleased&&(p.%Get("formerClubId")'="")&&##class(Rugby.Service.TransferPool).Eligible(p)&&('seen.%IsDefined(p.id)) set ranked(-##class(Rugby.Service.Development).Average(p),p.id)=p.id }
-    set score=""
-    for { set score=$order(ranked(score)) quit:score=""  set id="" for { set id=$order(ranked(score,id)) quit:id=""  quit:ids.%Size()>=20  do ids.%Push(id),seen.%Set(id,1) } }
     set ^RugbyWorld(game,"transferPoolIds")=ids.%ToJSON()
     quit {"version":(..#VERSION),"limit":20,"playerIds":(ids),"changed":(old'=ids.%ToJSON())}
 }
 ClassMethod Position(day As %Integer, serial As %Integer) As %Integer
 {
-    set players=##class(Rugby.Service.TransferPool).Players(),minimum=100,best=1,priority=2147483647
+    set players=##class(Rugby.Service.TransferPool).Players(0),minimum=100,best=1,priority=2147483647
     for i=0:1:players.%Size()-1 { set p=players.%Get(i),counts(p.position)=$get(counts(p.position))+1 }
     for pos=1:1:15 {
         set count=$get(counts(pos)),hash=##class(Rugby.Service.Rivals).Hash("foreign-position-"_day_"-"_serial_"-"_pos,##class(Rugby.Service.Rivals).Seed())
@@ -88,7 +83,7 @@ ClassMethod Tick(day As %Integer) As %DynamicObject
     set game=##class(Rugby.Service.Store).Game(),last=^RugbyWorld(game,"foreignMarketLastDay"),report={"version":(..#VERSION),"weeks":[]},pool=..Refresh(day)
     for week=last+7:7:day {
         kill ranked
-        set players=##class(Rugby.Service.TransferPool).Players(),removed=[],count=+$justify(players.%Size()*.2,0,0)
+        set players=##class(Rugby.Service.TransferPool).Players(0),removed=[],count=+$justify(players.%Size()*.2,0,0)
         for i=0:1:players.%Size()-1 { set p=players.%Get(i),ranked(##class(Rugby.Service.Development).Average(p),p.id)=p }
         set score=""
         for { set score=$order(ranked(score)) quit:score=""  quit:removed.%Size()>=count  set id="" for { set id=$order(ranked(score,id)) quit:id=""  quit:removed.%Size()>=count  set p=ranked(score,id) do ..Remove(p,week),removed.%Push({"playerId":(p.id),"average":(##class(Rugby.Service.Development).Average(p))}) } }

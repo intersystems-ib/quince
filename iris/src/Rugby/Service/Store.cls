@@ -58,6 +58,7 @@ ClassMethod Put(kind As %String, d As %DynamicObject)
     set o.Payload=d.%ToJSON()
     set sc=o.%Save()
     if $SYSTEM.Status.IsError(sc) throw ##class(%Exception.StatusException).CreateFromStatus(sc)
+    if kind="PlayerMatchStats" do ##class(Rugby.Service.CompetitionStatistics).Project(o.Key,d)
     if $get(%RugbyCacheDepth) { set %RugbyCache(..Game(),"get",kind,"@"_d.id)=o.Payload kill %RugbyCache(..Game(),"all",kind) }
     set ^RugbyWorld(##class(Rugby.Service.Store).Game(),"catalog",kind,d.id)=1
     set previous={}
@@ -82,7 +83,7 @@ ClassMethod Put(kind As %String, d As %DynamicObject)
 }
 ClassMethod Flags(d As %DynamicObject)
 {
-    for field="available","settled","generatedRoster","realIdentity" {
+    for field="available","settled","generatedRoster","realIdentity","transferListed" {
         if d.%IsDefined(field) do d.%Set(field,+d.%Get(field),"boolean")
     }
 }

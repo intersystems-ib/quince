@@ -174,8 +174,9 @@ ClassMethod Recruit(c As %DynamicObject, day As %Integer, medicalOnly As %Boolea
     set free=##class(Rugby.Service.TransferPool).Players(),candidate="",best=-1,pos=$select(medical:need.position,1:weakest.position),minimum=$select(medical:$select(need.healthySpecialists=0:($select(c.competitionId=416:58,1:50)*##class(Rugby.Service.TalentScale).Factor()),weak>(62*##class(Rugby.Service.TalentScale).Factor()):weak-(12*##class(Rugby.Service.TalentScale).Factor()),1:(50*##class(Rugby.Service.TalentScale).Factor())),1:weak+1)
     for i=0:1:free.%Size()-1 {
         set p=free.%Get(i)
+        if '##class(Rugby.Service.PlayerSales).CanBuy(p,c.id) continue
         if $isobject(excluded)&&excluded.%IsDefined(p.id) continue
-        set age=(day-p.birthDay)\365,v=##class(Rugby.Service.Development).Average(p),fee=p.%Get("signingFee",0),fit=$select(p.position=pos:1,medical&&((p.position<=8)=(pos<=8)):.85,1:0)
+        set age=(day-p.birthDay)\365,v=##class(Rugby.Service.Development).Average(p),fee=##class(Rugby.Service.PlayerSales).Cost(p),fit=$select(p.position=pos:1,medical&&((p.position<=8)=(pos<=8)):.85,1:0)
         if (fit=0)||((v*fit)<minimum)||(age>$select(medical:36,1:32))||(fee>(c.balance/8)) continue
         set wage=##class(Rugby.Service.Payroll).Reference(p,c.id),monthly=##class(Rugby.Service.Payroll).Monthly(wage)
         if ((used+wage)>wageCap)||(c.balance<(fee+(monthly*2))) continue
@@ -190,16 +191,21 @@ ClassMethod Recruit(c As %DynamicObject, day As %Integer, medicalOnly As %Boolea
 ClassMethod AcceptRecruitment(c As %DynamicObject, proposal As %DynamicObject, day As %Integer) As %DynamicObject
 {
     set candidate=##class(Rugby.Service.Store).Get("Player",proposal.playerId),medical=proposal.medical,need=proposal.medicalNeed,bestWage=proposal.weeklyWage
-    if (candidate.clubId'="")||('candidate.available)||(candidate.version'=proposal.playerVersion) quit {"signed":false,"reason":"candidateTaken"}
+    if ('##class(Rugby.Service.PlayerSales).CanBuy(candidate,c.id))||('candidate.available)||(candidate.version'=proposal.playerVersion) quit {"signed":false,"reason":"candidateTaken"}
+    if ##class(Rugby.Service.Store).Active(c.id) quit {"signed":false,"reason":"matchActive"}
+    if candidate.clubId'="" { if ##class(Rugby.Service.Store).Active(candidate.clubId) quit {"signed":false,"reason":"matchActive"} }
     if $isobject(##class(Rugby.Service.Store).Get("PlayerContract",c.id_"-sign-"_day,0)) quit {"signed":false,"reason":"dailySigningComplete"}
     if '$select(medical:##class(Rugby.Service.Payroll).CanPayMedical(c.id,candidate.id,bestWage),1:##class(Rugby.Service.Payroll).CanPay(c.id,candidate.id,bestWage)) quit {"signed":false,"reason":"payrollLimit"}
-    if c.balance<(candidate.%Get("signingFee",0)+(proposal.monthlyWage*2)) quit {"signed":false,"reason":"cashReserve"}
-    set fee=candidate.%Get("signingFee",0),candidate.clubId=c.id,candidate.category="senior",candidate.contractStatus="employed",candidate.weeklyWage=bestWage,candidate.monthlyWage=##class(Rugby.Service.Payroll).Monthly(bestWage),candidate.signedDay=day,candidate.payrollStartDay=day
+    if c.balance<(##class(Rugby.Service.PlayerSales).Cost(candidate)+(proposal.monthlyWage*2)) quit {"signed":false,"reason":"cashReserve"}
+    set fee=##class(Rugby.Service.PlayerSales).Cost(candidate),seller=candidate.clubId
+    if seller'="" do ##class(Rugby.Service.PlayerSales).Complete(candidate,c.id,fee,"ai-sale-"_c.id_"-"_day)
+    set candidate.clubId=c.id,candidate.category="senior",candidate.contractStatus="employed",candidate.weeklyWage=bestWage,candidate.monthlyWage=##class(Rugby.Service.Payroll).Monthly(bestWage),candidate.signedDay=day,candidate.payrollStartDay=day
     if medical { set candidate.injuryCoverForPlayerId=need.playerId,c.aiInjurySignings=c.%Get("aiInjurySignings",0)+1 }
     else { set c.aiSignings=c.aiSignings+1 do candidate.%Remove("injuryCoverForPlayerId") }
     set candidate.contractYears=##class(Rugby.Service.ContractTerms).Preferred((day-candidate.birthDay)\365,candidate.id)
     do ##class(Rugby.Service.Seasons).Contract(candidate,##class(Rugby.Service.Seasons).Year(c.id)+candidate.contractYears-1),##class(Rugby.Service.Store).Put("Player",candidate)
-    do ##class(Rugby.Service.Management).Money(c,-fee,"transfer","Fichaje de "_candidate.name,"ai-sign-"_day)
+    if seller="" { do ##class(Rugby.Service.Management).Money(c,-fee,"transfer","Fichaje de "_candidate.name,"ai-sign-"_day) }
+    else { set c.balance=##class(Rugby.Service.Store).Get("Club",c.id).balance do ##class(Rugby.Service.Store).Put("Club",c) }
     set reason=$select(medical:"injuryCover",1:"squadImprovement"),contract={"id":(c.id_"-sign-"_day),"clubId":(c.id),"playerId":(candidate.id),"kind":"signing","reason":(reason),"replacementForPlayerId":(need.%Get("playerId")),"day":(day),"weeklyWage":(candidate.weeklyWage),"monthlyWage":(candidate.monthlyWage),"payPeriod":"monthly","contractEndDate":(candidate.contractEndDate),"contractYears":(candidate.contractYears),"fee":(fee)}
     do ##class(Rugby.Service.Store).Put("PlayerContract",contract)
     set pool=##class(Rugby.Service.TransferPool).Refresh(day)
@@ -255,10 +261,9 @@ ClassMethod Surplus(c As %DynamicObject, day As %Integer) As %String
         if value<worst set candidate=p,worst=value
     }
     if '$isobject(candidate) quit ""
-    set candidate.formerClubId=c.id,candidate.previousWeeklyWage=candidate.weeklyWage,candidate.clubId="",candidate.weeklyWage=0,candidate.releasedDay=day,candidate.contractStatus="released",candidate.signingFee=0
-    do ##class(Rugby.Service.Seasons).Contract(candidate,##class(Rugby.Service.Seasons).Year(c.id))
+    if candidate.%Get("transferListed",0)||candidate.%Get("retirementAnnounced",0) quit ""
+    set candidate.transferListed=1,candidate.transferFee=##class(Rugby.Service.PlayerSales).Suggested(candidate),candidate.transferListedDay=day
     do ##class(Rugby.Service.Store).Put("Player",candidate)
-    do ##class(Rugby.Service.Store).Put("PlayerContract",{"id":(c.id_"-ai-release-"_day),"clubId":(c.id),"playerId":(candidate.id),"kind":"release","day":(day),"fee":0})
     quit candidate.id
 }
 ClassMethod Rating(p As %DynamicObject, pos As %Integer) As %Numeric
@@ -349,7 +354,7 @@ ClassMethod Day(day As %Integer, deferSave As %Boolean = 0) As %DynamicObject
             if review { set released=..Surplus(c,day),staff=..Coach(c,day) }
             set intake=..Academy(c,day)
             do ##class(Rugby.Service.Store).Put("Club",c)
-            do report.%Push({"clubId":(cid),"day":(day),"medicalOnly":('review),"monthlyPayroll":(payroll),"staff":(staff),"renewals":(renewals),"releasedPlayerId":(released),"academyIntake":(intake.added),"academyDepartures":(intake.departed),"academyPromotions":(intake.promoted)})
+            do report.%Push({"clubId":(cid),"day":(day),"medicalOnly":('review),"monthlyPayroll":(payroll),"staff":(staff),"renewals":(renewals),"listedPlayerId":(released),"academyIntake":(intake.added),"academyDepartures":(intake.departed),"academyPromotions":(intake.promoted)})
         }
     }
     set auction=##class(Rugby.Service.TransferPool).Compete(report,day)

@@ -67,6 +67,9 @@ ClassMethod Market() As %DynamicArray
     set players=##class(Rugby.Service.TransferPool).Players(),items=[],club=##class(Rugby.Service.Store).Get("Club",##class(Rugby.Service.Store).ManagedClub())
     for i=0:1:players.%Size()-1 {
         set p=players.%Get(i)
+        if p.clubId=club.id continue
+        set p.transferFee=##class(Rugby.Service.PlayerSales).Fee(p),p.marketClubName="Agente libre"
+        if p.clubId'= "" set p.marketClubName=##class(Rugby.Service.Store).Get("Club",p.clubId).name
         if p.%Get("retirementAnnounced",0)||(p.%Get("contractStatus")="retired") continue
         set p.age=(club.day-p.birthDay)\365,p.askingWeeklyWage=..Asking(p),p.signingFee=p.%Get("signingFee",0),p.nationalityCode=p.%Get("nationalityCode","ES"),p.nationality=p.%Get("nationality","España")
         do items.%Push(##class(Rugby.Service.Development).FreeProfile(p))
@@ -81,7 +84,7 @@ ClassMethod Public(n As %DynamicObject) As %DynamicObject
     if out.status'="signed" {
         if (out.%Get("kind","signing")="promotion")&&((p.clubId'=out.clubId)||(p.category'="academy")) { set out.status="unavailable" }
         elseif (out.%Get("kind","signing")="renewal")&&((p.clubId'=out.clubId)||p.%Get("retirementAnnounced",0)) { set out.status="unavailable" }
-        elseif (out.%Get("kind","signing")="signing")&&(p.clubId'="") { set out.status="unavailable" }
+        elseif (out.%Get("kind","signing")="signing")&&(('##class(Rugby.Service.PlayerSales).CanBuy(p,out.clubId))||(p.clubId'=out.%Get("sellerClubId",""))||((p.clubId'="")&&(p.%Get("transferFee",0)'=out.%Get("transferFee",0)))) { set out.status="unavailable" }
         elseif p.version'=out.playerVersion { set out.status="changed" }
         elseif (c.day>out.expiresDay)&&$listfind($listbuild("open","counteroffer","agreed"),out.status) { set out.status="expired" }
     }
@@ -106,8 +109,8 @@ ClassMethod Free(pid As %String) As %DynamicObject
 {
     set p=##class(Rugby.Service.Store).Get("Player",pid)
     if p.%Get("retirementAnnounced",0)||(p.%Get("contractStatus")="retired") do ##class(Rugby.Service.Store).Fail(409,"PLAYER_RETIRING","El jugador se retira y no puede firmar.")
-    if p.clubId'="" do ##class(Rugby.Service.Store).Fail(409,"PLAYER_TAKEN","El jugador ya tiene equipo.")
-    if p.%Get("transferMarketRemoved",0) do ##class(Rugby.Service.Store).Fail(409,"MARKET_UNLISTED","El jugador ha salido del mercado en la renovación semanal.")
+    if '##class(Rugby.Service.PlayerSales).CanBuy(p,##class(Rugby.Service.Store).ManagedClub()) do ##class(Rugby.Service.Store).Fail(409,"PLAYER_TAKEN","El jugador no está disponible para este club.")
+    if (p.clubId="")&&p.%Get("transferMarketRemoved",0) do ##class(Rugby.Service.Store).Fail(409,"MARKET_UNLISTED","El jugador ha salido del mercado en la renovación semanal.")
     quit p
 }
 ClassMethod Candidate(pid As %String, kind As %String) As %DynamicObject
@@ -144,7 +147,8 @@ ClassMethod Open(pid As %String, b As %DynamicObject, key As %String, kind As %S
     if (kind="signing")&&('##class(Rugby.Service.TransferPool).Contains(pid)) do ##class(Rugby.Service.Store).Fail(409,"MARKET_UNLISTED","El jugador no está entre los candidatos disponibles del mercado.")
     set ask=..Asking(p,kind),h=##class(Rugby.Service.Rivals).Hash(pid,##class(Rugby.Service.Rivals).Seed()),floor=((((ask\100)*(85+(h#11)))+99)\100)*100,id=club_"-neg-"_$increment(^RugbyWorld(game,"ids","Negotiation"))
     set n={"id":(id),"clubId":(club),"playerId":(pid),"playerVersion":(p.version),"status":"open","askingWeeklyWage":(ask),"reservationWage":(floor),"counterWeeklyWage":(ask),"agreedWeeklyWage":0,"signingFee":(p.%Get("signingFee",0)),"round":0,"maxRounds":5,"createdDay":(c.day),"updatedDay":(c.day),"expiresDay":(c.day+7),"offers":[]}
-    set n.kind=kind
+    set n.kind=kind,n.sellerClubId=$select(kind="signing":p.clubId,1:""),n.transferFee=$select(kind="signing":##class(Rugby.Service.PlayerSales).Fee(p),1:0)
+    if n.sellerClubId'="" set n.signingFee=0
     if (kind="promotion")||(kind="renewal") set n.signingFee=0
     set year=##class(Rugby.Service.Seasons).Year(club)
     if kind="promotion" {
@@ -166,6 +170,7 @@ ClassMethod Validate(id As %String, b As %DynamicObject) As %DynamicObject
     set n=##class(Rugby.Service.Store).Get("Negotiation",id)
     do ##class(Rugby.Service.Store).Managed(n.clubId),##class(Rugby.Service.Store).CheckVersion(n,b)
     set p=..Candidate(n.playerId,n.%Get("kind","signing")),c=##class(Rugby.Service.Store).Get("Club",n.clubId)
+    if (n.%Get("kind","signing")="signing")&&((p.clubId'=n.%Get("sellerClubId",""))||(##class(Rugby.Service.PlayerSales).Fee(p)'=n.%Get("transferFee",0))) do ##class(Rugby.Service.Store).Fail(409,"PLAYER_CHANGED","Las condiciones del traspaso han cambiado.")
     if p.version'=n.playerVersion do ##class(Rugby.Service.Store).Fail(409,"PLAYER_CHANGED","Las condiciones del jugador han cambiado. Abre una nueva negociación.")
     if c.day>n.expiresDay do ##class(Rugby.Service.Store).Fail(409,"NEGOTIATION_EXPIRED","La negociación ha caducado.")
     quit n
@@ -212,9 +217,11 @@ ClassMethod Sign(id As %String, b As %DynamicObject, key As %String) As %Dynamic
     if n.status'="agreed" do ##class(Rugby.Service.Store).Fail(409,"NEGOTIATION_STATE","Primero debes acordar el salario.")
     if ##class(Rugby.Service.Store).Active(club) do ##class(Rugby.Service.Store).Fail(409,"MATCH_ACTIVE","Termina el partido antes de incorporar un jugador.")
     set c=##class(Rugby.Service.Store).Get("Club",club),p=..Candidate(n.playerId,n.%Get("kind","signing"))
-    if (n.signingFee>0)&&(c.balance<n.signingFee) do ##class(Rugby.Service.Store).Fail(409,"SIGNING_FUNDS","No hay saldo suficiente para la prima de incorporación.")
+    set totalFee=n.signingFee+n.%Get("transferFee",0)
+    if (totalFee>0)&&(c.balance<totalFee) do ##class(Rugby.Service.Store).Fail(409,"SIGNING_FUNDS","No hay saldo suficiente para la prima de incorporación.")
     set cover=##class(Rugby.Service.Rivals).InjuryNeed(c,c.day),medical=(n.%Get("kind","signing")="signing")&&(cover.position>0)&&((cover.position<=8)=(p.position<=8)),useMedical=medical&&##class(Rugby.Service.Payroll).CanPayMedical(club,p.id,n.agreedWeeklyWage)
-    if (##class(Rugby.Service.SalaryBudget).Percent(club)>0)||('useMedical) do ##class(Rugby.Service.Payroll).Check(club,p.id,n.agreedWeeklyWage,n.signingFee)
+    if (##class(Rugby.Service.SalaryBudget).Percent(club)>0)||('useMedical) do ##class(Rugby.Service.Payroll).Check(club,p.id,n.agreedWeeklyWage,totalFee)
+    if n.%Get("sellerClubId","")'="" do ##class(Rugby.Service.PlayerSales).Complete(p,club,n.transferFee,"sale-"_n.id)
     if n.%Get("kind")'="renewal" set p.clubId=club,p.category="senior",p.signedDay=c.day
     set p.weeklyWage=n.agreedWeeklyWage,p.monthlyWage=n.%Get("agreedMonthlyWage",##class(Rugby.Service.Payroll).Monthly(n.agreedWeeklyWage)),p.payrollStartDay=c.day,p.contractStatus="employed",p.contractYears=n.%Get("agreedContractYears",1),p.contractEndDate=n.%Get("contractEndDate",##class(Rugby.Service.Seasons).EndDate(##class(Rugby.Service.Seasons).Year(club))),p.age=(c.day-p.birthDay)\365
     if useMedical set p.injuryCoverForPlayerId=cover.playerId
@@ -222,7 +229,7 @@ ClassMethod Sign(id As %String, b As %DynamicObject, key As %String) As %Dynamic
     if n.%Get("kind")="promotion" set p.seniorWeeklyWage=n.agreedWeeklyWage,p.promotedDay=c.day
     do ##class(Rugby.Service.Store).Put("Player",p)
     if n.signingFee do ##class(Rugby.Service.Management).Money(c,-n.signingFee,"transfer","Prima de incorporación de "_p.name,"sign-"_n.id)
-    set contract={"id":(n.id_"-contract"),"clubId":(club),"playerId":(p.id),"negotiationId":(n.id),"kind":(n.%Get("kind","signing")),"day":(c.day),"weeklyWage":(p.weeklyWage),"monthlyWage":(p.monthlyWage),"payPeriod":"monthly","contractEndDate":(p.contractEndDate),"contractYears":(p.contractYears),"fee":(n.signingFee),"idempotencyKey":(key)}
+    set contract={"id":(n.id_"-contract"),"clubId":(club),"playerId":(p.id),"negotiationId":(n.id),"kind":(n.%Get("kind","signing")),"day":(c.day),"weeklyWage":(p.weeklyWage),"monthlyWage":(p.monthlyWage),"payPeriod":"monthly","contractEndDate":(p.contractEndDate),"contractYears":(p.contractYears),"fee":(totalFee),"sellerClubId":(n.%Get("sellerClubId","")),"idempotencyKey":(key)}
     if useMedical set contract.reason="injuryCover",contract.replacementForPlayerId=cover.playerId
     do ##class(Rugby.Service.Store).Put("PlayerContract",contract)
     set n.status="signed",n.updatedDay=c.day,n.contractId=contract.id

@@ -28,7 +28,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             set foreignMarket=##class(Rugby.Service.ForeignMarket).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.foreignTransferMarket=foreignMarket,pResponse.DetailsJSON=details.%ToJSON()
             set grants=##class(Rugby.Service.PublicGrants).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.publicGrantDistribution=grants,pResponse.DetailsJSON=details.%ToJSON()
             set reduction=##class(Rugby.Service.FundingReduction).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.fundingReduction=reduction,pResponse.DetailsJSON=details.%ToJSON()
-            do ##class(Rugby.Service.Admin).Apply()
+            do ##class(Rugby.Service.Admin).Apply(),##class(Rugby.Service.CompetitionStatistics).Initialize()
             set out={"initialized":true}
         } else {
             if (pRequest.Resource'="auth")&&(pRequest.Resource'="health") {

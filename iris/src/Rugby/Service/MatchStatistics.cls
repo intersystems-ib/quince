@@ -26,6 +26,8 @@ ClassMethod Entry(p As %DynamicObject, f As %DynamicObject, match As %String = "
     set side=p.side,cid=f.%Get(side_"Id"),other=$select(side="home":"away",1:"home"),opponent=f.%Get(other_"Id"),c=##class(Rugby.Service.Store).Get("Club",cid),r=##class(Rugby.Service.Store).Get("Club",opponent),date=f.%Get("date",##class(Rugby.Service.Injuries).Date(f.day)),year=##class(Rugby.Service.Competition).Year(date)
     set stats=##class(%DynamicObject).%FromJSON(p.%Get("stats",{}).%ToJSON()),stats.yellowCards=p.%Get("yellowCards",0),stats.redCards=p.%Get("redCards",0),stats.infringements=p.%Get("infringements",0)
     set e={"id":(f.id_"-"_p.playerId),"playerId":(p.playerId),"playerName":(p.name),"clubId":(cid),"clubName":(c.name),"opponentId":(opponent),"opponentName":(r.name),"fixtureId":(f.id),"matchId":(match),"date":(date),"day":(f.day),"season":(year_"/"_(year+1)),"stage":(f.%Get("stage","friendly")),"competitionType":(f.%Get("competitionType","league")),"side":(side),"position":(p.position),"playedSeconds":(p.%Get("playedSeconds",0)),"homeScore":(f.%Get("homeScore",0)),"awayScore":(f.%Get("awayScore",0)),"stats":(stats),"source":(source),"modelVersion":(..#VERSION)}
+    set e.competitionKey=f.%Get("competitionKey")
+    do e.%Set("matchFinished",f.status="finished","boolean")
     do e.%Set("complete",p.%Get("statsVersion")=..#VERSION,"boolean")
     quit e
 }
