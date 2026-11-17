@@ -54,6 +54,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
             if id="" quit ..Paginate(##class(Rugby.Service.Store).All("Club"))
             set c=##class(Rugby.Service.Store).Get("Club",id)
             if child="" quit c
+            if child="inbox" quit ##class(Rugby.Service.Inbox).View(id)
             if (child="players")||(child="academy") {
                 set a=##class(Rugby.Service.Store).All("Player","clubId",id),items=[]
                 for i=0:1:a.%Size()-1 { set p=a.%Get(i) if (child="players")||(p.category="academy") do items.%Push(##class(Rugby.Service.Development).Summary(p,c)) }
@@ -120,6 +121,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
     }
     if (resource="clubs")&&(method'="GET") {
         do ##class(Rugby.Service.Store).Managed(id)
+        if (child="inbox")&&(method="POST") quit ##class(Rugby.Service.Inbox).Mark(id,b,key)
         if (child="auto-advance")&&(method="POST") quit ##class(Rugby.Service.AutoAdvance).Step(id,b,key)
         if (child="advance-day")&&(method="POST") quit ##class(Rugby.Service.Management).Advance(id,b,key)
         if (child="friendly-invitations")&&(method="POST") quit ##class(Rugby.Service.FriendlyRequests).Respond(id,b.%Get("invitationId"),b,key)

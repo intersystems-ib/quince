@@ -13,3 +13,5 @@ Calendrier affiche les mois, résultats et amicaux. Choisissez parmi trois adver
 Impossible d'avancer avec un match en attente ou en cours. Le volume `iris-data` conserve la progression au redémarrage des conteneurs.
 
 Les données du club s'actualisent après un match. Si l'avance détecte une ancienne version, elle recharge les données et réessaie une fois, sans avancer deux fois.
+
+La boîte de réception, accessible depuis le menu et la cloche supérieure, signale les titulaires blessés, les ventes finalisées, les postes techniques et financier vacants, ainsi que les contrats seniors et de jeunes arrivant à échéance en fin de saison à partir du 30 mai. Les avis peuvent être marqués comme lus ou non lus. Les alertes résolues disparaissent ; les ventes restent consultables. L’état de lecture est propre à chaque partie.

@@ -23,5 +23,32 @@ ClassMethod Run()
     set paid=##class(Rugby.Service.Store).Get("Club",c.id).balance
     do ##class(Rugby.Service.Finance).Tick(c.id)
     do ..Assert((paid=balance)&&(##class(Rugby.Service.Store).Get("Club",c.id).balance=paid),"No compensating grant is paid on repeated ticks")
+    do ..Tickets()
+}
+ClassMethod Tickets()
+{
+    set c=##class(Rugby.Service.Store).Get("Club","c1"),c.date="2096-10-01",c.stadium={"capacity":200},s={"year":2096},f={"id":"forecast-gate-league","homeId":"c1","awayId":"c2","date":"2096-10-10","day":25500,"stage":"regular","status":"scheduled","ticketPrice":1200}
+    do ##class(Rugby.Service.Store).Put("Club",c),##class(Rugby.Service.Store).Put("Fixture",f)
+    set estimate=##class(Rugby.Service.Finance).Forecast(f,-1,{"members":50}),plan=##class(Rugby.Service.FinancialPlanning).TicketForecast(c,s,50)
+    do ..Assert((plan.remainingMatches=1)&&(plan.pending=estimate.ticketRevenue)&&(plan.averagePayingAttendees=estimate.attendance-50)&&(estimate.attendance<=200)&&(plan.averageTicketPrice=1200),"Gate forecast excludes season ticket holders, respects capacity and exposes mean price and attendance")
+    set empty=##class(Rugby.Service.FinancialPlanning).TicketForecast(c,s,0)
+    do ..Assert(empty.pending=plan.pending+(50*1200),"Season ticket holders are not counted twice as paying spectators")
+    set f.id="forecast-gate-cup",f.stage="cup-group"
+    do ##class(Rugby.Service.Store).Put("Fixture",f)
+    set cup=##class(Rugby.Service.Finance).Forecast(f),f.id="forecast-gate-away",f.homeId="c2",f.awayId="c1",f.stage="regular"
+    do ##class(Rugby.Service.Store).Put("Fixture",f)
+    set f.id="forecast-gate-friendly",f.stage="friendly"
+    do ##class(Rugby.Service.Store).Put("Fixture",f)
+    set friendly=##class(Rugby.Service.Finance).Forecast(f),expected=plan.pending+cup.ticketRevenue+friendly.ticketRevenue-(friendly.ticketRevenue\2),plan=##class(Rugby.Service.FinancialPlanning).TicketForecast(c,s,50)
+    do ..Assert((plan.remainingMatches=3)&&(plan.pending=expected),"Cup gates and the away friendly half-share count, ordinary away matches do not")
+    set f=##class(Rugby.Service.Store).Get("Fixture","forecast-gate-league"),f.status="finished"
+    do ##class(Rugby.Service.Store).Put("Fixture",f),##class(Rugby.Service.Management).Money(c,estimate.ticketRevenue,"tickets","Gate forecast test","forecast-gate-test")
+    set settled=##class(Rugby.Service.FinancialPlanning).TicketForecast(c,s,50)
+    do ..Assert((settled.received=estimate.ticketRevenue)&&(settled.total=plan.total)&&(settled.remainingMatches=2),"Finished match receipts replace their estimate without double counting")
+    set f.id="forecast-gate-unassigned",f.status="scheduled",f.stage="final",f.awayId=""
+    do ##class(Rugby.Service.Store).Put("Fixture",f)
+    set f.id="forecast-gate-other-season",f.awayId="c2",f.date="2097-10-10"
+    do ##class(Rugby.Service.Store).Put("Fixture",f)
+    do ..Assert(##class(Rugby.Service.FinancialPlanning).TicketForecast(c,s,50).%ToJSON()=settled.%ToJSON(),"Unassigned knockout ties and other seasons generate no forecast income")
 }
 }

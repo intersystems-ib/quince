@@ -1,6 +1,6 @@
 Class Rugby.Service.FinancialPlanning Extends %RegisteredObject
 {
-Parameter VERSION = "2.0.0";
+Parameter VERSION = "2.1.0";
 ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject) As %DynamicObject
 {
     set payroll=##class(Rugby.Service.Payroll).Summary(c.id,0),managed=o.director.%Get("id")'="",quality=o.director.%Get("quality",35),success=##class(Rugby.Service.Finance).Success(c),agreements=##class(Rugby.Service.Store).All("FinancialAgreement","clubId",c.id),slots={},private=0,bar=0
@@ -15,24 +15,32 @@ ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObje
     }
     set price=s.%Get("seasonTicketPrice",15000),members=s.%Get("members",0),campaign=s.%Get("campaignIncome",0)
     if ('s.%Get("campaignComplete",0))&&managed { set members=+$justify(##class(Rugby.Service.Finance).Budget(c)*.125*(.8+(quality*.004))/price,0,0),campaign=members*price }
-    set tickets=0,movements=##class(Rugby.Service.Store).All("FinancialMovement","clubId",c.id)
-    for i=0:1:movements.%Size()-1 { set m=movements.%Get(i) if (m.type="tickets")&&(##class(Rugby.Service.Competition).Year(m.date)=s.year) set tickets=tickets+m.amount }
-    set comp=##class(Rugby.Service.Store).Get("Competition","league-"_c.competitionId_"-"_s.year,0)
-    if $isobject(comp) {
-        set fixtures=##class(Rugby.Service.Competition).Fixtures(comp.id),campaignForecast={"members":(members)}
-        for i=0:1:fixtures.%Size()-1 {
-            set f=fixtures.%Get(i)
-            if (f.homeId'=c.id)||(f.stage'="regular")||(f.status="finished") continue
-            set ticketPrice=-1
-            if f.matchId'="" { set match=##class(Rugby.Service.Store).Get("Match",f.matchId,0) if $isobject(match) set ticketPrice=match.%Get("ticketPrice",-1) }
-            set forecast=##class(Rugby.Service.Finance).Forecast(f,ticketPrice,campaignForecast),tickets=tickets+forecast.ticketRevenue
-        }
-    }
+    set ticketPlan=..TicketForecast(c,s,members),tickets=ticketPlan.total
     set costs=payroll.annualProjectedCosts,targetFactor=.98+(quality*.0005),other=private+bar+campaign+tickets,needed=+$justify((costs*targetFactor)-other,0,0),unsubsidizedGap=$select(needed>0:needed,1:0),needed=unsubsidizedGap\2,grants=0
     for i=0:1:s.grants.%Size()-1 { set grants=grants+s.grants.%Get(i).amount }
     if ('s.%Get("grantsComplete",0))&&managed set grants=needed
     set income=other+grants
-    quit {"modelVersion":(..#VERSION),"projectedCosts":(costs),"projectedIncome":(income),"projectedMargin":(income-costs),"marginPercent":($select(costs>0:(income-costs)*100/costs,1:0)),"targetMarginPercent":((targetFactor-1)*100),"privateSponsors":(private),"barConcession":(bar),"memberships":(campaign),"tickets":(tickets),"publicGrants":(grants),"requiredGrants":(needed),"unsubsidizedGap":(unsubsidizedGap),"grantFactor":0.5,"directorQuality":(quality),"provisional":('s.%Get("grantsComplete",0))}
+    quit {"modelVersion":(..#VERSION),"projectedCosts":(costs),"projectedIncome":(income),"projectedMargin":(income-costs),"marginPercent":($select(costs>0:(income-costs)*100/costs,1:0)),"targetMarginPercent":((targetFactor-1)*100),"privateSponsors":(private),"barConcession":(bar),"memberships":(campaign),"tickets":(tickets),"ticketForecast":(ticketPlan),"publicGrants":(grants),"requiredGrants":(needed),"unsubsidizedGap":(unsubsidizedGap),"grantFactor":0.5,"directorQuality":(quality),"provisional":('s.%Get("grantsComplete",0))}
+}
+ClassMethod TicketForecast(c As %DynamicObject, s As %DynamicObject, members As %Integer) As %DynamicObject
+{
+    set received=0,pending=0,count=0,paying=0,gross=0,movements=##class(Rugby.Service.Store).All("FinancialMovement","clubId",c.id)
+    for i=0:1:movements.%Size()-1 { set m=movements.%Get(i) if (m.type="tickets")&&(##class(Rugby.Service.Competition).Year(m.date)=s.year) set received=received+m.amount }
+    set fixtures=##class(Rugby.Service.Store).All("Fixture"),campaignForecast={"members":(members)}
+        for i=0:1:fixtures.%Size()-1 {
+            set f=fixtures.%Get(i)
+            if (f.%Get("status")="finished")||(f.%Get("status")="cancelled") continue
+            if (f.%Get("homeId")="")||(f.%Get("awayId")="")||(f.%Get("date")="") continue
+            if ##class(Rugby.Service.Competition).Year(f.date)'=s.year continue
+            set friendly=f.%Get("stage")="friendly",home=f.homeId=c.id
+            if ('home)&&(('friendly)||(f.awayId'=c.id)) continue
+            set ticketPrice=-1
+            if f.%Get("matchId")'="" { set match=##class(Rugby.Service.Store).Get("Match",f.matchId,0) if $isobject(match) set ticketPrice=match.%Get("ticketPrice",-1) }
+            set forecast=##class(Rugby.Service.Finance).Forecast(f,ticketPrice,$select(home:campaignForecast,1:"")),amount=forecast.ticketRevenue
+            if friendly set amount=$select(home:amount\2,1:amount-(amount\2))
+            set pending=pending+amount,count=count+1,paying=paying+forecast.payingAttendees,gross=gross+forecast.ticketRevenue
+        }
+    quit {"received":(received),"pending":(pending),"total":(received+pending),"remainingMatches":(count),"averagePayingAttendees":($select(count>0:+$justify(paying/count,0,0),1:0)),"averageTicketPrice":($select(paying>0:+$justify(gross/paying,0,0),1:0))}
 }
 ClassMethod Adopt(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject) As %DynamicObject
 {

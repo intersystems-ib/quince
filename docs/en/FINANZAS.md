@@ -20,3 +20,5 @@ Grants cover half the amount calculated by the funding model, with variation bas
 Gate receipts depend on ticket price, attendance and season-ticket holders, capped by capacity. Initial prices consider division, stage, opponent position, derbies and decisive late-season matches. Standings are used after three matches; before then, club reference quality is used. Recommendations range from €5 to €40; the host may set €0–50 before kick-off. Friendlies split gate receipts equally.
 
 **Ground and tickets** shows name, capacity and a generic illustration for up to 1,000; 1,001–2,500; 2,501–5,000; 5,001–10,000; or more than 10,000 spectators. These are illustrative images, not photographs of the actual grounds.
+
+Projected income includes collected gate receipts and estimates for remaining scheduled league, Cup and friendly matches, showing average paying attendance and ticket price. League season-ticket holders are excluded, capacity limits apply and friendly receipts are shared 50/50. Knockout matches without confirmed teams are not budgeted.

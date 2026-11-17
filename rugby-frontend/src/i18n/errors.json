@@ -434,5 +434,9 @@
   "ENGINE_VERSION": [
     "This game requires a different version of the match engine.",
     "Cette partie nécessite une autre version du moteur de match."
+  ],
+  "INBOX_INPUT": [
+    "Check the selected notifications and read status.",
+    "Vérifiez les notifications sélectionnées et leur état de lecture."
   ]
 }

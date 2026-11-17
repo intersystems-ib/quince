@@ -13,3 +13,5 @@ Calendario muestra los meses, resultados y amistosos. Puedes elegir uno de tres 
 No se puede avanzar con encuentros pendientes ni con un partido en curso. El volumen `iris-data` conserva el progreso al reiniciar los contenedores.
 
 El club se actualiza al terminar el partido. Si avanzar detecta una versión anterior, recarga los datos y reintenta una vez, sin duplicar días.
+
+El buzón de avisos, accesible desde el menú y la campana superior, muestra lesiones en el XV titular, ventas completadas, puestos técnicos y financiero vacantes, y contratos de primer equipo o cantera que vencen al cierre de temporada desde el 30 de mayo. Permite marcar avisos como leídos o sin leer. Las alertas resueltas desaparecen; las ventas se conservan. El estado de lectura pertenece a cada partida.

@@ -20,3 +20,5 @@ Les subventions couvrent la moitié du montant calculé par le modèle de financ
 La billetterie dépend du prix, des spectateurs et des abonnés, dans la limite de capacité. Le prix initial tient compte de la division, phase, position adverse, derbys et rencontres décisives de fin de saison. Le classement est utilisé après trois matchs ; auparavant, le niveau de référence du club. Les recommandations vont de 5 à 40 € ; le recevant peut fixer de 0 à 50 € avant le coup d'envoi. Les amicaux partagent les recettes à parts égales.
 
 **Stade et billetterie** affiche nom, capacité et illustration générique pour jusqu'à 1 000, 1 001–2 500, 2 501–5 000, 5 001–10 000 ou plus de 10 000 spectateurs. Ces images sont indicatives, pas des photographies des stades réels.
+
+Les revenus prévisionnels incluent la billetterie encaissée et estimée des matchs programmés restants (championnat, Coupe et amicaux), avec affluence payante et prix moyen. Les abonnés sont exclus en championnat, la capacité est respectée et les recettes des amicaux sont partagées à 50 %. Les tours à élimination directe sans équipes confirmées ne sont pas budgétés.

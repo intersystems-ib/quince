@@ -5290,5 +5290,109 @@
   "Copa": [
     "Cup",
     "Coupe"
+  ],
+  "Taquilla cobrada": [
+    "Gate receipts collected",
+    "Recettes de billetterie encaissées"
+  ],
+  "Taquilla pendiente estimada": [
+    "Estimated remaining gate receipts",
+    "Recettes de billetterie restantes estimées"
+  ],
+  "{0} partidos pendientes · {1} asistentes de pago por partido · entrada media {2}": [
+    "{0} remaining matches · {1} paying spectators per match · average ticket {2}",
+    "{0} matchs restants · {1} spectateurs payants par match · billet moyen {2}"
+  ],
+  "Sólo partidos programados. Sin abonados en liga; amistosos al 50%.": [
+    "Scheduled matches only. League season-ticket holders excluded; friendly receipts shared 50/50.",
+    "Matchs programmés uniquement. Abonnés exclus en championnat ; recettes des matchs amicaux partagées à 50 %."
+  ],
+  "Buzón de avisos": [
+    "Club inbox",
+    "Boîte de réception du club"
+  ],
+  "Avisos": [
+    "Notifications",
+    "Notifications"
+  ],
+  "GESTIÓN DEL CLUB": [
+    "CLUB MANAGEMENT",
+    "GESTION DU CLUB"
+  ],
+  "Filtrar avisos": [
+    "Filter notifications",
+    "Filtrer les notifications"
+  ],
+  "Sin leer": [
+    "Unread",
+    "Non lus"
+  ],
+  "Marcar todos como leídos": [
+    "Mark all as read",
+    "Tout marquer comme lu"
+  ],
+  "Avisos del club": [
+    "Club notifications",
+    "Notifications du club"
+  ],
+  "No tienes avisos sin leer.": [
+    "You have no unread notifications.",
+    "Vous n’avez aucune notification non lue."
+  ],
+  "No hay avisos pendientes.": [
+    "There are no pending notifications.",
+    "Aucune notification en attente."
+  ],
+  "Venta": [
+    "Sale",
+    "Vente"
+  ],
+  "Lesionado en el XV titular": [
+    "Injured player in the starting XV",
+    "Joueur blessé dans le XV titulaire"
+  ],
+  "Contrato próximo a finalizar": [
+    "Contract expiring soon",
+    "Contrat arrivant à échéance"
+  ],
+  "Venta de jugador completada": [
+    "Player sale completed",
+    "Vente de joueur finalisée"
+  ],
+  "Puesto sin cubrir": [
+    "Vacant position",
+    "Poste vacant"
+  ],
+  "Revisa la alineación y sustituye al jugador lesionado.": [
+    "Review the lineup and replace the injured player.",
+    "Vérifiez la composition et remplacez le joueur blessé."
+  ],
+  "Revisar alineación": [
+    "Review lineup",
+    "Vérifier la composition"
+  ],
+  "Ver jugador": [
+    "View player",
+    "Voir le joueur"
+  ],
+  "Marcar como no leído": [
+    "Mark as unread",
+    "Marquer comme non lu"
+  ],
+  "Marcar como leído": [
+    "Mark as read",
+    "Marquer comme lu"
+  ],
+  "Los avisos de lesiones, contratos y puestos vacantes desaparecen cuando se resuelven. Las ventas permanecen en el buzón.": [
+    "Injury, contract and vacancy alerts disappear when resolved. Sales remain in the inbox.",
+    "Les alertes de blessure, de contrat et de poste vacant disparaissent une fois résolues. Les ventes restent dans la boîte de réception."
+  ],
+  "Indica los avisos y si están leídos.": [
+    "Specify the notifications and their read status.",
+    "Indiquez les notifications et leur état de lecture."
+  ],
+  "Selecciona como máximo 500 avisos.": [
+    "Select up to 500 notifications.",
+    "Sélectionnez au maximum 500 notifications."
   ]
 }

@@ -9,7 +9,7 @@ ClassMethod Run(only As %String = "")
     lock +^RugbyWrite:15
     if '$test { write "TESTS FAILED: busy",! quit }
     set failures=0
-    for name="RenewalPayroll","CompetitionStatistics","PlayerSales","StorageMaintenance","YouthIntake","AdvancePerformance","DayOptimization","TicketPricing","PeriodEnd","FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
+    for name="Inbox","RenewalPayroll","CompetitionStatistics","PlayerSales","StorageMaintenance","YouthIntake","AdvancePerformance","DayOptimization","TicketPricing","PeriodEnd","FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
         if (only'="")&&(name'=only) continue
         try {
             if (name'="Concurrency")&&(name'="AdvancePerformance") tstart
@@ -25,6 +25,7 @@ ClassMethod Run(only As %String = "")
     lock -^RugbyWrite
     write $select(failures:"TESTS FAILED: "_failures,1:"ALL TESTS PASSED"),!
 }
+ClassMethod Inbox() { do ##class(Rugby.Test.Inbox).Run() }
 ClassMethod RenewalPayroll() { do ##class(Rugby.Test.RenewalPayroll).Run() }
 ClassMethod CompetitionStatistics() { do ##class(Rugby.Test.CompetitionStatistics).Run() }
 ClassMethod PlayerSales() { do ##class(Rugby.Test.PlayerSales).Run() }

@@ -13,3 +13,5 @@ Calendar displays months, results and friendlies. Choose one of three proposed o
 You cannot advance past pending fixtures or while a match is in progress. The `iris-data` volume preserves progress when containers restart.
 
 Club data refreshes after a match. If advancing detects an old version, it reloads and retries once without advancing twice.
+
+The club inbox is available in the menu and top bell. It shows injured starters, completed sales, vacant coaching and financial director positions, and senior or academy contracts expiring at season close from 30 May. Notifications can be marked read or unread. Resolved alerts disappear; sales remain. Read status is stored per saved game.

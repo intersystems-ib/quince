@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom';
 import { getLocale, localize, tr, useLocale } from "./i18n";
 import FinanceSalary from './FinanceSalary';
 import { monthlySalary } from './salary';
@@ -11,7 +12,8 @@ const labels: Record<string, string> = { sponsorship: 'Patrocinios', grant: 'Sub
 export default function FinancesView() {
     useLocale();
     const q = useQuery({ queryKey: ['finances'], queryFn: () => api<FinancialView>('/my-club/finances') });
-    const [page, setPage] = useState(0), [tab, setTab] = useState('overview');
+    const [params] = useSearchParams();
+    const [page, setPage] = useState(0), [tab, setTab] = useState(() => params.get('tab') === 'director' ? 'director' : 'overview');
     if (q.isLoading)
         return <Loading />;
     if (q.error)
