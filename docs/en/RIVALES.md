@@ -1,0 +1,13 @@
+# Opponent management
+
+[Español](../RIVALES.md) · [English](RIVALES.md) · [Français](../fr/RIVALES.md) · [Index](README.md)
+
+Nineteen automatic clubs act as days advance, using seed-reproducible decisions. They manage selection, training, fatigue, academies, renewals, employees and recruitment.
+
+Plans prioritise positions, weaknesses and recovery. Academies maintain twenty players and use their own coach. Technical and squad reviews are periodic.
+
+Season limits are two ordinary signings, two promotions and up to six medical replacements, with at most 28 seniors or 30 with injury cover. Long absences are reviewed daily. Offers compete on wages then league position and respect cash and wage reserves. Surplus players can be listed for transfer.
+
+The user receives at most one friendly invitation per month, for a weekend free for both clubs. Calendar allows acceptance or rejection; there is no automatic acceptance.
+
+Daily processing and financial effects appear in interoperability audit. Retrying an action does not repeat sessions, signings or payments.

@@ -1,5 +1,7 @@
 # Acceso y partidas
 
+[Español](ACCESO-PARTIDAS.md) · [English](en/ACCESO-PARTIDAS.md) · [Français](fr/ACCESO-PARTIDAS.md) · [Índice](README.md)
+
 Crea una cuenta o inicia sesión. En **Mis partidas** puedes crear, cargar o eliminar tus propias partidas. Cada una comienza el 1 de septiembre, tras elegir división y club.
 
 La sesión utiliza JWT en cookie HttpOnly. Las partidas y sus datos están separados por usuario; cerrar sesión pausa sus encuentros. Cargar otra partida conserva la anterior.

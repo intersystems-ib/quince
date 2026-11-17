@@ -1,5 +1,7 @@
 # Jugadores reales
 
+[Español](PLANTILLAS-REALES.md) · [English](en/PLANTILLAS-REALES.md) · [Français](fr/PLANTILLAS-REALES.md) · [Índice](README.md)
+
 Las diez actas de la primera jornada aportan 460 identidades: 230 por división, quince titulares y ocho suplentes por club. No son plantillas completas; edad, atributos y contratos son simulados. La cantera y los nuevos agentes son generados.
 
 | Acta | Competición | Club local | Club visitante |

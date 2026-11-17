@@ -1,5 +1,7 @@
 # Arquitectura
 
+[Español](ARQUITECTURA.md) · [English](en/ARQUITECTURA.md) · [Français](fr/ARQUITECTURA.md) · [Índice](README.md)
+
 React y TypeScript consumen la API por el mismo origen. Nginx y Web Gateway conectan con IRIS:
 
 `Rugby.API.REST → HTTP.In → API.Process → Business Operation → servicios → modelos persistentes`.

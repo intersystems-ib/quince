@@ -1,5 +1,7 @@
 # Moral de todos los clubes
 
+[Español](MORAL.md) · [English](en/MORAL.md) · [Français](fr/MORAL.md) · [Índice](README.md)
+
 La moral está entre 0 y 100. Todos los jugadores de las dos divisiones, primer equipo, cantera y agentes generados comienzan al 100 %.
 
 Una victoria deja al 100 % a toda la plantilla del club, incluidos suplentes no utilizados, no convocados y cantera. Una derrota resta cinco puntos a toda esa plantilla. Los empates no añaden ni restan moral por resultado. En eliminatorias decide el vencedor final, incluido el desempate. Estas reglas son idénticas en partidos jugados y simulados, y también se aplican a amistosos.

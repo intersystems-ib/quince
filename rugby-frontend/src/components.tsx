@@ -1,79 +1,159 @@
-import {usePitchMotion} from './usePitchMotion';
-import {requestId} from './requestId';
-import {useEffect,useRef,useState} from 'react';
-import {useMutation,useQueryClient} from '@tanstack/react-query';
-import {ArrowRight,Check,LoaderCircle,TriangleAlert,X} from 'lucide-react';
-import {api} from './api';
-import {advanceWithRefresh} from './advanceDay';
-import type {Club,Kit,Match,Tactic} from './types';
-import {pitchFormation,positions} from './positions';
-export {positions} from './positions';
-export const attrLabels:Record<string,string>={speed:'Velocidad',strength:'Fuerza',stamina:'Resistencia',agility:'Agilidad',passing:'Pase',handling:'Manejo',tackling:'Placaje',kicking:'Patada',scrum:'Melé',lineout:'Touche',discipline:'Disciplina',decisions:'Decisiones',leadership:'Liderazgo',ruck:'Rucks',maul:'Mauls',attacking:'Estructura de ataque',defensiveReading:'Lectura defensiva'};
-export const money=(n:number)=>new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n/100);
-export const clock=(n:number)=>`${Math.floor(n/60).toString().padStart(2,'0')}:${Math.floor(n%60).toString().padStart(2,'0')}`;
-export const statusLabels:Record<string,string>={scheduled:'Programado',first:'Primera parte',halftime:'Descanso',second:'Segunda parte',finished:'Finalizado',live:'En juego'};
-export function ErrorBox({error,onDismiss}:{error:unknown;onDismiss?:()=>void}){return <div role="alert" className="error"><TriangleAlert size={19}/><span>{error instanceof Error?error.message:'No se han podido cargar los datos.'}</span>{onDismiss&&<button type="button" className="error-dismiss" aria-label="Cerrar aviso" onClick={onDismiss}><X size={17}/></button>}</div>}
-export function Loading(){return <div className="loading" role="status"><LoaderCircle className="spin" size={22}/> Cargando datos del club…</div>}
-export function Heading({eyebrow,title,description,action}:{eyebrow:string;title:string;description?:string;action?:React.ReactNode}){return <div className="page-heading"><div><div className="eyebrow">{eyebrow}</div><h1>{title}</h1>{description&&<p>{description}</p>}</div>{action}</div>}
-export function Energy({value}:{value:number}){const energy=Number.isFinite(value)?Math.min(100,Math.max(0,value)):0;return <span className="energy"><span className="energy-track"><i style={{width:`${energy}%`,background:`hsl(${energy*1.2} 72% 42%)`}}/></span><b>{Math.round(energy)}<small>%</small></b></span>}
-export function TrendArrow({trend}:{trend:'growth'|'decline'|'stable'}){const label={growth:'Mejora prevista',decline:'Declive previsto',stable:'Sin variación prevista'}[trend];return <span className={`trend-arrow trend-${trend}`} role="img" aria-label={label} title={label}>{({growth:'↑',decline:'↓',stable:'→'})[trend]}</span>}
-export function AttributeDelta({value,year}:{value:number;year?:number}){
- if(!Number.isFinite(value))return null;
- const amount=Math.round(Math.abs(value));
- if(!amount)return null;
- const formatted=new Intl.NumberFormat('es-ES',{maximumFractionDigits:0}).format(amount),sign=value>0?'+':'−';
- const label=`${value>0?'Subida':'Bajada'} de ${formatted} ${amount===1?'punto':'puntos'} en la temporada${year?` ${year}/${year+1}`:''}`;
- return <small className={`attribute-delta ${value>0?'growth':'decline'}`} aria-label={label} title={label}>{sign}{formatted}</small>;
+import { getLocale, localize, localizedError, tr, useLocale } from "./i18n";
+import { usePitchMotion } from './usePitchMotion';
+import { requestId } from './requestId';
+import { useEffect, useRef, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { ArrowRight, Check, LoaderCircle, TriangleAlert, X } from 'lucide-react';
+import { api } from './api';
+import { advanceWithRefresh } from './advanceDay';
+import type { Club, Kit, Match, Tactic } from './types';
+import { pitchFormation, positions } from './positions';
+export { positions } from './positions';
+export const attrLabels: Record<string, string> = { speed: 'Velocidad', strength: 'Fuerza', stamina: 'Resistencia', agility: 'Agilidad', passing: 'Pase', handling: 'Manejo', tackling: 'Placaje', kicking: 'Patada', scrum: 'Melé', lineout: 'Touche', discipline: 'Disciplina', decisions: 'Decisiones', leadership: 'Liderazgo', ruck: 'Rucks', maul: 'Mauls', attacking: 'Estructura de ataque', defensiveReading: 'Lectura defensiva' };
+export const money = (n: number) => new Intl.NumberFormat(getLocale(), { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n / 100);
+export const clock = (n: number) => `${Math.floor(n / 60).toString().padStart(2, '0')}:${Math.floor(n % 60).toString().padStart(2, '0')}`;
+export const statusLabels: Record<string, string> = { scheduled: 'Programado', first: 'Primera parte', halftime: 'Descanso del partido', second: 'Segunda parte', finished: 'Finalizado', live: 'En juego' };
+export function ErrorBox({ error, onDismiss }: {
+    error: unknown;
+    onDismiss?: () => void;
+}) { useLocale(); return <div role="alert" className="error"><TriangleAlert size={19}/><span>{localizedError(error)}</span>{localize(onDismiss && <button type="button" className="error-dismiss" aria-label={tr("Cerrar aviso")} onClick={onDismiss}><X size={17}/></button>)}</div>; }
+export function Loading() { useLocale(); return <div className="loading" role="status"><LoaderCircle className="spin" size={22}/>{tr(" Cargando datos del club\u2026")}</div>; }
+export function Heading({ eyebrow, title, description, action }: {
+    eyebrow: string;
+    title: string;
+    description?: string;
+    action?: React.ReactNode;
+}) { useLocale(); return <div className="page-heading"><div><div className="eyebrow">{localize(eyebrow)}</div><h1>{localize(title)}</h1>{localize(description && <p>{localize(description)}</p>)}</div>{localize(action)}</div>; }
+export function Energy({ value }: {
+    value: number;
+}) { useLocale(); const energy = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : 0; return <span className="energy"><span className="energy-track"><i style={{ width: `${energy}%`, background: `hsl(${energy * 1.2} 72% 42%)` }}/></span><b>{localize(Math.round(energy))}<small>{tr("%")}</small></b></span>; }
+export function TrendArrow({ trend }: {
+    trend: 'growth' | 'decline' | 'stable';
+}) { useLocale(); const label = { growth: 'Mejora prevista', decline: 'Declive previsto', stable: 'Sin variación prevista' }[trend]; return <span className={`trend-arrow trend-${trend}`} role="img" aria-label={tr(label)} title={tr(label)}>{localize(({ growth: '↑', decline: '↓', stable: '→' })[trend])}</span>; }
+export function AttributeDelta({ value, year }: {
+    value: number;
+    year?: number;
+}) {
+    useLocale();
+    if (!Number.isFinite(value))
+        return null;
+    const amount = Math.round(Math.abs(value));
+    if (!amount)
+        return null;
+    const formatted = new Intl.NumberFormat(getLocale(), { maximumFractionDigits: 0 }).format(amount), sign = value > 0 ? '+' : '−';
+    const label = `${value > 0 ? 'Subida' : 'Bajada'} de ${formatted} ${amount === 1 ? 'punto' : 'puntos'} en la temporada${year ? ` ${year}/${year + 1}` : ''}`;
+    return <small className={`attribute-delta ${value > 0 ? 'growth' : 'decline'}`} aria-label={tr(label)} title={tr(label)}>{localize(sign)}{localize(formatted)}</small>;
 }
-export function Action({path,method='POST',body,children,onSuccess,className='',disabled=false,confirmMessage,confirmLabel='Rescindir contrato',errorResetKey}:{path:string;method?:string;body?:unknown;children:React.ReactNode;onSuccess?:(data:unknown)=>void;className?:string;disabled?:boolean;confirmMessage?:string;confirmLabel?:string;errorResetKey?:string}){
- const qc=useQueryClient(),key=useRef(requestId()),dialog=useRef<HTMLDialogElement>(null),[confirmOpen,setConfirmOpen]=useState(false);
- useEffect(()=>{if(confirmOpen)dialog.current?.showModal();else dialog.current?.close();},[confirmOpen]);
- const errorContext=useRef(errorResetKey);
- const mutation=useMutation({mutationFn:()=>{
-  if(method==='POST'&&path.endsWith('/advance-day')&&body&&typeof body==='object'&&'version' in body&&typeof body.version==='number'&&'day' in body&&typeof body.day==='number'){
-   return advanceWithRefresh(body as {version:number;day:number},version=>api<Club>(path,method,{...body,version},key.current),async()=>{
-    const fresh=await api<Club>(path.replace(/\/advance-day$/,''));
-    qc.setQueryData(['club'],fresh);
-    return fresh;
-   });
-  }
-  return api(path,method,body,key.current);
- },onSuccess:(data)=>{key.current=requestId();void qc.invalidateQueries();onSuccess?.(data);}});
- useEffect(()=>{if(errorContext.current===errorResetKey)return;errorContext.current=errorResetKey;if(mutation.isError)mutation.reset();},[errorResetKey,mutation.isError,mutation.reset]);
- return <div className="action-wrap"><button className={`button ${className}`} disabled={disabled||mutation.isPending} onClick={()=>{if(confirmMessage){setConfirmOpen(true);return;}mutation.mutate();}}>{mutation.isPending?<LoaderCircle className="spin" size={16}/>:mutation.isSuccess?<Check size={16}/>:null}{children}</button>{confirmMessage&&<dialog ref={dialog} className="action-confirm" aria-labelledby={`confirm-${key.current}`} onCancel={e=>{e.preventDefault();setConfirmOpen(false);}}><h3 id={`confirm-${key.current}`}>{confirmLabel}</h3><p>{confirmMessage}</p><div className="confirm-buttons"><button className="button" autoFocus onClick={()=>setConfirmOpen(false)}>Cancelar</button><button className="button danger" onClick={()=>{setConfirmOpen(false);mutation.mutate();}}>{confirmLabel}</button></div></dialog>}{mutation.error&&<ErrorBox error={mutation.error} onDismiss={()=>mutation.reset()}/>}</div>
+export function Action({ path, method = 'POST', body, children, onSuccess, className = '', disabled = false, confirmMessage, confirmLabel = 'Rescindir contrato', errorResetKey }: {
+    path: string;
+    method?: string;
+    body?: unknown;
+    children: React.ReactNode;
+    onSuccess?: (data: unknown) => void;
+    className?: string;
+    disabled?: boolean;
+    confirmMessage?: string;
+    confirmLabel?: string;
+    errorResetKey?: string;
+}) {
+    useLocale();
+    const qc = useQueryClient(), key = useRef(requestId()), dialog = useRef<HTMLDialogElement>(null), [confirmOpen, setConfirmOpen] = useState(false);
+    useEffect(() => {
+        if (confirmOpen)
+            dialog.current?.showModal();
+        else
+            dialog.current?.close();
+    }, [confirmOpen]);
+    const errorContext = useRef(errorResetKey);
+    const mutation = useMutation({ mutationFn: () => {
+            if (method === 'POST' && path.endsWith('/advance-day') && body && typeof body === 'object' && 'version' in body && typeof body.version === 'number' && 'day' in body && typeof body.day === 'number') {
+                return advanceWithRefresh(body as {
+                    version: number;
+                    day: number;
+                }, version => api<Club>(path, method, { ...body, version }, key.current), async () => {
+                    const fresh = await api<Club>(path.replace(/\/advance-day$/, ''));
+                    qc.setQueryData(['club'], fresh);
+                    return fresh;
+                });
+            }
+            return api(path, method, body, key.current);
+        }, onSuccess: (data) => { key.current = requestId(); void qc.invalidateQueries(); onSuccess?.(data); } });
+    useEffect(() => {
+        if (errorContext.current === errorResetKey)
+            return;
+        errorContext.current = errorResetKey;
+        if (mutation.isError)
+            mutation.reset();
+    }, [errorResetKey, mutation.isError, mutation.reset]);
+    return <div className="action-wrap"><button className={`button ${className}`} disabled={disabled || mutation.isPending} onClick={() => {
+            if (confirmMessage) {
+                setConfirmOpen(true);
+                return;
+            }
+            mutation.mutate();
+        }}>{localize(mutation.isPending ? <LoaderCircle className="spin" size={16}/> : mutation.isSuccess ? <Check size={16}/> : null)}{localize(children)}</button>{localize(confirmMessage && <dialog ref={dialog} className="action-confirm" aria-labelledby={`confirm-${key.current}`} onCancel={e => { e.preventDefault(); setConfirmOpen(false); }}><h3 id={`confirm-${key.current}`}>{localize(confirmLabel)}</h3><p>{localize(confirmMessage)}</p><div className="confirm-buttons"><button className="button" autoFocus onClick={() => setConfirmOpen(false)}>{tr("Cancelar")}</button><button className="button danger" onClick={() => { setConfirmOpen(false); mutation.mutate(); }}>{localize(confirmLabel)}</button></div></dialog>)}{localize(mutation.error && <ErrorBox error={mutation.error} onDismiss={() => mutation.reset()}/>)}</div>;
 }
-export const penaltyPriorityLabels={auto:'Según el contexto',posts:'Asegurar puntos',touch:'Buscar el ensayo',quick:'Jugar rápido'} as const;
-export function TacticFields({value,onChange}:{value:Tactic;onChange:(t:Tactic)=>void}){return <div className="tactic-fields"><label>Construcción del juego<span className="sr-only">Estilo</span><select aria-label="Estilo de juego" value={value.style} onChange={e=>onChange({...value,style:e.target.value as Tactic['style']})}><option value="hands">A la mano</option><option value="balanced">Equilibrado</option><option value="kicking">Al pie</option></select></label><label>Ritmo<select value={value.tempo} onChange={e=>onChange({...value,tempo:e.target.value as Tactic['tempo']})}><option value="slow">Pausado</option><option value="normal">Normal</option><option value="fast">Alto</option></select></label><label>Presión defensiva<select value={value.defense} onChange={e=>onChange({...value,defense:e.target.value as Tactic['defense']})}><option value="low">Baja</option><option value="normal">Normal</option><option value="high">Alta</option></select></label><label>Prioridad en golpes de castigo<select aria-label="Prioridad en golpes de castigo" value={value.penaltyPriority??'auto'} onChange={e=>onChange({...value,penaltyPriority:e.target.value as Tactic['penaltyPriority']})}>{Object.entries(penaltyPriorityLabels).map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label></div>}
-function KitPattern({id,kit,color}:{id:string;kit:Kit|undefined;color:string}){
- const accent=kit?.accentColor??color,pattern=kit?.pattern,vertical=pattern==='stripes',width=vertical?2.2:6,height=pattern==='hoops'?2.2:6;
- return <pattern id={id} width={width} height={height} patternUnits="userSpaceOnUse"><rect width={width} height={height} fill={color}/>{pattern==='trim'?<path d="M-1 6L6-1" stroke={accent} strokeWidth="1.8"/>:pattern==='halves'?<rect x="0" y="-3" width="3" height="12" fill={accent}/>:kit?.thirdColor?<><rect x="0" y=".88" width="6" height=".44" fill={accent}/><rect x="0" y="1.32" width="6" height=".88" fill={kit.thirdColor}/></>:pattern==='hoops'?<rect x="0" y="1.1" width="6" height="1.1" fill={accent}/>:vertical?<rect x="1.1" y="0" width="1.1" height="6" fill={accent}/>:null}</pattern>;
+export const penaltyPriorityLabels = { auto: 'Según el contexto', posts: 'Asegurar puntos', touch: 'Buscar el ensayo', quick: 'Jugar rápido' } as const;
+export function TacticFields({ value, onChange }: {
+    value: Tactic;
+    onChange: (t: Tactic) => void;
+}) { useLocale(); return <div className="tactic-fields"><label>{tr("Construcci\u00F3n del juego")}<span className="sr-only">{tr("Estilo")}</span><select aria-label={tr("Estilo de juego")} value={value.style} onChange={e => onChange({ ...value, style: e.target.value as Tactic['style'] })}><option value="hands">{tr("A la mano")}</option><option value="balanced">{tr("Equilibrado")}</option><option value="kicking">{tr("Al pie")}</option></select></label><label>{tr("Ritmo")}<select value={value.tempo} onChange={e => onChange({ ...value, tempo: e.target.value as Tactic['tempo'] })}><option value="slow">{tr("Pausado")}</option><option value="normal">{tr("Normal")}</option><option value="fast">{tr("Alto")}</option></select></label><label>{tr("Presi\u00F3n defensiva")}<select value={value.defense} onChange={e => onChange({ ...value, defense: e.target.value as Tactic['defense'] })}><option value="low">{tr("Baja")}</option><option value="normal">{tr("Normal")}</option><option value="high">{tr("Alta")}</option></select></label><label>{tr("Prioridad en golpes de castigo")}<select aria-label={tr("Prioridad en golpes de castigo")} value={value.penaltyPriority ?? 'auto'} onChange={e => onChange({ ...value, penaltyPriority: e.target.value as Tactic['penaltyPriority'] })}>{localize(Object.entries(penaltyPriorityLabels).map(([id, label]) => <option key={id} value={id}>{localize(label)}</option>))}</select></label></div>; }
+function KitPattern({ id, kit, color }: {
+    id: string;
+    kit: Kit | undefined;
+    color: string;
+}) {
+    useLocale();
+    const accent = kit?.accentColor ?? color, pattern = kit?.pattern, vertical = pattern === 'stripes', width = vertical ? 2.2 : 6, height = pattern === 'hoops' ? 2.2 : 6;
+    return <pattern id={id} width={width} height={height} patternUnits="userSpaceOnUse"><rect width={width} height={height} fill={color}/>{localize(pattern === 'trim' ? <path d="M-1 6L6-1" stroke={accent} strokeWidth="1.8"/> : pattern === 'halves' ? <rect x="0" y="-3" width="3" height="12" fill={accent}/> : kit?.thirdColor ? <><rect x="0" y=".88" width="6" height=".44" fill={accent}/><rect x="0" y="1.32" width="6" height=".88" fill={kit.thirdColor}/></> : pattern === 'hoops' ? <rect x="0" y="1.1" width="6" height="1.1" fill={accent}/> : vertical ? <rect x="1.1" y="0" width="1.1" height="6" fill={accent}/> : null)}</pattern>;
 }
-export function Pitch({match,compact=false,activePosition,naturalPosition,onPositionSelect}:{match?:Match;compact?:boolean;activePosition?:number;naturalPosition?:number;onPositionSelect?:(position:number)=>void}){
- const motionRef=usePitchMotion(match);
- const right=match?((match.possession==='home')===(match.period===1)):true;
- const x=match?.x??50,y=match?.y??35;
- const switchedEnds=!!match&&(match.period>=2||match.status==='halftime');
- const defendedEnds=match?[
-  {side:'home',clubId:match.homeId,name:match.homeName,x:switchedEnds?75:25,end:switchedEnds?'right':'left'},
-  {side:'away',clubId:match.awayId,name:match.awayName,x:switchedEnds?25:75,end:switchedEnds?'left':'right'},
- ]:[];
- const pitchHeight=82,kitPrefix=`pitch-kit-${match?.id??'lineup'}`;
- return <div ref={motionRef} className={`pitch ${compact?'compact':''} ${match?'pitch-live-motion':''}`}><svg viewBox={`-9 -6 118 ${pitchHeight}`} role={onPositionSelect?"group":"img"} aria-label={match?`Balón en ${Math.round(x)}, ${Math.round(y)}. Ataca ${match.possession==='home'?match.homeName:match.awayName} hacia la ${right?'derecha':'izquierda'}. ${match.homeName} defiende la mitad ${switchedEnds?'derecha':'izquierda'} y ${match.awayName} la ${switchedEnds?'izquierda':'derecha'}. Posiciones simuladas de los jugadores, numeradas por puesto.`:'Campo de rugby con quince jugadores en sus posiciones. Ataque hacia la izquierda.'}>
- <defs><pattern id="grass" width="20" height="70" patternUnits="userSpaceOnUse"><rect width="10" height="70" fill="#367b61"/><rect x="10" width="10" height="70" fill="#32765d"/></pattern><filter id="ballshadow"><feDropShadow dx="0" dy=".35" stdDeviation=".3" floodOpacity=".5"/></filter>{match&&<><KitPattern id={`${kitPrefix}-home`} kit={match.homeKit} color={match.homeColor}/><KitPattern id={`${kitPrefix}-away`} kit={match.awayKit} color={match.awayColor}/></>}</defs>
+export function Pitch({ match, compact = false, activePosition, naturalPosition, onPositionSelect }: {
+    match?: Match;
+    compact?: boolean;
+    activePosition?: number;
+    naturalPosition?: number;
+    onPositionSelect?: (position: number) => void;
+}) {
+    useLocale();
+    const motionRef = usePitchMotion(match);
+    const right = match ? ((match.possession === 'home') === (match.period === 1)) : true;
+    const x = match?.x ?? 50, y = match?.y ?? 35;
+    const switchedEnds = !!match && (match.period >= 2 || match.status === 'halftime');
+    const defendedEnds = match ? [
+        { side: 'home', clubId: match.homeId, name: match.homeName, x: switchedEnds ? 75 : 25, end: switchedEnds ? 'right' : 'left' },
+        { side: 'away', clubId: match.awayId, name: match.awayName, x: switchedEnds ? 25 : 75, end: switchedEnds ? 'left' : 'right' },
+    ] : [];
+    const pitchHeight = 82, kitPrefix = `pitch-kit-${match?.id ?? 'lineup'}`;
+    return <div ref={motionRef} className={`pitch ${compact ? 'compact' : ''} ${match ? 'pitch-live-motion' : ''}`}><svg viewBox={`-9 -6 118 ${pitchHeight}`} role={onPositionSelect ? "group" : "img"} aria-label={tr(match ? `Balón en ${Math.round(x)}, ${Math.round(y)}. Ataca ${match.possession === 'home' ? match.homeName : match.awayName} hacia la ${right ? 'derecha' : 'izquierda'}. ${match.homeName} defiende la mitad ${switchedEnds ? 'derecha' : 'izquierda'} y ${match.awayName} la ${switchedEnds ? 'izquierda' : 'derecha'}. Posiciones simuladas de los jugadores, numeradas por puesto.` : 'Campo de rugby con quince jugadores en sus posiciones. Ataque hacia la izquierda.')}>
+ <defs><pattern id="grass" width="20" height="70" patternUnits="userSpaceOnUse"><rect width="10" height="70" fill="#367b61"/><rect x="10" width="10" height="70" fill="#32765d"/></pattern><filter id="ballshadow"><feDropShadow dx="0" dy=".35" stdDeviation=".3" floodOpacity=".5"/></filter>{localize(match && <><KitPattern id={`${kitPrefix}-home`} kit={match.homeKit} color={match.homeColor}/><KitPattern id={`${kitPrefix}-away`} kit={match.awayKit} color={match.awayColor}/></>)}</defs>
  <rect x="-9" y="-6" width="118" height={pitchHeight} rx="3" fill="#28634e"/><rect x="0" y="0" width="100" height="70" fill="url(#grass)"/><rect x="-6" width="6" height="70" fill="#2c6b53"/><rect x="100" width="6" height="70" fill="#2c6b53"/>
  <g fill="none" stroke="#d6ebd9" strokeWidth=".35" opacity=".75"><rect width="100" height="70"/><path d="M50 0V70M22 0V70M78 0V70"/></g>
  <g className="pitch-dashed-lines" fill="none" stroke="#d6ebd9" strokeWidth=".3" strokeDasharray="1.5 1.5" opacity=".65" aria-hidden="true"><path d="M40 0V70M60 0V70M0 5H100M0 15H100M0 55H100M0 65H100"/></g>
  <g stroke="#eff7ea" strokeWidth=".7"><path d="M0 30V40M-1.5 32H1.5M-1.5 38H1.5M100 30V40M98.5 32H101.5M98.5 38H101.5"/></g>
- <g fill="#e4f0e4" opacity=".7" fontSize="2" textAnchor="middle" fontFamily="sans-serif"><text x="22" y="-2">22</text><text x="50" y="-2">50</text><text x="78" y="-2">22</text><text transform="translate(-3 35) rotate(-90)" letterSpacing="1">QUINCE</text><text transform="translate(104 35) rotate(90)" letterSpacing="1">RUGBY CLUB</text></g>
- {match&&defendedEnds.map(end=><g key={`players-${end.side}`} className="pitch-formation" data-team={end.side}>
-  {match[end.side==='home'?'homePlayers':'awayPlayers'].filter(p=>p.status==='field').map(p=>{const slot=pitchFormation.find(s=>s.number===p.position);if(!slot)return null;const kit=end.side==='home'?match.homeKit:match.awayKit;const left=end.end==='left',px=Number.isFinite(p.x)?p.x!:(left?46-slot.x*.47:54+slot.x*.47),py=Number.isFinite(p.y)?p.y!:(left?70-slot.y:slot.y);return <g key={p.playerId} className="pitch-player" data-player-id={p.playerId} data-position={p.position} data-motion-id={p.playerId} data-x={px} data-y={py}><title>{end.name} · {p.position}. {positions[p.position]} · {p.name}</title><circle r="2.2" fill={`url(#${kitPrefix}-${end.side})`} stroke="#f8f5e9" strokeWidth=".45"/>{kit?.pattern&&kit.pattern!=='solid'&&<circle className="player-number-backing" r="1.35" fill={end.side==='home'?match.homeColor:match.awayColor}/>}<text y=".85" textAnchor="middle" fontFamily="sans-serif" fontSize="2.4" fontWeight="700" fill={kit?.numberColor??'#fffef9'} stroke={kit?.numberColor==='#000000'?'#ffffff':'#16392c'} strokeWidth=".12" paintOrder="stroke">{p.position}</text>{!!p.yellowCards&&<rect x="1.1" y="-3.5" width="1.7" height="2.4" rx=".25" fill="#f4c542" stroke="#5e4a13" strokeWidth=".2"/>}</g>})}
- </g>)}
- {match&&<g className="ball-marker" data-motion-id="ball" data-x={x} data-y={y}><circle r="2.4" fill="#fff" opacity=".18"/><image href="/app-icon.png" x="-1.6" y="-1.6" width="3.2" height="3.2" preserveAspectRatio="xMidYMid meet" filter="url(#ballshadow)"/></g>}
- {!match&&<><g fill="#fff1e6" stroke="#e56a45" strokeWidth=".5">{pitchFormation.map(({number,x,y})=><g key={number} className={`formation-slot ${activePosition===number?'is-active':''} ${naturalPosition===number?'is-natural':''}`} data-position={number} transform={`translate(${x} ${y})`} role={onPositionSelect?'button':undefined} tabIndex={onPositionSelect?0:undefined} aria-label={`${number}. ${positions[number]}`} aria-pressed={onPositionSelect?activePosition===number:undefined} onClick={()=>onPositionSelect?.(number)} onKeyDown={e=>{if(onPositionSelect&&(e.key==='Enter'||e.key===' ')){e.preventDefault();onPositionSelect(number);}}}><title>{number}. {positions[number]}</title>{naturalPosition===number&&<circle className="natural-ring" r="4.8"/>}{activePosition===number&&<circle className="active-ring" r="3.8"/>}<circle r="2.5"/><text y=".8" fill="#1c3329" stroke="none" textAnchor="middle" fontSize="2.2" fontWeight="bold">{number}</text></g>)}</g><text x="50" y="74" fill="#d6ebd9" textAnchor="middle" fontFamily="sans-serif" fontSize="2" letterSpacing=".6">← ATAQUE</text></>}
+ <g fill="#e4f0e4" opacity=".7" fontSize="2" textAnchor="middle" fontFamily="sans-serif"><text x="22" y="-2">{tr("22")}</text><text x="50" y="-2">{tr("50")}</text><text x="78" y="-2">{tr("22")}</text><text transform="translate(-3 35) rotate(-90)" letterSpacing="1">{tr("QUINCE")}</text><text transform="translate(104 35) rotate(90)" letterSpacing="1">{tr("RUGBY CLUB")}</text></g>
+ {localize(match && defendedEnds.map(end => <g key={`players-${end.side}`} className="pitch-formation" data-team={end.side}>
+  {localize(match[end.side === 'home' ? 'homePlayers' : 'awayPlayers'].filter(p => p.status === 'field').map(p => {
+                const slot = pitchFormation.find(s => s.number === p.position);
+                if (!slot)
+                    return null;
+                const kit = end.side === 'home' ? match.homeKit : match.awayKit;
+                const left = end.end === 'left', px = Number.isFinite(p.x) ? p.x! : (left ? 46 - slot.x * .47 : 54 + slot.x * .47), py = Number.isFinite(p.y) ? p.y! : (left ? 70 - slot.y : slot.y);
+                return <g key={p.playerId} className="pitch-player" data-player-id={p.playerId} data-position={p.position} data-motion-id={p.playerId} data-x={px} data-y={py}><title>{localize(end.name)}{tr(" \u00B7 ")}{localize(p.position)}{tr(". ")}{localize(positions[p.position])}{tr(" \u00B7 ")}{p.name}</title><circle r="2.2" fill={`url(#${kitPrefix}-${end.side})`} stroke="#f8f5e9" strokeWidth=".45"/>{localize(kit?.pattern && kit.pattern !== 'solid' && <circle className="player-number-backing" r="1.35" fill={end.side === 'home' ? match.homeColor : match.awayColor}/>)}<text y=".85" textAnchor="middle" fontFamily="sans-serif" fontSize="2.4" fontWeight="700" fill={kit?.numberColor ?? '#fffef9'} stroke={kit?.numberColor === '#000000' ? '#ffffff' : '#16392c'} strokeWidth=".12" paintOrder="stroke">{localize(p.position)}</text>{localize(!!p.yellowCards && <rect x="1.1" y="-3.5" width="1.7" height="2.4" rx=".25" fill="#f4c542" stroke="#5e4a13" strokeWidth=".2"/>)}</g>;
+            }))}
+ </g>))}
+ {localize(match && <g className="ball-marker" data-motion-id="ball" data-x={x} data-y={y}><circle r="2.4" fill="#fff" opacity=".18"/><image href="/app-icon.png" x="-1.6" y="-1.6" width="3.2" height="3.2" preserveAspectRatio="xMidYMid meet" filter="url(#ballshadow)"/></g>)}
+ {localize(!match && <><g fill="#fff1e6" stroke="#e56a45" strokeWidth=".5">{localize(pitchFormation.map(({ number, x, y }) => <g key={number} className={`formation-slot ${activePosition === number ? 'is-active' : ''} ${naturalPosition === number ? 'is-natural' : ''}`} data-position={number} transform={`translate(${x} ${y})`} role={onPositionSelect ? 'button' : undefined} tabIndex={onPositionSelect ? 0 : undefined} aria-label={tr(`${number}. ${positions[number]}`)} aria-pressed={onPositionSelect ? activePosition === number : undefined} onClick={() => onPositionSelect?.(number)} onKeyDown={e => {
+                    if (onPositionSelect && (e.key === 'Enter' || e.key === ' ')) {
+                        e.preventDefault();
+                        onPositionSelect(number);
+                    }
+                }}><title>{localize(number)}{tr(". ")}{localize(positions[number])}</title>{localize(naturalPosition === number && <circle className="natural-ring" r="4.8"/>)}{localize(activePosition === number && <circle className="active-ring" r="3.8"/>)}<circle r="2.5"/><text y=".8" fill="#1c3329" stroke="none" textAnchor="middle" fontSize="2.2" fontWeight="bold">{localize(number)}</text></g>))}</g><text x="50" y="74" fill="#d6ebd9" textAnchor="middle" fontFamily="sans-serif" fontSize="2" letterSpacing=".6">{tr("\u2190 ATAQUE")}</text></>)}
 
- </svg></div>
+ </svg></div>;
 }
-export function InlineNotice({children}:{children:React.ReactNode}){return <p className="notice">{children}</p>}
-export function SaveNotice({dirty}:{dirty:boolean}){const [saved,setSaved]=useState(false);useEffect(()=>{setSaved(!dirty)},[dirty]);return <span className="muted small">{saved?'Cambios guardados':'Cambios sin guardar'} <ArrowRight size={12}/></span>}
-
-
+export function InlineNotice({ children }: {
+    children: React.ReactNode;
+}) { useLocale(); return <p className="notice">{localize(children)}</p>; }
+export function SaveNotice({ dirty }: {
+    dirty: boolean;
+}) { useLocale(); const [saved, setSaved] = useState(false); useEffect(() => { setSaved(!dirty); }, [dirty]); return <span className="muted small">{localize(saved ? 'Cambios guardados' : 'Cambios sin guardar')} <ArrowRight size={12}/></span>; }

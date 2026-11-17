@@ -1,5 +1,7 @@
 # Tarjetas y exclusiones
 
+[Español](DISCIPLINA.md) · [English](en/DISCIPLINA.md) · [Français](fr/DISCIPLINA.md) · [Índice](README.md)
+
 La amarilla excluye durante diez minutos de reloj de juego. Una segunda amarilla o roja expulsa definitivamente. El jugador excluido desaparece del campo y de las acciones; la inferioridad afecta al motor.
 
 Al cumplirse la sanción temporal vuelve si sigue siendo elegible. El descanso y las pausas no consumen minutos. El estado persiste al recargar o reiniciar.

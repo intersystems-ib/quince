@@ -1,5 +1,7 @@
 # Escudos de los clubes
 
+[Español](ESCUDOS.md) · [English](en/ESCUDOS.md) · [Français](fr/ESCUDOS.md) · [Índice](README.md)
+
 Los veinte escudos proceden de los archivos JPEG de FERugby/iSquad para División de Honor y División de Honor Élite de 2026/2027. Fecha de consulta: 7 de noviembre de 2026.
 
 - [División de Honor · competición 416](https://resultadosrugby.isquad.es/competicion.php?id_superficie=1&seleccion=0&id_competicion=416&id_temp=2627&id_ambito=1&id_territorial=9999).

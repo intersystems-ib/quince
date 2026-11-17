@@ -1,5 +1,7 @@
 # Entrenamiento y cuerpo técnico
 
+[Español](ENTRENAMIENTO.md) · [English](en/ENTRENAMIENTO.md) · [Français](fr/ENTRENAMIENTO.md) · [Índice](README.md)
+
 El primer equipo usa un plan semanal recurrente. Elige un enfoque general y pulsa «Solicitar planificación» para generar una propuesta. Las siete tarjetas permiten seleccionar un día y ajustar su sesión y los ejercicios de delanteros y tres cuartos. Los cambios se aplican al guardar.
 
 La cantera entrena automáticamente sin planificación manual, también en partidas existentes. Su entrenador organiza un ciclo de destrezas, físico, ataque, defensa, formaciones, táctica y descanso. La mejora depende exclusivamente de su calidad.

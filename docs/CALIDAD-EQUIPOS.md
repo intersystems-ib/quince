@@ -1,5 +1,7 @@
 # Calidad de jugadores
 
+[Español](CALIDAD-EQUIPOS.md) · [English](en/CALIDAD-EQUIPOS.md) · [Français](fr/CALIDAD-EQUIPOS.md) · [Índice](README.md)
+
 La calidad de jugadores utiliza un factor de escala de 0,75 sobre las referencias de los diecisiete atributos. Primer equipo, cantera y agentes libres comparten esa escala y mantienen decimales internos. Energía, moral, salarios y lesiones tienen sus propias reglas.
 
 La referencia por club combina la clasificación actual y, donde existe, un 65 % de peso histórico de 2025/26. Datos y fuentes: `../iris/data/team-quality.json`. Medias iniciales aproximadas:

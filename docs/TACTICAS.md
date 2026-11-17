@@ -1,5 +1,7 @@
 # Comparativa y tácticas del partido
 
+[Español](TACTICAS.md) · [English](en/TACTICAS.md) · [Français](fr/TACTICAS.md) · [Índice](README.md)
+
 La previa compara las 17 características del XV elegido y permite consultar delanteros (8) y tres cuartos (7). Muestra los escudos, la media, la energía y la moral. Los valores son medias aritméticas de los titulares del grupo, sin suplentes ni redondeos internos. La interfaz muestra enteros. Consultar la previa no inicia el encuentro.
 
 El rival compara sus unidades con las contrarias para elegir juego a la mano, equilibrado o al pie. Valora pase, manejo, ataque, velocidad, agilidad, placaje, lectura defensiva, formaciones y su mejor pateador. Usa valores efectivos que incluyen energía, moral y forma; una exclusión reduce la fuerza de la unidad. Las ventajas se comparan proporcionalmente, con recepción especialista frente al pateador, para conservar sentido con distintas escalas de atributos. El cansancio, la resistencia, la disciplina y las ventajas relativas frente a cada rival condicionan ritmo, presión y prioridad en golpes. La presión baja reduce el desgaste y la eficacia defensiva; la alta aumenta ambos. A ritmo normal, la baja consume aproximadamente un 18 % menos de energía que la normal. No modifica los atributos guardados ni las decisiones del usuario.

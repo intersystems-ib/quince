@@ -1,5 +1,7 @@
 # Gestión de rivales
 
+[Español](RIVALES.md) · [English](en/RIVALES.md) · [Français](fr/RIVALES.md) · [Índice](README.md)
+
 Los diecinueve clubes automáticos actúan al avanzar cada día, con decisiones reproducibles por semilla. Gestionan alineaciones, entrenamientos, cansancio, cantera, renovaciones, empleados y agentes libres.
 
 Los planes priorizan posición, carencias y recuperación. La cantera mantiene veinte jóvenes y usa su entrenador. Las revisiones técnicas y de plantilla son periódicas.

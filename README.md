@@ -1,15 +1,19 @@
 # Quince · Rugby Club Manager
 
-Mánager de rugby en español con React, TypeScript e InterSystems IRIS. Incluye veinte clubes de Honor y Élite, 460 identidades reales y partidas privadas con JWT. Atributos, contratos y economía son simulados.
+[Español](README.md) · [English](README.en.md) · [Français](README.fr.md)
+
+Mánager de rugby en español, inglés y francés con React, TypeScript e InterSystems IRIS. Incluye veinte clubes de Honor y Élite, 460 identidades reales y partidas privadas con JWT. Atributos, contratos y economía son simulados.
 
 ## Arranque
 
-Requiere Docker Desktop con contenedores Linux y Compose v2. Desde la raíz del proyecto:
+Requiere Docker Engine o Docker Desktop con contenedores Linux y Compose v2. Desde la raíz del proyecto:
 
 ```powershell
 Copy-Item .env.example .env
 docker compose up -d --build
 ```
+
+En Linux, utiliza `cp .env.example .env` para el primer comando.
 
 Aplicación: [localhost:5175](http://localhost:5175). [Estado de la API](http://localhost:8085/api/v1/health). También puedes usar `./scripts/start.ps1`. La imagen IRIS se configura en `.env` y usa `latest-preview` por defecto.
 
@@ -52,3 +56,5 @@ El volumen `iris-data` conserva las partidas al detener o recrear contenedores. 
 - [Entrenamiento](docs/ENTRENAMIENTO.md), [lesiones](docs/LESIONES.md), [estadísticas](docs/ESTADISTICAS.md) y [moral](docs/MORAL.md).
 - [Fichajes](docs/FICHAJES.md), [finanzas](docs/FINANZAS.md) y [salarios](docs/SALARIOS-PRESUPUESTO.md).
 - [API](docs/openapi.json): regenerar con `python scripts/generate_openapi.py`.
+
+[Índice completo de documentación](docs/README.md) · [Idiomas](docs/IDIOMAS.md) · [Almacenamiento](docs/almacenamiento.md).

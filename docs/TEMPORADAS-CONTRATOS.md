@@ -1,5 +1,7 @@
 # Temporadas y contratos
 
+[Español](TEMPORADAS-CONTRATOS.md) · [English](en/TEMPORADAS-CONTRATOS.md) · [Français](fr/TEMPORADAS-CONTRATOS.md) · [Índice](README.md)
+
 El 30 de junio se cierra la temporada y se genera la siguiente, reservando primero las fechas de Copa y después las de Liga. El siguiente avance salta al 1 de septiembre, día de apertura. Ambos eventos aparecen en el calendario y detienen «Próximo evento». Se conservan resultados e historial.
 
 El décimo de la regular de Honor desciende; el campeón de playoffs de Élite asciende. Cada liga mantiene diez clubes y vuelve a sortear su calendario.

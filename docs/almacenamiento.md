@@ -1,5 +1,7 @@
 # Almacenamiento
 
+[Español](almacenamiento.md) · [English](en/almacenamiento.md) · [Français](fr/almacenamiento.md) · [Índice](README.md)
+
 - Auditoría de mensajes y registros de interoperabilidad: 2 días, respetando las sesiones activas.
 - Las respuestas completas sólo viajan al cliente; la auditoría guarda resúmenes e identificadores.
 - El entrenamiento conserva recibos mínimos para evitar duplicados y calcular nóminas. No se almacena el detalle diario por jugador ni copias del plan o del cuerpo técnico.

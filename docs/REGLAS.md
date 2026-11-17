@@ -1,5 +1,7 @@
 # Reglas del juego
 
+[Español](REGLAS.md) · [English](en/REGLAS.md) · [Français](fr/REGLAS.md) · [Índice](README.md)
+
 Rugby union de quince jugadores: ensayo 5 puntos, transformación 2, golpe y drop 3. Dos partes de cuarenta minutos; el ataque cambia de dirección al descanso.
 
 Los números 1–15 identifican puestos, no dorsales permanentes. Se permiten intercambios de posición con penalización de moral: 3 puntos en secundaria, 8 dentro de la misma línea y 15 entre líneas. No cambian los atributos. La penalización es reversible al volver a la posición natural o salir del XV.

@@ -1,5 +1,7 @@
 # Administración de datos iniciales
 
+[Español](ADMINISTRACION.md) · [English](en/ADMINISTRACION.md) · [Français](fr/ADMINISTRACION.md) · [Índice](README.md)
+
 El formulario único de **Iniciar sesión** reconoce las credenciales de una cuenta activa de IRIS y abre directamente la administración. Las cuentas del juego acceden a sus partidas. Los usuarios de IRIS no requieren registro en Quince; sus nombres están reservados para el acceso administrativo. La autenticación utiliza el mecanismo nativo de IRIS; las cuentas deshabilitadas, caducadas o pendientes de cambio de contraseña no acceden. La sesión administrativa no permite listar, crear ni cargar partidas. Las cuentas del juego no pueden utilizar la API administrativa.
 
 **Clubes** permite editar nombres, localidad, color, campo, aforo y escudo. Los escudos admiten PNG, JPEG y WebP de hasta 5 MB; se adaptan a 128 píxeles y se guardan con los datos. «Escudo original» restaura la imagen del despliegue. **Otros datos** permite editar los campos adicionales del registro. El identificador, las fechas de simulación y la división se conservan para mantener la estructura de competición.

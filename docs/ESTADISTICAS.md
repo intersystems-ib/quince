@@ -1,5 +1,7 @@
 # Estadísticas
 
+[Español](ESTADISTICAS.md) · [English](en/ESTADISTICAS.md) · [Français](fr/ESTADISTICAS.md) · [Índice](README.md)
+
 La ficha del jugador incluye historial paginado por partido, totales y detalle de acciones. El resumen del encuentro permite consultar a ambos equipos. Los partidos en directo atribuyen las acciones a sus protagonistas; los automáticos guardan estadísticas del modelo resumido, ponderadas por atributos y minutos. Se conserva el club representado y los reintentos no duplican registros.
 
 `GET /players/{playerId}/match-stats` consulta el historial; `GET /competitions/{competitionId}/statistics`, los Top 10. Ambas consultas están restringidas a la partida privada y pasan por interoperabilidad.

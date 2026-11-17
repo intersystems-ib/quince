@@ -1,0 +1,438 @@
+{
+  "GAME_NOT_FOUND": [
+    "This game could not be found.",
+    "Cette partie est introuvable."
+  ],
+  "ADMIN_ONLY": [
+    "This session can only manage the initial data.",
+    "Cette session permet uniquement de gérer les données initiales."
+  ],
+  "ADMIN_REQUIRED": [
+    "Sign in with an IRIS account to manage the initial data.",
+    "Connectez-vous avec un compte IRIS pour gérer les données initiales."
+  ],
+  "BUSY": [
+    "An operation is in progress. Please try again shortly.",
+    "Une opération est en cours. Réessayez dans un instant."
+  ],
+  "ORIGIN": [
+    "This request origin is not allowed.",
+    "L'origine de cette requête n'est pas autorisée."
+  ],
+  "STALE_MATCH": [
+    "The match has changed. Refresh its data.",
+    "Le match a changé. Actualisez ses données."
+  ],
+  "ROUTE_NOT_FOUND": [
+    "This action is unavailable.",
+    "Cette action est indisponible."
+  ],
+  "ADMIN_TEXT": [
+    "Check the text fields and their permitted lengths.",
+    "Vérifiez les champs de texte et leurs longueurs autorisées."
+  ],
+  "ADMIN_NUMBER": [
+    "Check the numeric fields and their permitted ranges.",
+    "Vérifiez les champs numériques et leurs limites autorisées."
+  ],
+  "CREST_IMAGE": [
+    "Choose a valid PNG, JPEG or WebP image, no larger than 5 MB.",
+    "Choisissez une image PNG, JPEG ou WebP valide, de 5 Mo maximum."
+  ],
+  "ADMIN_COLOR": [
+    "Use a colour in #RRGGBB format.",
+    "Utilisez une couleur au format #RRGGBB."
+  ],
+  "ADMIN_STADIUM": [
+    "Enter the ground name and capacity.",
+    "Indiquez le nom et la capacité du stade."
+  ],
+  "ADMIN_PLAYER": [
+    "Age and position must be whole numbers.",
+    "L'âge et le poste doivent être des nombres entiers."
+  ],
+  "ADMIN_CATEGORY": [
+    "Choose first team or academy.",
+    "Choisissez l'équipe première ou le centre de formation."
+  ],
+  "ADMIN_POSITION": [
+    "Check the secondary positions.",
+    "Vérifiez les postes secondaires."
+  ],
+  "ADMIN_ATTRIBUTES": [
+    "Check the player's attributes.",
+    "Vérifiez les attributs du joueur."
+  ],
+  "IDEMPOTENCY_CONFLICT": [
+    "This save key belongs to another operation.",
+    "Cette clé d'enregistrement appartient à une autre opération."
+  ],
+  "ADMIN_DATA": [
+    "A data object is required.",
+    "Un objet de données est requis."
+  ],
+  "ADMIN_ID": [
+    "The identifier cannot be changed.",
+    "L'identifiant ne peut pas être modifié."
+  ],
+  "ADMIN_CLUB": [
+    "Assign the new player to an existing club.",
+    "Affectez le nouveau joueur à un club existant."
+  ],
+  "UNAUTHORIZED": [
+    "Sign in to continue.",
+    "Connectez-vous pour continuer."
+  ],
+  "USERNAME": [
+    "Use 3–40 letters, numbers, dots or hyphens for your username.",
+    "L'identifiant doit contenir de 3 à 40 lettres, chiffres, points ou tirets."
+  ],
+  "PASSWORD": [
+    "Use a password between 10 and 128 characters when registering.",
+    "À l'inscription, le mot de passe doit contenir entre 10 et 128 caractères."
+  ],
+  "LOGIN_FAILED": [
+    "Incorrect username or password.",
+    "Identifiant ou mot de passe incorrect."
+  ],
+  "LOGIN_LIMIT": [
+    "Too many attempts. Wait one minute.",
+    "Trop de tentatives. Patientez une minute."
+  ],
+  "USERNAME_TAKEN": [
+    "This username is already registered.",
+    "Cet identifiant est déjà enregistré."
+  ],
+  "DATE": [
+    "Select a valid date.",
+    "Sélectionnez une date valide."
+  ],
+  "FRIENDLY_DATE": [
+    "Choose a date between today and the next twelve months.",
+    "Choisissez une date entre aujourd'hui et les douze prochains mois."
+  ],
+  "SUMMER_BREAK": [
+    "Friendlies cannot be arranged during July, August or season opening and closing days.",
+    "Aucun amical ne peut être organisé en juillet, en août ou les jours d'ouverture et de clôture de saison."
+  ],
+  "CALENDAR_BUSY": [
+    "One team already has a fixture that weekend.",
+    "Une des équipes a déjà un match ce week-end."
+  ],
+  "NO_OPPONENTS": [
+    "Three opponents are not available that day. Choose another date.",
+    "Trois adversaires ne sont pas disponibles ce jour-là. Choisissez une autre date."
+  ],
+  "MATCH_ACTIVE": [
+    "Finish the current match before performing this action.",
+    "Terminez le match en cours avant cette action."
+  ],
+  "FRIENDLY_OPPONENT": [
+    "Choose one of the three proposed opponents.",
+    "Choisissez l'un des trois adversaires proposés."
+  ],
+  "FRIENDLY_VENUE": [
+    "Choose home or away.",
+    "Choisissez domicile ou extérieur."
+  ],
+  "LEAGUE_TEAMS": [
+    "The league requires exactly ten teams.",
+    "Le championnat nécessite exactement dix équipes."
+  ],
+  "LEAGUE_CALENDAR": [
+    "There are not enough free weekends for the league schedule.",
+    "Il ne reste pas assez de week-ends libres pour le championnat."
+  ],
+  "STATISTICS": [
+    "The statistics could not be loaded. Please try again.",
+    "Impossible de charger les statistiques. Réessayez."
+  ],
+  "CUP_TEAMS": [
+    "The cup requires all twenty Honor and Élite clubs.",
+    "La coupe nécessite les vingt clubs de Honor et Élite."
+  ],
+  "CUP_CALENDAR": [
+    "There are not enough free weekends for the cup.",
+    "Il ne reste pas assez de week-ends libres pour la coupe."
+  ],
+  "TRAINING_TYPE": [
+    "Choose a valid training drill.",
+    "Choisissez un exercice valide."
+  ],
+  "TRAINING_INTENSITY": [
+    "Choose a valid training intensity.",
+    "Choisissez une intensité d'entraînement valide."
+  ],
+  "TRAINING_GROUPS": [
+    "There are too many training groups.",
+    "Il y a trop de groupes d'entraînement."
+  ],
+  "TRAINING_GROUP": [
+    "The group needs a name of 1–60 characters.",
+    "Le groupe doit avoir un nom de 1 à 60 caractères."
+  ],
+  "TRAINING_PLAYERS": [
+    "Each group must include 1–100 players.",
+    "Chaque groupe doit contenir de 1 à 100 joueurs."
+  ],
+  "PLAYER_CLUB": [
+    "This player belongs to another club.",
+    "Ce joueur appartient à un autre club."
+  ],
+  "TRAINING_VARIANT": [
+    "The proposal number must be between 0 and 1,000,000.",
+    "Le numéro de proposition doit être compris entre 0 et 1 000 000."
+  ],
+  "FINANCIAL_CANDIDATE": [
+    "Choose an available finance director.",
+    "Choisissez un directeur financier disponible."
+  ],
+  "FINANCIAL_EMPLOYED": [
+    "This finance director is already employed.",
+    "Ce directeur financier est déjà recruté."
+  ],
+  "TICKETS_LOCKED": [
+    "The ticket price is locked once the match starts.",
+    "Le prix des billets est fixé dès le début du match."
+  ],
+  "MATCH_DAY": [
+    "Set the ticket price on matchday.",
+    "Fixez le prix des billets le jour du match."
+  ],
+  "TICKET_PRICE": [
+    "The ticket price must be between €0 and €50.",
+    "Le prix du billet doit être compris entre 0 et 50 €."
+  ],
+  "NOT_FOUND": [
+    "The requested record could not be found.",
+    "L'enregistrement demandé est introuvable."
+  ],
+  "INVITATION_EXPIRED": [
+    "This invitation is no longer available.",
+    "Cette invitation n'est plus disponible."
+  ],
+  "INVITATION_DECISION": [
+    "Accept or decline the invitation.",
+    "Acceptez ou refusez l'invitation."
+  ],
+  "GAME_DELETED": [
+    "This game has been deleted. Create a new game.",
+    "Cette partie a été supprimée. Créez une nouvelle partie."
+  ],
+  "DIVISION_CLUB": [
+    "Choose a club from the selected division.",
+    "Choisissez un club de la division sélectionnée."
+  ],
+  "GAME_NAME": [
+    "Name your game using no more than 60 characters.",
+    "Nommez votre partie avec 60 caractères maximum."
+  ],
+  "DELETE_CONFIRMATION": [
+    "Confirm the permanent deletion of this game.",
+    "Confirmez la suppression définitive de cette partie."
+  ],
+  "KIT_COLOR": [
+    "Choose a valid secondary kit colour.",
+    "Choisissez une couleur de deuxième maillot valide."
+  ],
+  "KIT_CONTRAST": [
+    "The selected kits do not provide enough contrast between the teams.",
+    "Les maillots choisis ne permettent pas de distinguer les équipes."
+  ],
+  "KIT_PALETTE": [
+    "The club's two kits must be distinguishable.",
+    "Les deux maillots du club doivent se différencier."
+  ],
+  "TACTIC": [
+    "Check the playing style, tempo, defensive pressure and penalty priority.",
+    "Vérifiez le style de jeu, le rythme, la pression défensive et la priorité sur pénalités."
+  ],
+  "NO_CONTRACT": [
+    "The player no longer has a contract with the club.",
+    "Le joueur n'a plus de contrat avec le club."
+  ],
+  "MATCH_PENDING": [
+    "Play the pending match before advancing. Check the calendar.",
+    "Disputez le match en attente avant d'avancer. Consultez le calendrier."
+  ],
+  "FIXTURE_ARCHIVED": [
+    "This friendly is archived. Check the competition.",
+    "Cet amical est archivé. Consultez la compétition."
+  ],
+  "FIXTURE_STATE": [
+    "This match is no longer pending.",
+    "Ce match n'est plus en attente."
+  ],
+  "FIXTURE_FUTURE": [
+    "Advance to matchday first.",
+    "Avancez d'abord jusqu'au jour du match."
+  ],
+  "SEED": [
+    "The seed must be between 1 and 2147483646.",
+    "La graine doit être comprise entre 1 et 2147483646."
+  ],
+  "PREPARATION_NOT_FOUND": [
+    "No preparation is available for this match.",
+    "Aucune préparation n'est disponible pour ce match."
+  ],
+  "PREPARATION_CLOSED": [
+    "Preparation closes when the match starts.",
+    "La préparation se termine au début du match."
+  ],
+  "PREPARATION_LINEUP": [
+    "Check the line-up and available players before applying the plan.",
+    "Vérifiez la composition et les joueurs disponibles avant d'appliquer le plan."
+  ],
+  "PREPARATION_CHANGED": [
+    "The team has changed. Update the report before applying a proposal.",
+    "L'équipe a changé. Actualisez le rapport avant d'appliquer une proposition."
+  ],
+  "PREPARATION_CHOICE": [
+    "Choose a proposal or set your own tactics.",
+    "Choisissez une proposition ou définissez une tactique."
+  ],
+  "PAYROLL_LIMIT": [
+    "The proposed wage or fee exceeds the available wage margin. Review Finances.",
+    "Le salaire ou l'indemnité dépasse la marge salariale disponible. Consultez les finances."
+  ],
+  "STAFF_ROLE": [
+    "Choose a valid coaching specialism.",
+    "Choisissez une spécialité d'entraîneur valide."
+  ],
+  "SALE": [
+    "Specify whether the player is for sale.",
+    "Indiquez si le joueur est à vendre."
+  ],
+  "PLAYER_RETIRING": [
+    "The player has announced retirement and cannot renew or sign.",
+    "Le joueur a annoncé sa retraite et ne peut plus prolonger ni signer."
+  ],
+  "TRANSFER_FEE": [
+    "Enter a transfer fee between €0 and €1,000,000 in whole euros.",
+    "Indiquez un prix entre 0 et 1 000 000 €, en euros entiers."
+  ],
+  "SALE_CHANGED": [
+    "The player is no longer available on these terms.",
+    "Le joueur n'est plus disponible dans ces conditions."
+  ],
+  "SIGNING_FUNDS": [
+    "There is not enough cash for this signing.",
+    "La trésorerie est insuffisante pour ce recrutement."
+  ],
+  "PLAYER_POSITION": [
+    "Choose a valid rugby position.",
+    "Choisissez un poste de rugby valide."
+  ],
+  "AI_LINEUP": [
+    "The opponent does not have enough players for a valid line-up.",
+    "L'adversaire n'a pas assez de joueurs pour une composition valide."
+  ],
+  "PAGINATION": [
+    "Check the page offset and page size.",
+    "Vérifiez le décalage et la taille de la page."
+  ],
+  "SALARY_PERCENT": [
+    "Choose a whole percentage between 0 and 90.",
+    "Choisissez un pourcentage entier entre 0 et 90."
+  ],
+  "SALARY_SURPLUS": [
+    "There is no additional surplus to increase the wage limit.",
+    "Aucun excédent supplémentaire ne permet d'augmenter le plafond salarial."
+  ],
+  "SEASON_PENDING": [
+    "Some competitions must finish before the season can close.",
+    "Certaines compétitions doivent se terminer avant la clôture de saison."
+  ],
+  "CHAMPION_PENDING": [
+    "División Élite must have a champion before promotion is decided.",
+    "La División Élite doit avoir un champion avant la promotion."
+  ],
+  "COACH_UNAVAILABLE": [
+    "This coach is already employed. Refresh the candidates.",
+    "Cet entraîneur est déjà recruté. Actualisez les candidats."
+  ],
+  "VERSION_CONFLICT": [
+    "The data has changed. Refresh before saving.",
+    "Les données ont changé. Actualisez avant d'enregistrer."
+  ],
+  "IDEMPOTENCY_KEY": [
+    "The request needs a valid operation identifier.",
+    "La requête nécessite un identifiant d'opération valide."
+  ],
+  "CLUB_FORBIDDEN": [
+    "You can only manage the club in this game.",
+    "Vous pouvez uniquement gérer le club de cette partie."
+  ],
+  "PLAYER_TAKEN": [
+    "The player is unavailable for this club.",
+    "Le joueur est indisponible pour ce club."
+  ],
+  "MARKET_UNLISTED": [
+    "The player is no longer listed on the market.",
+    "Le joueur n'est plus proposé sur le marché."
+  ],
+  "NOT_ACADEMY": [
+    "The player is no longer in the academy.",
+    "Le joueur n'appartient plus au centre de formation."
+  ],
+  "NEGOTIATION_OPEN": [
+    "There is already an active negotiation with this player. Withdraw it before starting a different operation.",
+    "Une négociation est déjà en cours avec ce joueur. Abandonnez-la avant de commencer une autre opération."
+  ],
+  "NEGOTIATION_COOLDOWN": [
+    "The player needs a few days before negotiating again.",
+    "Le joueur souhaite attendre quelques jours avant de négocier à nouveau."
+  ],
+  "PLAYER_CHANGED": [
+    "The player's terms have changed. Open a new negotiation.",
+    "Les conditions du joueur ont changé. Ouvrez une nouvelle négociation."
+  ],
+  "NEGOTIATION_EXPIRED": [
+    "The negotiation has expired.",
+    "La négociation a expiré."
+  ],
+  "COUNTEROFFER": [
+    "There is no valid counteroffer to accept.",
+    "Aucune contre-offre valide ne peut être acceptée."
+  ],
+  "NEGOTIATION_STATE": [
+    "This negotiation does not allow this action.",
+    "Cette négociation ne permet pas cette action."
+  ],
+  "WAGE": [
+    "Enter a valid wage in whole euros within the permitted range.",
+    "Indiquez un salaire valide, en euros entiers, dans la plage autorisée."
+  ],
+  "CONTRACT_YEARS": [
+    "Contract length must be a whole number from 1 to 5 years.",
+    "La durée du contrat doit être un nombre entier de 1 à 5 ans."
+  ],
+  "WEEKLY_THEME": [
+    "Choose a valid weekly training focus.",
+    "Choisissez une orientation hebdomadaire valide."
+  ],
+  "WEEKLY_PLAN": [
+    "The weekly plan must be valid.",
+    "Le programme hebdomadaire doit être valide."
+  ],
+  "WEEKLY_DAYS": [
+    "Each week must have exactly seven days.",
+    "Chaque semaine doit comporter exactement sept jours."
+  ],
+  "WEEKLY_DAY": [
+    "Do not repeat a day of the week.",
+    "Ne répétez pas un jour de la semaine."
+  ],
+  "WEEKLY_FOCUS": [
+    "The drill must match the selected focus and group.",
+    "L'exercice doit correspondre à l'orientation et au groupe choisis."
+  ],
+  "YOUTH_INTAKE_EXISTS": [
+    "Players from this academy intake have already arrived.",
+    "Les joueurs de cette promotion sont déjà arrivés."
+  ],
+  "ENGINE_VERSION": [
+    "This game requires a different version of the match engine.",
+    "Cette partie nécessite une autre version du moteur de match."
+  ]
+}

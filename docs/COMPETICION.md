@@ -1,5 +1,7 @@
 # Competición y calendario
 
+[Español](COMPETICION.md) · [English](en/COMPETICION.md) · [Français](fr/COMPETICION.md) · [Índice](README.md)
+
 Ambas divisiones tienen diez equipos, dieciocho jornadas a doble vuelta y noventa partidos de liga. El sorteo limita las rachas a dos encuentros seguidos en casa o fuera.
 
 La temporada deportiva va del fin de semana próximo al 27 de septiembre al próximo al 7 de junio. Los cuatro primeros disputan semifinales 1.º–4.º y 2.º–3.º y una final, a partido único en casa del mejor clasificado de la regular. Los cruces se completan al terminar cada fase.

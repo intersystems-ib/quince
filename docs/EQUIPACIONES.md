@@ -1,5 +1,7 @@
 # Equipaciones
 
+[Español](EQUIPACIONES.md) · [English](en/EQUIPACIONES.md) · [Français](fr/EQUIPACIONES.md) · [Índice](README.md)
+
 Cada club dispone de primera y segunda equipación. El visitante usa la segunda camiseta si hay conflicto de colores. Los diseños se muestran en el campo, el marcador y el directorio.
 
 | Club | Primera equipación | Segunda equipación |

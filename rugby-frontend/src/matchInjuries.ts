@@ -1,8 +1,9 @@
+import {tr} from './i18n';
 import type {Match} from './types';
 
 export function injuryEventMessage(match:Match,playerId?:string){
  const player=[...match.homePlayers,...match.awayPlayers].find(p=>p.playerId===playerId);
- return `${player?.name||'Un jugador'} se ha lesionado y abandona el campo.`;
+ return `${player?.name||tr('Un jugador')} se ha lesionado y abandona el campo.`;
 }
 
 export function injuryPauseMessage(match:Match){

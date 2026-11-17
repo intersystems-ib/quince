@@ -1,5 +1,7 @@
 # Finanzas
 
+[Español](FINANZAS.md) · [English](en/FINANZAS.md) · [Français](fr/FINANZAS.md) · [Índice](README.md)
+
 El usuario contrata al financiero; éste gestiona los ingresos de septiembre según su calidad y la semilla de la partida.
 
 | Fecha | Gestión |

@@ -1,5 +1,7 @@
 # Preparación del rival
 
+[Español](PREPARACION-RIVAL.md) · [English](en/PREPARACION-RIVAL.md) · [Français](fr/PREPARACION-RIVAL.md) · [Índice](README.md)
+
 Cada partido oficial de Liga o Copa con ambos equipos asignados tiene una reunión dos días antes. Aparece en el calendario y en «El plan de la semana» de Tu club. La pestaña «Preparación del rival» de Cuerpo técnico abre el informe desde esa fecha hasta el día del partido, ambos incluidos, antes de su inicio. El mensaje de informe en preparación comienza al día siguiente del partido anterior, incluidos los amistosos; para el primer encuentro, al abrir la temporada.
 
 El informe compara el XV elegido con una alineación rival probable en formaciones fijas, contacto, ataque abierto, defensa y juego al pie. Delanteros y tres cuartos se analizan por separado; energía y moral influyen en el rendimiento previsto. La calidad del cuerpo técnico determina la precisión de las estimaciones. Los informes no revelan la táctica ni una alineación confirmada del rival.

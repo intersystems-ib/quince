@@ -1,5 +1,7 @@
 # Mercado de jugadores
 
+[Español](mercado.md) · [English](en/mercado.md) · [Français](fr/mercado.md) · [Índice](README.md)
+
 - El motor mantiene hasta 20 agentes generados y renueva semanalmente el 20 % de menor media.
 - Los jugadores ofrecidos por clubes y los liberados de contratos no consumen esas plazas.
 - Cada club puede ofrecer jugadores con un precio de traspaso. Siguen en su plantilla hasta la firma; la oferta puede retirarse.

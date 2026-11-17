@@ -1,5 +1,7 @@
 # Lesiones
 
+[Español](LESIONES.md) · [English](en/LESIONES.md) · [Français](fr/LESIONES.md) · [Índice](README.md)
+
 Las bajas ocurren en partidos y entrenamientos; influyen edad, fatiga, intensidad y preparación. El riesgo base de partido es 0,000045 por jugador y veinte segundos. Son parámetros de simulación.
 
 | Lesión | Grado | Semanas |
