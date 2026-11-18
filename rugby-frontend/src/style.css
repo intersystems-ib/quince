@@ -233,3 +233,43 @@
 .club-revenue-card{grid-column:1/-1}.club-revenue-columns{display:grid;grid-template-columns:1fr 1fr;gap:24px}.club-revenue-card h4{font-size:13px;margin:16px 0 10px}.club-revenue-card p{font-size:13px}.club-revenue-card small{color:var(--muted);line-height:1.6}.club-revenue-card dl{margin:12px 0}.club-revenue-card dl>div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:8px 0;border-bottom:1px solid var(--line);font-size:12px}.club-revenue-card dt{min-width:0}.club-revenue-card dd{margin:0;white-space:nowrap;font-weight:650}.club-revenue-summary{border-top:1px solid var(--line);margin-top:16px;padding-top:2px}.club-revenue-net{font-weight:700}.club-revenue-card .card-top{gap:10px;flex-wrap:wrap}@media(max-width:650px){.club-revenue-columns{grid-template-columns:minmax(0,1fr);gap:4px}.club-revenue-card dl>div{gap:10px;font-size:11px}}
 
 .prematch-start-controls{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:12px}.match-view-mode{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff;gap:3px}.match-view-mode>button{border:0;border-radius:5px;background:transparent;padding:10px 14px;font-size:12px;color:var(--dark);white-space:nowrap}.match-view-mode>button[aria-checked=true]{background:var(--dark);color:#fff}.result-control{min-width:0;max-width:100%}.result-control>.action-wrap>.button{max-width:100%;height:auto;min-height:32px;padding:8px 12px;white-space:normal}.result-control .error{font-size:11px;max-width:300px}@media(max-width:650px){.page-heading:has(.prematch-start-controls){flex-wrap:wrap}.prematch-start-controls{width:100%;justify-content:flex-start;gap:8px}.match-view-mode>button{padding:9px 12px;font-size:11px}}
+
+/* Finance income, expenses and balance views */
+.finance-tabs>button{min-width:110px;justify-content:center}.finance-overview,.finance-history,.finance-director-panel{margin-bottom:24px}.finance-overview table,.finance-history table,.finance-monthly table{font-variant-numeric:tabular-nums}.finance-overview tfoot,.finance-monthly tfoot{font-weight:700;background:#f0f3eb}.finance-overview tfoot td,.finance-overview tfoot th,.finance-monthly tfoot td,.finance-monthly tfoot th{border-top:2px solid #dce3d2}.finance-history>summary{cursor:pointer;font-weight:650}.finance-history>summary>span{font-weight:400;color:var(--muted)}.finance-history>.table-wrap{margin-top:16px}.finance-history .toolbar{margin-top:14px}.finance-history td:nth-child(2){white-space:normal;min-width:170px}.finance-history td:first-child,.finance-history td:last-child{white-space:nowrap}.finance-balance-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:22px;align-items:start}.finance-balance-layout>.card{min-width:0}.finance-monthly table{min-width:440px}.finance-monthly tbody th{text-transform:none;white-space:nowrap;font-weight:500;color:inherit;letter-spacing:0}.finance-monthly tfoot th{text-transform:none;letter-spacing:0}.finance-balance-forecast .card-top{align-items:center;gap:10px;flex-wrap:wrap}.finance-balance-forecast h3{margin:0}.finance-balance-forecast dt{min-width:0}.finance-director-panel>.card{margin-bottom:16px}.finance-director-panel>.staff-candidates{margin-bottom:24px}.finance-overview td.right,.finance-overview th.right,.finance-monthly td.right,.finance-monthly th.right{text-align:right;white-space:nowrap}.finance-overview .right{min-width:105px}.finance-salary{margin-bottom:24px}@media(max-width:1100px){.finance-balance-layout{grid-template-columns:minmax(0,1fr)}}@media(max-width:650px){.finance-tabs>button{min-width:0;flex:1;font-size:12px;padding-left:8px;padding-right:8px}.finance-overview table{min-width:380px}.finance-monthly .card-top{gap:10px;flex-wrap:wrap}.finance-overview .card-top{padding-left:0;padding-right:0}.finance-balance-forecast dd{font-size:12px}}
+
+.finance-monthly .negative{color:#b84f42}@media(max-width:650px){.finance-stats{gap:8px}.finance-stats>.finance-metric{padding:13px 14px;flex-direction:row;align-items:center;justify-content:space-between;gap:10px}.finance-stats>.finance-metric>strong{font-size:19px;white-space:nowrap}.finance-stats>.finance-metric>small{font-size:10px;line-height:1.5;max-width:48%}.finance-monthly table,.finance-overview table{min-width:0;table-layout:fixed}.finance-monthly th,.finance-monthly td{padding:12px 3px;font-size:9px}.finance-monthly thead th{font-size:8px;letter-spacing:0}.finance-monthly thead th:first-child{width:22%}.finance-monthly tbody th{font-size:9px}.finance-overview th,.finance-overview td{padding:12px 5px;font-size:10px}.finance-overview .right{min-width:0;font-size:9px}.finance-overview thead th.right{white-space:normal;letter-spacing:0;font-size:8px}.finance-overview thead th:first-child{width:40%}.finance-overview tbody td:first-child{white-space:normal;overflow-wrap:anywhere}}
+
+/* Shared detail cards for income and expenses. */
+.finance-detail-card { min-width:0; padding:24px; background:#fffef9; border:1px solid var(--line,#e8eae2); border-radius:12px; }
+.finance-detail-card > .card-top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin:0 0 20px; padding-bottom:16px; border-bottom:1px solid var(--line,#e8eae2); }
+.finance-detail-card > .card-top h3 { margin:0; font-size:16px; line-height:1.4; }
+.finance-detail-card > .card-top .pill { font-size:9px; white-space:nowrap; }
+.finance-detail-card small { color:var(--muted,#64716b); font-size:11px; line-height:1.6; }
+.finance-detail-card .finance-deal { gap:7px; padding:16px 0; font-size:13px; }
+.finance-detail-card .finance-deal:first-child, .finance-detail-card > .finance-deal:nth-child(2) { padding-top:0; }
+.finance-detail-card .finance-deal b { font-size:18px; font-variant-numeric:tabular-nums; }
+.finance-detail-card .finance-metric > strong, .finance-detail-card .finance-payroll-total > strong, .finance-detail-card.finance-player-budget > strong { font-size:26px; color:#304e38; }
+.finance-detail-card dl > div { display:flex; flex-direction:row; justify-content:space-between; align-items:baseline; gap:16px; padding:12px 0; border-bottom:1px solid var(--line,#e8eae2); font-size:12px; }
+.finance-detail-card dt { min-width:0; font-weight:400; color:var(--muted,#64716b); }
+.finance-detail-card dd { margin:0; font-weight:650; text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.finance-detail-card .club-revenue-summary { margin:18px 0 14px; padding:0 14px; border:0; border-radius:8px; background:#f0f3eb; }
+.finance-detail-card .club-revenue-summary dl > div { border:0; }
+.finance-detail-card .club-revenue-summary dt { color:inherit; font-weight:600; }
+.finance-detail-card.finance-player-budget { padding:24px; }
+.finance-detail-card.finance-player-budget.over-budget { background:#fffef9; border-color:#e9c3b8; }
+.finance-detail-card.finance-player-budget.over-budget > strong { color:#b84f42; }
+.finance-detail-card .finance-salary-flex dl > div { margin:0; }
+.finance-salary { align-items:stretch; }
+.finance-salary .finance-player-budget > .card-top { margin-bottom:14px; }
+.finance-salary .finance-budget-bar { margin:12px 0 10px; }
+.finance-salary .finance-player-budget .finance-salary-flex { margin-top:14px; padding-top:14px; }
+.finance-salary .finance-salary-flex .card-top { margin-bottom:10px; }
+.finance-salary .finance-salary-flex dl { margin:10px 0; }
+.finance-salary .finance-salary-flex dl > div { padding:8px 0; }
+.finance-salary .finance-salary-flex .action-wrap { margin-top:12px; }
+@media (max-width:650px) {
+  .finance-detail-card, .finance-detail-card.finance-player-budget { padding:18px; }
+  .finance-detail-card > .card-top { margin-bottom:16px; padding-bottom:12px; }
+  .finance-detail-card > .card-top h3 { font-size:15px; }
+  .finance-detail-card dl > div { gap:10px; font-size:11px; }
+}

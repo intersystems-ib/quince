@@ -5542,5 +5542,105 @@
   "No se ha podido completar la parte del partido. Inténtalo de nuevo.": [
     "This half could not be completed. Please try again.",
     "Cette mi-temps n’a pas pu être terminée. Réessayez."
+  ],
+  "Ingresos de la temporada": [
+    "Season income",
+    "Revenus de la saison"
+  ],
+  "Gastos de la temporada": [
+    "Season expenses",
+    "Dépenses de la saison"
+  ],
+  "Resumen de ingresos": [
+    "Income summary",
+    "Résumé des revenus"
+  ],
+  "Resumen de gastos": [
+    "Expense summary",
+    "Résumé des dépenses"
+  ],
+  "Cobrado": [
+    "Received",
+    "Encaissé"
+  ],
+  "Pagado": [
+    "Paid",
+    "Payé"
+  ],
+  "Previsión total": [
+    "Full-season forecast",
+    "Prévisions totales"
+  ],
+  "Histórico de ingresos": [
+    "Income history",
+    "Historique des revenus"
+  ],
+  "Histórico de gastos": [
+    "Expense history",
+    "Historique des dépenses"
+  ],
+  "Movimientos de ingresos": [
+    "Income transactions",
+    "Opérations de revenus"
+  ],
+  "Movimientos de gastos": [
+    "Expense transactions",
+    "Opérations de dépenses"
+  ],
+  "Balance": [
+    "Balance",
+    "Bilan"
+  ],
+  "Balance mensual": [
+    "Monthly balance",
+    "Bilan mensuel"
+  ],
+  "Balance mensual de la temporada": [
+    "Season monthly balance",
+    "Bilan mensuel de la saison"
+  ],
+  "Acumulado": [
+    "Cumulative total",
+    "Cumul"
+  ],
+  "Previsión del conjunto de la temporada, incluidos los importes ya cobrados y pagados.": [
+    "Full-season forecast, including amounts already received and paid.",
+    "Prévisions de la saison entière, y compris les montants déjà encaissés et payés."
+  ],
+  "Gestión del financiero": [
+    "Financial director management",
+    "Gestion du financier"
+  ],
+  "Partidos pendientes": [
+    "Remaining matches",
+    "Matchs restants"
+  ],
+  "Asistentes de pago por partido": [
+    "Paying spectators per match",
+    "Spectateurs payants par match"
+  ],
+  "Precio medio de entrada": [
+    "Average ticket price",
+    "Prix moyen du billet"
+  ],
+  "Socios y otros ingresos": [
+    "Membership and other income",
+    "Adhésions et autres revenus"
+  ],
+  "Referencias anuales": [
+    "Annual figures",
+    "Références annuelles"
+  ],
+  "Cobros mensuales el día 21, de septiembre a junio.": [
+    "Monthly receipts on the 21st, September through June.",
+    "Encaissements le 21 de chaque mois, de septembre à juin."
+  ],
+  "Gastos mensuales el día 21, de septiembre a junio.": [
+    "Monthly expenses on the 21st, September through June.",
+    "Dépenses le 21 de chaque mois, de septembre à juin."
+  ],
+  "Traspasos": [
+    "Transfers",
+    "Transferts"
   ]
 }
