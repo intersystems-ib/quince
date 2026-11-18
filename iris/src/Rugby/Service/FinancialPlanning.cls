@@ -1,7 +1,7 @@
 Class Rugby.Service.FinancialPlanning Extends %RegisteredObject
 {
-Parameter VERSION = "2.2.0";
-ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject) As %DynamicObject
+Parameter VERSION = "3.0.0";
+ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject, includeCommunity As %Boolean = 1) As %DynamicObject
 {
     set payroll=##class(Rugby.Service.Payroll).Summary(c.id,0),managed=o.director.%Get("id")'="",quality=o.director.%Get("quality",35),success=##class(Rugby.Service.Finance).Success(c),agreements=##class(Rugby.Service.Store).All("FinancialAgreement","clubId",c.id),slots={},private=0,bar=0
     for i=0:1:agreements.%Size()-1 { set a=agreements.%Get(i) if (a.startYear<=s.year)&&(a.endYear>=s.year)&&(a.slot>=1)&&(a.slot<=7) do slots.%Set(a.slot,a.annualAmount) }
@@ -20,8 +20,11 @@ ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObje
     set costs=payroll.annualProjectedCosts,fundingReference=##class(Rugby.Service.Finance).Budget(c)*.85,targetFactor=.98+(quality*.0005),other=private+bar+campaign+tickets,needed=+$justify((fundingReference*targetFactor)-other,0,0),unsubsidizedGap=$select(needed>0:needed,1:0),needed=unsubsidizedGap\2,grants=0
     for i=0:1:s.grants.%Size()-1 { set grants=grants+s.grants.%Get(i).amount }
     if ('s.%Get("grantsComplete",0))&&managed set grants=needed
-    set income=other+grants
-    quit {"modelVersion":(..#VERSION),"projectedCosts":(costs),"projectedIncome":(income),"projectedMargin":(income-costs),"marginPercent":($select(costs>0:(income-costs)*100/costs,1:0)),"targetMarginPercent":((targetFactor-1)*100),"privateSponsors":(private),"barConcession":(bar),"memberships":(campaign),"tickets":(tickets),"ticketForecast":(ticketPlan),"publicGrants":(grants),"requiredGrants":(needed),"unsubsidizedGap":(unsubsidizedGap),"grantFactor":0.5,"directorQuality":(quality),"provisional":('s.%Get("grantsComplete",0))}
+    set income=other+grants,costs=costs-payroll.%Get("annualCommunityCosts",0),community={}
+    if includeCommunity {
+        set community=##class(Rugby.Service.ClubRevenue).Plan(c,s,o,costs,income),income=income+community.plannedMembersIncome+community.plannedOtherIncome,costs=costs+community.plannedCosts
+    }
+    quit {"modelVersion":(..#VERSION),"projectedCosts":(costs),"projectedIncome":(income),"projectedMargin":(income-costs),"marginPercent":($select(costs>0:(income-costs)*100/costs,1:0)),"targetMarginPercent":2,"privateSponsors":(private),"barConcession":(bar),"memberships":(campaign),"tickets":(tickets),"ticketForecast":(ticketPlan),"community":(community),"publicGrants":(grants),"requiredGrants":(needed),"unsubsidizedGap":(unsubsidizedGap),"grantFactor":0.5,"directorQuality":(quality),"provisional":('s.%Get("grantsComplete",0))}
 }
 ClassMethod TicketForecast(c As %DynamicObject, s As %DynamicObject, members As %Integer) As %DynamicObject
 {

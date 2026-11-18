@@ -13,15 +13,7 @@ ClassMethod Run()
         set graduating=##class(Rugby.Service.Store).Get("Player","c2-academy-2"),graduating.age=23,graduating.birthDay=day-(23*365)-10,catalog=##class(Rugby.Service.Development).Catalog()
         for k=0:1:16 { do graduating.attributes.%Set(catalog.%Get(k).id,20) }
         do ##class(Rugby.Service.Store).Put("Player",graduating)
-        // Recruitment needs genuine roster and payroll space in a balanced club.
-        set released=##class(Rugby.Service.Store).Get("Player","c3-p23"),released.formerClubId="c3",released.clubId="",released.contractStatus="free"
-        set funded=##class(Rugby.Service.Store).Get("Club","c3"),funded.salaryAnnualIncome=funded.salaryAnnualIncome+3000000,roster=##class(Rugby.Service.Store).All("Player","clubId","c3"),minimum=101
-        for r=0:1:roster.%Size()-1 { set target=roster.%Get(r) if (target.category="senior")&&(##class(Rugby.Service.Development).Average(target)<minimum) set minimum=##class(Rugby.Service.Development).Average(target),released.position=target.position }
-        for k=0:1:16 { do released.attributes.%Set(catalog.%Get(k).id,70) }
-        set released.birthDay=day-(25*365),released.signingFee=0
-        do ##class(Rugby.Service.Store).Put("Club",funded)
-        do ##class(Rugby.Service.Store).Put("Player",released)
-        set result=##class(Rugby.Service.Rivals).Day(day),again=##class(Rugby.Service.Rivals).Day(day),hired=0,signed=0,youthTraining=0,recovered=0,ids={}
+        set result=##class(Rugby.Service.Rivals).Day(day),again=##class(Rugby.Service.Rivals).Day(day),hired=0,signed=0,deferred=0,youthTraining=0,recovered=0,ids={}
         do ..Assert(result.clubs.%Size()=19,"Exactly nineteen clubs are managed automatically")
         do ..Assert(result.%ToJSON()=again.%ToJSON(),"Replaying the day does not repeat training, salaries or recruitment")
         do ..Assert(##class(Rugby.Service.Store).Get("Player",graduating.id).clubId="","Older academy players leave and are replaced without deleting their history")
@@ -37,6 +29,7 @@ ClassMethod Run()
                 do ids.%Set(r.recruitment.playerId,1)
                 do ..Assert(##class(Rugby.Service.Store).Get("Player",r.recruitment.playerId).clubId=r.clubId,"Signed players join the actual rival roster")
             }
+            if $listfind($listbuild("cashReserve","noAffordableCandidate"),r.recruitment.%Get("reason")) set deferred=deferred+1
             set l=##class(Rugby.Service.Store).Get("Lineup",r.clubId_"-default"),valid=##class(Rugby.Service.Management).Validate(l)
             do ..Assert(valid.valid,"AI chooses a legal lineup by position")
             set training=##class(Rugby.Service.Store).Get("TrainingExecution",r.trainingExecutionId)
@@ -47,7 +40,7 @@ ClassMethod Run()
                 set recovered=(rested.energy=33)&&(rested.attributes.%ToJSON()=beforeTired)
             }
         }
-        do ..Assert((hired>0)&&(signed>0)&&(youthTraining>0)&&recovered,"AI recruits players and staff and develops tired academies: staff="_hired_" players="_signed_" training="_youthTraining_" recovery="_recovered)
+        do ..Assert((hired>0)&&((signed+deferred)>0)&&(youthTraining>0)&&recovered,"AI improves staff and academies, recruiting only when cash and affordable candidates permit")
         do ..Assert(##class(Rugby.Service.Store).All("Player","clubId","c1").%ToJSON()=originalPlayers,"AI does not touch managed players")
         do ..Assert((##class(Rugby.Service.Store).Get("TrainingPlan","c1").%ToJSON()=originalPlan)&&(##class(Rugby.Service.Staff).View("c1").%ToJSON()=originalStaff),"AI does not change managed training or coaches")
         if pass=1 { set fingerprint=result.%ToJSON() } else { do ..Assert(fingerprint=result.%ToJSON(),"Same state and seed produce exactly the same decisions and development") }

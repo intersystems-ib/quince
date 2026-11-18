@@ -1,11 +1,11 @@
 Class Rugby.Service.OpeningTreasury Extends %RegisteredObject
 {
-Parameter VERSION = "1.0.0";
+Parameter VERSION = "2.0.0";
 ClassMethod Funds(club As %String) As %Integer
 {
-    set c=##class(Rugby.Service.Store).Get("Club",club),t=##class(Rugby.Service.MonthlyPayroll).Totals(club),monthly=t.players+t.staff+t.director
-    // Two payrolls, registration fees and two months of travel, plus 10% liquidity.
-    set need=((monthly*2)+(##class(Rugby.Service.Finance).Budget(c)*.03)+(1650000/6))*1.1
+    set c=##class(Rugby.Service.Store).Get("Club",club),t=##class(Rugby.Service.MonthlyPayroll).Totals(club),monthly=t.players+t.staff+t.director+(##class(Rugby.Service.ClubRevenue).Costs(club)/10)
+    // One payroll, registration fees and one month of travel, plus 10% liquidity.
+    set need=(monthly+(##class(Rugby.Service.Finance).Budget(c)*.03)+(1650000/12))*1.1
     quit ((need+99999)\100000)*100000
 }
 ClassMethod Initialize() As %DynamicArray

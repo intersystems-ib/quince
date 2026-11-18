@@ -60,7 +60,6 @@ ClassMethod Asking(p As %DynamicObject, kind As %String = "signing") As %Integer
     if (kind="signing")&&(p.clubId="")&&##class(Rugby.Service.Payroll).Active() set base=##class(Rugby.Service.Payroll).Reference(p,##class(Rugby.Service.Store).ManagedClub())
     if (p.category="academy")&&(kind'="renewal") set base=p.%Get("seniorWeeklyWage",45000)
     set base=##class(Rugby.Simulation.Engine).Clamp(base,100,5000000)
-    if ##class(Rugby.Service.MonthlyPayroll).Active() quit +$justify(base,0,0)
     quit ((base+99)\100)*100
 }
 ClassMethod Market() As %DynamicArray
@@ -195,7 +194,7 @@ ClassMethod Offer(id As %String, b As %DynamicObject, key As %String) As %Dynami
         set wage=+$justify(amount*12/52,0,0)
     }
     if '$listfind($listbuild("open","counteroffer"),n.status) do ##class(Rugby.Service.Store).Fail(409,"NEGOTIATION_STATE","Esta negociación no admite más ofertas.")
-    if 'monthly { if (b.%GetTypeOf("weeklyWage")'="number")||('##class(Rugby.Service.Store).Integer(wage,100,5000000))||((wage#100)&&('##class(Rugby.Service.MonthlyPayroll).Active())) do ##class(Rugby.Service.Store).Fail(422,"WAGE","Indica un salario semanal entre 1 y 50.000 €, en euros enteros.") }
+    if 'monthly { if (b.%GetTypeOf("weeklyWage")'="number")||('##class(Rugby.Service.Store).Integer(wage,100,5000000))||(wage#100) do ##class(Rugby.Service.Store).Fail(422,"WAGE","Indica un salario semanal entre 1 y 50.000 €, en euros enteros.") }
     set years=b.%Get("contractYears",n.%Get("contractYears",1))
     if b.%IsDefined("contractYears") { if (b.%GetTypeOf("contractYears")'="number")||('##class(Rugby.Service.Store).Integer(years,1,5)) do ##class(Rugby.Service.Store).Fail(422,"CONTRACT_YEARS","La duración del contrato debe ser de 1 a 5 años enteros.") }
     set c=##class(Rugby.Service.Store).Get("Club",club),p=..Candidate(n.playerId,n.%Get("kind","signing")),age=(c.day-p.birthDay)\365,preferred=##class(Rugby.Service.ContractTerms).Preferred(age,p.id),minimum=(((n.reservationWage*##class(Rugby.Service.ContractTerms).Premium(age,years))+99)\100)*100
@@ -204,7 +203,6 @@ ClassMethod Offer(id As %String, b As %DynamicObject, key As %String) As %Dynami
     if accept||(wage>=minimum) { set n.status="agreed",n.agreedWeeklyWage=wage,n.agreedMonthlyWage=$select(monthly:amount,1:##class(Rugby.Service.Payroll).Monthly(wage)),n.counterWeeklyWage=0,n.agreedContractYears=years,n.contractYears=years,n.counterContractYears=0,n.contractEndDate=##class(Rugby.Service.ContractTerms).EndDate(n,years) }
     elseif n.round>=n.maxRounds { set n.status="rejected",n.counterWeeklyWage=0,n.counterContractYears=0 }
     else { set n.status="counteroffer",n.contractYears=preferred,n.counterContractYears=preferred,n.contractEndDate=##class(Rugby.Service.ContractTerms).EndDate(n,preferred),n.counterWeeklyWage=n.askingWeeklyWage-(((((n.askingWeeklyWage-n.reservationWage)\100)*n.round)\5)*100) }
-    if (n.status="agreed")&&('monthly)&&(n.kind="renewal")&&(wage=p.weeklyWage) set n.agreedMonthlyWage=##class(Rugby.Service.MonthlyPayroll).Value(p)
     do n.offers.%Push({"round":(n.round),"day":(c.day),"offeredWeeklyWage":(wage),"offeredContractYears":(years),"status":(n.status),"counterWeeklyWage":(n.counterWeeklyWage),"counterContractYears":(n.%Get("counterContractYears",0)),"agreedContractYears":(n.%Get("agreedContractYears",0))})
     do ##class(Rugby.Service.Store).Put("Negotiation",n)
     set out=..Public(n),^RugbyWorld(game,"retry","offer",club,key)=out.%ToJSON()

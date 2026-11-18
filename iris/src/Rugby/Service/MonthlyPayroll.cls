@@ -32,18 +32,8 @@ ClassMethod Factor(club As %String) As %Numeric
     set office=##class(Rugby.Service.Finance).Office(club),base=base+..BaseDirector(office.director.%Get("quality",35),club),room=(b*.85)-(..PlayerTotal(club)*12)-(b*.03)-1650000
     quit $select(base>0:##class(Rugby.Simulation.Engine).Clamp(room/(12*base),.25,1),1:1)
 }
-ClassMethod StaffMonthly(role As %String, quality As %Numeric, club As %String) As %Integer
-{
-    set c=##class(Rugby.Service.Store).Get("Club",club),factor=c.%Get("salaryStaffFactor",-1)
-    if factor<0 set factor=..Factor(club)
-    quit +$justify(..BaseStaff(role,quality,club)*factor/100,0,0)*100
-}
-ClassMethod DirectorMonthly(quality As %Numeric, club As %String) As %Integer
-{
-    set c=##class(Rugby.Service.Store).Get("Club",club),factor=c.%Get("salaryDirectorFactor",-1)
-    if factor<0 set factor=..Factor(club)
-    quit +$justify(..BaseDirector(quality,club)*factor/100,0,0)*100
-}
+ClassMethod StaffMonthly(role As %String, quality As %Numeric, club As %String) As %Integer { quit +$justify(..BaseStaff(role,quality,club)*..Factor(club)/100,0,0)*100 }
+ClassMethod DirectorMonthly(quality As %Numeric, club As %String) As %Integer { quit +$justify(..BaseDirector(quality,club)*..Factor(club)/100,0,0)*100 }
 ClassMethod Totals(club As %String) As %DynamicObject
 {
     set players=##class(Rugby.Service.Store).All("Player","clubId",club),senior=0,academy=0,staff=0,t=##class(Rugby.Service.Store).Get("TechnicalStaff",club)
@@ -59,7 +49,7 @@ ClassMethod CanHire(club As %String, role As %String, monthly As %Integer) As %B
     else { for i=0:1:t.coachIds.%Size()-1 { set p=##class(Rugby.Service.Store).Get("Coach",t.coachIds.%Get(i)) if p.role=role set old=..Value(p) } }
     set reserve=$select((role'="finance")&&(totals.director=0):..DirectorMonthly(35,club),1:0)
     set plan=##class(Rugby.Service.Store).Get("TrainingPlan",club),cost=((totals.players+totals.staff+totals.director-old+monthly+reserve)*12)+(##class(Rugby.Service.Finance).Budget(c)*.03)+1650000
-    quit cost<=$select(c.%IsDefined("salaryAnnualIncome"):c.salaryAnnualIncome*.995,1:##class(Rugby.Service.Finance).Budget(c)*.85)
+    quit cost<=(##class(Rugby.Service.Finance).Budget(c)*.85)
 }
 ClassMethod Sync(kind As %String, d As %DynamicObject, previous As %DynamicObject)
 {

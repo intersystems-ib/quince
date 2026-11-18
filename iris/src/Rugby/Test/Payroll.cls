@@ -6,11 +6,11 @@ ClassMethod Run()
     set clubs=##class(Rugby.Service.Store).All("Club"),catalog=##class(Rugby.Service.Staff).Roles()
     for i=0:1:clubs.%Size()-1 {
         set c=clubs.%Get(i),s=##class(Rugby.Service.Payroll).Summary(c.id),all=##class(Rugby.Service.Store).All("Player","clubId",c.id),lo=9999999,hi=0,senior=0,academy=0
-        do ..Assert((s.annualMargin>=(s.budget*.15))&&(s.weeklyAvailable>0),"Annual initial spending fits the club reference budget and leaves a safety margin: "_c.id)
+        do ..Assert((s.annualMargin>=s.annualSafetyReserve)&&(s.weeklyAvailable>0),"Initial club-wide spending leaves its planned operating reserve: "_c.id)
         for j=0:1:all.%Size()-1 {
             set p=all.%Get(j)
             if p.category="senior" { set senior=senior+p.weeklyWage,lo=$select(p.weeklyWage<lo:p.weeklyWage,1:lo),hi=$select(p.weeklyWage>hi:p.weeklyWage,1:hi) } else { set academy=academy+p.weeklyWage }
-            do ..Assert((p.weeklyWage>0)&&(##class(Rugby.Service.MonthlyPayroll).Value(p)#100=0),"Monthly salaries are positive whole euros")
+            do ..Assert((p.weeklyWage>0)&&(p.weeklyWage#100=0),"Salaries are positive whole euros")
         }
         do ..Assert((hi>lo)&&(academy<(senior*.1)),"Salaries retain individual differences and low academy payroll")
         set worst=##class(Rugby.Service.Payroll).AnnualCap(c.id)+s.annualStaff+s.annualDirector+(##class(Rugby.Service.Payroll).TrainingCost(999999,c.id)*365)+s.annualRegistrations+1650000

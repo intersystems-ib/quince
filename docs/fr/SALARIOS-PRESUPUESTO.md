@@ -2,14 +2,20 @@
 
 [Español](../SALARIOS-PRESUPUESTO.md) · [English](../en/SALARIOS-PRESUPUESTO.md) · [Français](SALARIOS-PRESUPUESTO.md) · [Index](README.md)
 
-Les salaires et les offres sont mensuels. Les paies sont versées en fin de mois, au prorata des jours.
+Salaires et offres mensuels ; les paies sont versées en fin de mois, au prorata des jours.
 
-Les salaires initiaux des joueurs, des jeunes, des entraîneurs et du financier suivent les revenus annuels prévus : sponsors, aides, abonnements, concession du bar et billetterie. Environ 2 % restent disponibles après salaires, licences et déplacements. Les écarts individuels et les salaires réduits des jeunes sont conservés. L’ajustement unique concerne les parties existantes et nouvelles, sans réécrire les paiements ni dupliquer les contrats.
+| Groupe | Référence mensuelle |
+|---|---:|
+| Haut de tableau Honor | 850–2 400 € |
+| Milieu de tableau Honor | 800–2 000 € |
+| Bas de tableau Honor | 450–1 400 € |
+| Élite | 300–1 100 € |
+| Jeunes | 30–100 € |
 
-Les offres et recrutements futurs utilisent l’échelle du club. Le plafond salarial des joueurs déduit le personnel, les licences et les déplacements des revenus de référence ; un remplaçant pour blessure peut porter les dépenses à 99,5 % de ces revenus. Les aides prévues utilisent une référence stable, indépendante de la masse salariale.
+Les salaires varient selon le niveau et la marge sportive. Le joueur peut recruter du personnel sans plafond salarial ; les clubs automatiques vérifient leur marge. L’entraînement n’ajoute aucun coût quotidien.
 
-La trésorerie initiale couvre deux paies, les licences, deux mois de déplacements et une marge de 10 %, arrondie au millier d’euros supérieur. Elle concerne les nouvelles parties ou celles sans mouvement au jour initial. Les parties avancées conservent leur trésorerie et leur historique.
+Le budget global inclut adhésions, abonnements, sponsors, aides, billetterie, concession du bar et autres activités. Les cotisations des jeunes et des écoles de rugby ont leurs propres dépenses, hors des effectifs gérés. Cisneros et Alcobendas utilisent une référence globale de 600 000 €. Le budget initial complet conserve environ 2 % de marge avec un financier de niveau de référence ; les recrutements et les résultats peuvent la modifier.
 
-Le joueur peut recruter du personnel sans plafond salarial. Les clubs automatiques vérifient leur marge. L’entraînement n’ajoute aucun coût quotidien.
+La trésorerie initiale couvre une paie, un mois d’activité de base, les licences et un mois de déplacements, avec 10 % de marge. Elle concerne les parties nouvelles ou sans mouvement au jour initial. Les parties avancées conservent leur trésorerie et leurs opérations historiques.
 
-**Réinvestir l’excédent dans les recrutements** affecte jusqu’à 90 % de la marge supplémentaire aux salaires. Les aides en attente n’augmentent pas ce plafond. Les prolongations sans prime à salaire égal ou inférieur restent possibles au-delà du plafond. Les évolutions de l’effectif ou du financement peuvent modifier les prévisions.
+**Réinvestir l’excédent dans les recrutements** affecte jusqu’à 90 % de la marge supplémentaire aux salaires, après les dépenses de tout le club et sans les aides en attente. Les prolongations sans prime à salaire égal ou inférieur restent possibles au-delà du plafond.

@@ -32,7 +32,7 @@ ClassMethod Run()
 ClassMethod UnrestrictedHiring()
 {
     tstart
-    set c=##class(Rugby.Service.Store).Get("Club","c1"),c.divisionBudgetReference=1000000,c.salaryAnnualIncome=10000,c.balance=0
+    set c=##class(Rugby.Service.Store).Get("Club","c1"),c.divisionBudgetReference=1000000,c.balance=0
     do ##class(Rugby.Service.Store).Put("Club",c)
     set market=##class(Rugby.Service.Payroll).Market("head"),candidate=market.%Get(0),staff=##class(Rugby.Service.Staff).View(c.id)
     do ..Assert('##class(Rugby.Service.MonthlyPayroll).CanHire(c.id,candidate.role,candidate.monthlyWage),"Test club has no salary margin for a coach")

@@ -194,6 +194,7 @@ ClassMethod Tick(club As %String)
 {
     set c=##class(Rugby.Service.Store).Get("Club",club),o=..Office(club),s=..Season(c),month=+$piece(c.date,"-",2),beforeOffice=o.%ToJSON(),beforeSeason=s.%ToJSON()
     if month=9 do ..Deals(c,s,o)
+    do ##class(Rugby.Service.ClubRevenue).Tick(c,s,o)
     set planning=##class(Rugby.Service.FinancialPlanning).Adopt(c,s,o)
     // New obligations start at adoption; earlier instalments are never credited retroactively.
     if ((month>=9)||(month<=6)) {
