@@ -31,10 +31,15 @@ ClassMethod Create(b As %DynamicObject, key As %String) As %DynamicObject
     set ^RugbyWorld(##class(Rugby.Service.Store).Game(),"retry","match",key)=id
     quit m
 }
-ClassMethod Start(id As %String) As %DynamicObject
+ClassMethod Start(id As %String, b As %DynamicObject = "") As %DynamicObject
 {
     set m=##class(Rugby.Service.Store).Get("Match",id)
+    do ##class(Rugby.Service.Store).Managed(m.clubId)
     if m.status'="scheduled" quit m
+    if '$isobject(b) set b={}
+    set viewMode=b.%Get("viewMode","visualize")
+    if '$listfind($listbuild("visualize","result"),viewMode) do ##class(Rugby.Service.Store).Fail(422,"MATCH_VIEW_MODE","Selecciona Resultado o Visualizar.")
+    set m.viewMode=viewMode
     if ##class(Rugby.Service.Store).Active(##class(Rugby.Service.Store).ManagedClub()) do ##class(Rugby.Service.Store).Fail(409,"MATCH_ACTIVE","Ya hay un partido activo.")
     for side="home","away" {
         set cid=m.%Get(side_"Id")
@@ -64,6 +69,7 @@ ClassMethod Start(id As %String) As %DynamicObject
     do ##class(Rugby.Service.Store).Put("Match",m)
     set f=##class(Rugby.Service.Store).Get("Fixture",m.fixtureId),f.status="live"
     do ##class(Rugby.Service.Store).Put("Fixture",f)
+    if viewMode="result" do ##class(Rugby.Service.MatchResultMode).Play(m,"halftime")
     quit m
 }
 ClassMethod Pause(m As %DynamicObject, reason As %String, message As %String, playerId As %String = "")
@@ -77,6 +83,7 @@ ClassMethod CheckCommand(m As %DynamicObject, b As %DynamicObject, side As %Stri
     if (m.status="finished")||(m.status="scheduled") quit "El partido no está en juego."
     set type=b.%Get("type")
     if type="speed" {
+        if m.%Get("viewMode","visualize")="result" quit "En modo Resultado utiliza Ir a descanso o Ir al final."
         if '$listfind($listbuild(0,1,5,20,60),b.%Get("speed")) quit "Velocidad permitida: pausa (0), 1, 5, 20 o 60."
         quit ""
     }

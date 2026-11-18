@@ -23,6 +23,7 @@ ClassMethod Close(m As %DynamicObject)
         for team="home","away" { set a=m.%Get(team_"Players") for i=0:1:a.%Size()-1 { set q=a.%Get(i) if q.status="field" set q.energy=##class(Rugby.Simulation.Engine).Clamp(q.energy+7,0,100) } }
         do ##class(Rugby.Simulation.Engine).Event(m,"halftime","","Descanso. El balón ha quedado fuera de juego con el tiempo cumplido.",0,m.x,m.y,"")
         do ##class(Rugby.Service.Matches).Pause(m,"halftime","Descanso. Revisa los cambios y la táctica. Selecciona una velocidad para comenzar la segunda parte.")
+        if m.%Get("viewMode","visualize")="result" set m.pauseMessage="Descanso. Revisa los cambios y la táctica antes de ir al final."
     } else {
         set m.status="finished",m.phase="stoppage",m.secondHalfAddedSeconds=m.clock-..Limit(m)
         do ##class(Rugby.Service.Matches).PlayoffWinner(m)

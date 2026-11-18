@@ -4,7 +4,7 @@
 
 Fifteen-a-side rugby union: a try scores 5, a conversion 2, and penalties and drop goals 3. Matches have two forty-minute halves and teams change ends at half-time.
 
-Numbers 1–15 identify positions, not permanent squad numbers. Position swaps apply temporary morale penalties: 3 points in a secondary position, 8 within the same unit and 15 across units. Attributes do not change. Returning to the natural position or leaving the XV removes the penalty.
+Numbers 1–15 identify positions, not permanent squad numbers. Forwards can switch among positions 1–8 and backs among positions 9–15 without losing morale. Moving between units temporarily deducts 15 points, or 3 for a secondary position. Attributes remain unchanged; returning to the same unit or leaving the XV removes the deduction.
 
 Up to eight replacements and eight permanent substitutions, without duplicates or re-entry. **Not selected** contains available players outside the XV and bench and updates with the line-up. Only available senior players from the club may play. Injured replacements move to **Unavailable**; an injured starter needs replacing.
 

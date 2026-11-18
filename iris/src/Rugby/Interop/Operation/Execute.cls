@@ -66,6 +66,7 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             if (pRequest.Resource="preparations")&&(pRequest.Child="apply")&&(pRequest.Method="POST") set pResponse.DetailsJSON={"opponentPreparation":(out)}.%ToJSON()
             if (pRequest.Resource="games")&&(pRequest.Method="DELETE") set pResponse.DetailsJSON={"gameDeletion":(out)}.%ToJSON()
             if (pRequest.Resource="matches")&&(pRequest.Child="start")&&(pRequest.Method="POST") set pResponse.DetailsJSON={"tacticalAssessment":(out.%Get("aiTacticalAssessment"))}.%ToJSON()
+            if (pRequest.Resource="matches")&&(pRequest.Child="advance-result")&&(pRequest.Method="POST") set pResponse.DetailsJSON={"matchId":(out.id),"viewMode":(out.viewMode),"status":(out.status),"period":(out.period),"clock":(out.clock),"homeScore":(out.homeScore),"awayScore":(out.awayScore)}.%ToJSON()
             if (pRequest.Resource="negotiations")&&(pRequest.Child="sign")&&(pRequest.Method="POST") {
                 set contract=##class(Rugby.Service.Store).Get("PlayerContract",out.contractId),movements=##class(Rugby.Service.Store).All("FinancialMovement","source","sign-"_out.id)
                 set pResponse.DetailsJSON={"contract":(contract),"financialMovements":(movements)}.%ToJSON()

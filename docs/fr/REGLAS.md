@@ -4,7 +4,7 @@
 
 Rugby à XV : essai 5 points, transformation 2, pénalité et drop 3. Deux mi-temps de quarante minutes ; les équipes changent de côté à la pause.
 
-Les numéros 1–15 désignent les postes, pas des numéros permanents de joueurs. Les échanges de postes appliquent des pénalités temporaires de moral : 3 points sur un poste secondaire, 8 dans la même ligne et 15 entre les lignes. Les attributs ne changent pas. Revenir au poste naturel ou quitter le XV supprime la pénalité.
+Les numéros 1–15 désignent les postes, pas des numéros permanents de joueurs. Les avants peuvent alterner entre les postes 1–8 et les trois-quarts entre les postes 9–15 sans perte de moral. Changer de ligne retire temporairement 15 points, ou 3 sur un poste secondaire. Les attributs ne changent pas ; revenir dans sa ligne ou quitter le XV supprime la pénalité.
 
 Jusqu'à huit remplaçants et huit remplacements définitifs, sans doublon ni retour en jeu. **Non convoqués** regroupe les joueurs disponibles hors du XV et du banc et s'actualise avec la composition. Seuls les seniors disponibles du club peuvent jouer. Un remplaçant blessé passe dans **Indisponibles** ; un titulaire blessé doit être remplacé.
 

@@ -4,7 +4,7 @@
 
 Rugby union de quince jugadores: ensayo 5 puntos, transformación 2, golpe y drop 3. Dos partes de cuarenta minutos; el ataque cambia de dirección al descanso.
 
-Los números 1–15 identifican puestos, no dorsales permanentes. Se permiten intercambios de posición con penalización de moral: 3 puntos en secundaria, 8 dentro de la misma línea y 15 entre líneas. No cambian los atributos. La penalización es reversible al volver a la posición natural o salir del XV.
+Los números 1–15 identifican puestos, no dorsales permanentes. Los delanteros pueden alternar los puestos 1–8 y los tres cuartos los puestos 9–15 sin perder moral. Entre grupos se descuentan temporalmente 15 puntos, o 3 si el puesto figura como secundario. Los atributos no cambian; volver al propio grupo o salir del XV elimina la penalización.
 
 Hasta ocho suplentes y ocho sustituciones permanentes, sin duplicados ni reentrada. «No convocados» reúne a los disponibles que no son titulares ni suplentes; se actualiza al editar la alineación. Sólo juegan séniores disponibles del club. Los lesionados del banquillo pasan a «No disponibles»; un titular lesionado requiere sustituto.
 

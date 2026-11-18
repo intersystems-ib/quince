@@ -14,7 +14,7 @@ ClassMethod Run()
     set p=##class(Rugby.Service.Store).Get("Player",saved.slots.%Get(0).playerId),p.position=2,p.secondary=[]
     do ##class(Rugby.Service.Store).Put("Player",p)
     set m=##class(Rugby.Test.Suite).Build(335),s=m.homePlayers.%Get(0),raw=s.attributes.%ToJSON()
-    do ..Assert((s.position=1)&&(s.naturalPosition=2)&&(s.positionMoralePenalty=8),"Hooker playing prop loses morale only")
+    do ..Assert((s.position=1)&&(s.naturalPosition=2)&&(s.positionMoralePenalty=0),"Hooker playing prop retains morale")
     set morale=s.morale
     do ##class(Rugby.Simulation.Performance).ApplyMorale(s)
     do ..Assert((s.morale=morale)&&(raw=s.attributes.%ToJSON()),"No repeated morale penalty or attribute change")

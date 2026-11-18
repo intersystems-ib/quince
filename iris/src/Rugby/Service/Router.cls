@@ -141,7 +141,8 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
     if (resource="matches")&&(method="PUT")&&(child="ticketing") quit ##class(Rugby.Service.Finance).Ticketing(id,b,key)
     if (resource="matches")&&(method="POST") {
         if id="" quit ##class(Rugby.Service.Matches).Create(b,key)
-        if child="start" { do ##class(Rugby.Service.Store).Key(key) quit ##class(Rugby.Service.Matches).Start(id) }
+        if child="start" { do ##class(Rugby.Service.Store).Key(key) quit ##class(Rugby.Service.Matches).Start(id,b) }
+        if child="advance-result" quit ##class(Rugby.Service.MatchResultMode).Advance(id,b,key)
         if child="commands" quit ##class(Rugby.Service.Matches).Command(id,b,key)
     }
     do ##class(Rugby.Service.Store).Fail(404,"ROUTE_NOT_FOUND","Ruta no disponible.")

@@ -2,11 +2,11 @@ Class Rugby.Simulation.Performance Extends %RegisteredObject
 {
 ClassMethod MoralePenalty(p As %DynamicObject) As %Integer
 {
-    if p.position=p.naturalPosition quit 0
+    if (p.position<=8)=(p.naturalPosition<=8) quit 0
     set secondary=0
     for i=0:1:p.secondary.%Size()-1 { if p.secondary.%Get(i)=p.position set secondary=1 }
     if secondary quit 3
-    quit $select((p.position<=8)=(p.naturalPosition<=8):8,1:15)
+    quit 15
 }
 ClassMethod ApplyMorale(p As %DynamicObject)
 {

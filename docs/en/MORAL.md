@@ -10,4 +10,4 @@ After fourteen days without playing minutes, a player loses one point per day. T
 
 Each rest or recovery day adds two morale points, capped at 100%, for every team and category. Inactivity loss is calculated separately, so the net gain can be one point. The summer break does not accumulate these gains.
 
-Out-of-position penalties are temporary: 3 points for a secondary position, 8 within the same unit, 15 across units. Returning to the natural position or leaving the XV restores previous morale without stacking penalties. Results affect base morale.
+Forwards can occupy any position from 1 to 8, and backs any position from 9 to 15, without losing morale. Switching between units temporarily deducts 15 points, or 3 for a secondary position. Returning to the same unit or leaving the XV restores base morale without stacking deductions. Match results affect base morale.

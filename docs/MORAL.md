@@ -10,4 +10,4 @@ Tras catorce días sin disputar minutos, un jugador pierde un punto diario. Los 
 
 Cada día de descanso o recuperación suma dos puntos de moral, hasta el 100 %, en todos los equipos y categorías. La pérdida por falta de minutos se calcula por separado: si corresponde, el aumento neto será de un punto. El parón de verano no acumula estas mejoras.
 
-Fuera de posición se descuentan temporalmente 3 puntos en una posición secundaria, 8 dentro de la misma línea y 15 entre líneas. Al volver a la posición natural o salir del XV se recupera la moral previa, sin acumular descuentos. Los resultados afectan a la moral de base.
+Los delanteros pueden ocupar cualquier puesto del 1 al 8 y los tres cuartos del 9 al 15 sin perder moral. Entre grupos se descuentan temporalmente 15 puntos, o 3 si se trata de una posición secundaria. Volver al mismo grupo o salir del XV recupera la moral previa, sin acumular descuentos. Los resultados afectan a la moral de base.

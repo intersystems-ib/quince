@@ -2,7 +2,7 @@ import { localize, tr, useLocale } from "./i18n";
 import StadiumImage from './StadiumImage';
 import MatchTicketing from './MatchTicketing';
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowRight } from 'lucide-react';
 import { api } from './api';
 import ClubCrest from './ClubCrest';
@@ -13,9 +13,10 @@ export default function MatchPreview({ match: m }: {
 }) {
     useLocale();
     const [group, setGroup] = useState<ComparisonGroup | 'ticketing'>('all');
+    const qc = useQueryClient(), [viewMode, setViewMode] = useState<'visualize' | 'result' | null>(m.viewMode ?? null);
     const q = useQuery({ queryKey: ['match-comparison', m.id], queryFn: () => api<MatchComparison>(`/matches/${m.id}/comparison`) });
     const comparison = q.data, home = group === 'ticketing' ? undefined : comparison?.home.groups[group], away = group === 'ticketing' ? undefined : comparison?.away.groups[group];
-    return <><Heading eyebrow={"PREVIA DEL PARTIDO"} title={"Comparativa de equipos."} description={`${m.homeName} frente a ${m.awayName}`} action={<Action path={`/matches/${m.id}/start`} className="orange" disabled={!comparison?.ready || q.isFetching}>{tr("Iniciar partido ")}<ArrowRight size={16}/></Action>}/>
+    return <><Heading eyebrow={"PREVIA DEL PARTIDO"} title={"Comparativa de equipos."} description={`${m.homeName} frente a ${m.awayName}`} action={<div className="prematch-start-controls"><div className="match-view-mode" role="radiogroup" aria-required="true" aria-label={tr('Modo del partido')}><button type="button" role="radio" aria-checked={viewMode === 'result'} onClick={() => setViewMode('result')}>{tr('Resultado')}</button><button type="button" role="radio" aria-checked={viewMode === 'visualize'} onClick={() => setViewMode('visualize')}>{tr('Visualizar')}</button></div><Action path={`/matches/${m.id}/start`} body={{ viewMode }} onSuccess={data => qc.setQueryData(['match', m.id], data)} errorResetKey={viewMode ?? 'unselected'} className="orange" disabled={!viewMode || !comparison?.ready || q.isFetching}>{tr("Iniciar partido ")}<ArrowRight size={16}/></Action></div>}/>
  <div className="competition-tabs prematch-tabs" role="tablist" aria-label={tr("Previa del partido")}>{localize(([['all', 'XV titular'], ['forwards', 'Delanteros'], ['backs', 'Tres cuartos'], ['ticketing', 'Campo y entradas']] as const).map(([id, label]) => <button id={`comparison-${id}`} key={id} role="tab" aria-selected={group === id} aria-controls="comparison-panel" onClick={() => setGroup(id)}>{localize(label)}</button>))}</div>
  {localize(group === 'ticketing' ? <section className="card prematch-ticketing" id="comparison-panel" role="tabpanel" aria-labelledby="comparison-ticketing"><StadiumImage venue={m.venue}/><div className="stadium-ticket-details"><h3>{tr("Entradas")}</h3><MatchTicketing key={`${m.id}-${m.ticketPrice}`} match={m}/></div></section> : q.isLoading ? <Loading /> : q.error ? <ErrorBox error={q.error}/> : comparison && home && away ? <>
  <div id="comparison-panel" role="tabpanel" aria-labelledby={`comparison-${group}`}>

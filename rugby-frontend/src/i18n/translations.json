@@ -5482,5 +5482,65 @@
   "Escuelas, otras categorías y estructura social": [
     "Rugby schools, other teams and club administration",
     "Écoles de rugby, autres catégories et structure associative"
+  ],
+  "Visualizar": [
+    "Watch",
+    "Visualiser"
+  ],
+  "Modo del partido": [
+    "Match mode",
+    "Mode du match"
+  ],
+  "Ir a descanso": [
+    "Go to half-time",
+    "Aller à la mi-temps"
+  ],
+  "Ir al final": [
+    "Go to fulltime",
+    "Aller au résultat final"
+  ],
+  "Simulando hasta el descanso…": [
+    "Simulating to half-time…",
+    "Simulation jusqu’à la mi-temps…"
+  ],
+  "Simulando hasta el final…": [
+    "Simulating to fulltime…",
+    "Simulation jusqu’à la fin…"
+  ],
+  "Revisa los cambios y la táctica antes de continuar.": [
+    "Review substitutions and tactics before continuing.",
+    "Vérifiez les changements et la tactique avant de continuer."
+  ],
+  "Descanso. Revisa los cambios y la táctica antes de ir al final.": [
+    "Half-time. Review substitutions and tactics before going to fulltime.",
+    "Mi-temps. Vérifiez les changements et la tactique avant de terminer le match."
+  ],
+  "En modo Resultado utiliza Ir a descanso o Ir al final.": [
+    "In Result mode, use Go to half-time or Go to fulltime.",
+    "En mode Résultat, utilisez Aller à la mi-temps ou Aller au résultat final."
+  ],
+  "Selecciona Resultado o Visualizar.": [
+    "Choose Result or Watch.",
+    "Choisissez Résultat ou Visualiser."
+  ],
+  "Este partido utiliza el modo Visualizar.": [
+    "This match uses Watch mode.",
+    "Ce match utilise le mode Visualiser."
+  ],
+  "Selecciona descanso o final del partido.": [
+    "Choose half-time or fulltime.",
+    "Choisissez la mi-temps ou la fin du match."
+  ],
+  "Inicia el partido desde la previa.": [
+    "Start the match from the preview.",
+    "Lancez le match depuis l’avant-match."
+  ],
+  "Debes llegar al descanso antes de ir al final.": [
+    "Reach half-time before going to fulltime.",
+    "Vous devez atteindre la mi-temps avant de terminer le match."
+  ],
+  "No se ha podido completar la parte del partido. Inténtalo de nuevo.": [
+    "This half could not be completed. Please try again.",
+    "Cette mi-temps n’a pas pu être terminée. Réessayez."
   ]
 }

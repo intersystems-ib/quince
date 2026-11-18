@@ -438,5 +438,25 @@
   "INBOX_INPUT": [
     "Check the selected notifications and read status.",
     "Vérifiez les notifications sélectionnées et leur état de lecture."
+  ],
+  "MATCH_VIEW_MODE": [
+    "Check the selected match mode.",
+    "Vérifiez le mode de match sélectionné."
+  ],
+  "MATCH_RESULT_TARGET": [
+    "Choose half-time or fulltime.",
+    "Choisissez la mi-temps ou la fin du match."
+  ],
+  "MATCH_NOT_STARTED": [
+    "Start the match from the preview.",
+    "Lancez le match depuis l’avant-match."
+  ],
+  "MATCH_HALFTIME_REQUIRED": [
+    "Reach half-time before going to fulltime.",
+    "Atteignez la mi-temps avant de terminer le match."
+  ],
+  "MATCH_RESULT_LIMIT": [
+    "The half could not be completed. Please retry.",
+    "La mi-temps n’a pas pu être terminée. Réessayez."
   ]
 }

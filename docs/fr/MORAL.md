@@ -10,4 +10,4 @@ Après quatorze jours sans jouer, un joueur perd un point par jour. Les minutes 
 
 Chaque jour de repos ou de récupération ajoute deux points de moral, jusqu'à 100 %, pour toutes les équipes et catégories. La perte pour inactivité se calcule séparément ; le gain net peut donc être d'un point. La trêve estivale n'accumule pas ces gains.
 
-Les pénalités hors poste sont temporaires : 3 points sur un poste secondaire, 8 dans la même ligne et 15 entre lignes. Revenir au poste naturel ou quitter le XV rétablit le moral précédent, sans cumul des pénalités. Les résultats affectent le moral de base.
+Les avants peuvent occuper tous les postes de 1 à 8 et les trois-quarts tous les postes de 9 à 15 sans perte de moral. Un changement entre lignes retire temporairement 15 points, ou 3 pour un poste secondaire. Revenir dans sa ligne ou quitter le XV rétablit le moral précédent, sans cumul des pénalités. Les résultats affectent le moral de base.

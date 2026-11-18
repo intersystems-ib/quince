@@ -3,6 +3,16 @@ Class Rugby.Test.Performance Extends %RegisteredObject
 ClassMethod Assert(ok As %Boolean, text As %String) { do ##class(Rugby.Test.Suite).Assert(ok,text) }
 ClassMethod Run()
 {
+    for natural=1:1:15 {
+        for position=1:1:15 {
+            set player={"naturalPosition":(natural),"position":(position),"secondary":[],"status":"field","morale":73},expected=$select((natural<=8)=(position<=8):73,1:58)
+            do ##class(Rugby.Simulation.Performance).ApplyMorale(player)
+            do ..Assert(player.morale=expected,"Every forward and back can switch within their unit without a morale deduction")
+        }
+    }
+    set legacy={"naturalPosition":2,"position":1,"secondary":[],"status":"field","morale":65,"positionMoralePenalty":8,"positionMoraleApplied":8}
+    do ##class(Rugby.Simulation.Performance).ApplyMorale(legacy)
+    do ..Assert((legacy.morale=73)&&(legacy.positionMoraleApplied=0),"An existing same-unit penalty is removed without changing base morale")
     set low={"position":1,"naturalPosition":10,"secondary":[],"status":"field","morale":5}
     do ##class(Rugby.Simulation.Performance).ApplyMorale(low)
     do ..Assert((low.morale=0)&&(low.positionMoraleApplied=5),"Low morale records only the actual position deduction")
@@ -27,7 +37,7 @@ ClassMethod Run()
     set p=m.homePlayers.%Get(3),original=p.attributes.%ToJSON(),natural=##class(Rugby.Simulation.Engine).Rating(p,"tackling"),p.naturalPosition=5
     do ..Assert(##class(Rugby.Simulation.Engine).Rating(p,"tackling")=natural,"Position does not directly alter effective skills")
     do ##class(Rugby.Simulation.Performance).AlignmentMorale(m.homePlayers)
-    do ..Assert((p.morale=62)&&(p.attributes.%ToJSON()=original),"Wrong slot lowers morale, preserving every raw attribute")
+    do ..Assert((p.morale=70)&&(p.attributes.%ToJSON()=original),"Changing position within the forwards preserves morale and every raw attribute")
     set morale=p.morale
     do ##class(Rugby.Simulation.Performance).AlignmentMorale(m.homePlayers)
     do ..Assert(p.morale=morale,"Morale penalty is not repeated each tick")

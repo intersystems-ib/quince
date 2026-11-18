@@ -37,7 +37,7 @@ export function selectedPlayerId(l:Lineup,pick:LineupSelection):string{
  return pick.kind==='starter'?l.slots[pick.index]?.playerId??'':l.bench[pick.index]??'';
 }
 export function positionPenalty(p:Player,position:number):number{
- return p.position===position?0:p.secondary.includes(position)?3:(p.position<=8)===(position<=8)?8:15;
+ return (p.position<=8)===(position<=8)?0:p.secondary.includes(position)?3:15;
 }
 export function lineupMorale(p:Player,position?:number):number{
  return Math.max(0,Math.min(100,p.morale-(position===undefined?0:positionPenalty(p,position))));
