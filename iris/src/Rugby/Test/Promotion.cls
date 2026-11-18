@@ -3,6 +3,8 @@ Class Rugby.Test.Promotion Extends %RegisteredObject
 ClassMethod Assert(ok As %Boolean, text As %String) { do ##class(Rugby.Test.Suite).Assert(ok,text) }
 ClassMethod Run()
 {
+    set funded=##class(Rugby.Service.Store).Get("Club","c1"),funded.salaryAnnualIncome=funded.%Get("salaryAnnualIncome",10000000)+1000000
+    do ##class(Rugby.Service.Store).Put("Club",funded)
     set p=##class(Rugby.Service.Store).Get("Player","c1-p24"),oldWage=p.weeklyWage,attributes=p.attributes.%ToJSON(),energy=p.energy,c=##class(Rugby.Service.Store).Get("Club","c1"),balance=c.balance,plan=##class(Rugby.Service.Store).Get("TrainingPlan","c1").%ToJSON(),count=##class(Rugby.Service.Store).All("Player","clubId","c1").%Size()
     set n=##class(Rugby.Service.Router).Resolve("POST","clubs","c1","promote",p.id,{"version":(p.version)},"test-promotion-open")
     do ..Assert((n.kind="promotion")&&(n.status="open")&&(n.signingFee=0)&&('n.%IsDefined("reservationWage")),"Public promotion starts a private salary negotiation without a fee")

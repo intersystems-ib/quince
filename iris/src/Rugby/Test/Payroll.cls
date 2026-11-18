@@ -10,7 +10,7 @@ ClassMethod Run()
         for j=0:1:all.%Size()-1 {
             set p=all.%Get(j)
             if p.category="senior" { set senior=senior+p.weeklyWage,lo=$select(p.weeklyWage<lo:p.weeklyWage,1:lo),hi=$select(p.weeklyWage>hi:p.weeklyWage,1:hi) } else { set academy=academy+p.weeklyWage }
-            do ..Assert((p.weeklyWage>0)&&(p.weeklyWage#100=0),"Salaries are positive whole euros")
+            do ..Assert((p.weeklyWage>0)&&(##class(Rugby.Service.MonthlyPayroll).Value(p)#100=0),"Monthly salaries are positive whole euros")
         }
         do ..Assert((hi>lo)&&(academy<(senior*.1)),"Salaries retain individual differences and low academy payroll")
         set worst=##class(Rugby.Service.Payroll).AnnualCap(c.id)+s.annualStaff+s.annualDirector+(##class(Rugby.Service.Payroll).TrainingCost(999999,c.id)*365)+s.annualRegistrations+1650000

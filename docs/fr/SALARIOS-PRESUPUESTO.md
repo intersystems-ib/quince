@@ -2,26 +2,14 @@
 
 [Español](../SALARIOS-PRESUPUESTO.md) · [English](../en/SALARIOS-PRESUPUESTO.md) · [Français](SALARIOS-PRESUPUESTO.md) · [Index](README.md)
 
-Les montants et négociations sont mensuels. La paie est versée en fin de mois, au prorata des jours.
+Les salaires et les offres sont mensuels. Les paies sont versées en fin de mois, au prorata des jours.
 
-| Groupe | Référence mensuelle |
-|---|---:|
-| Haut de tableau Honor | 850–2 400 € |
-| Milieu de tableau Honor | 800–2 000 € |
-| Bas de tableau Honor | 450–1 400 € |
-| Élite | 300–1 100 € |
-| Formation | 30–100 € |
+Les salaires initiaux des joueurs, des jeunes, des entraîneurs et du financier suivent les revenus annuels prévus : sponsors, aides, abonnements, concession du bar et billetterie. Environ 2 % restent disponibles après salaires, licences et déplacements. Les écarts individuels et les salaires réduits des jeunes sont conservés. L’ajustement unique concerne les parties existantes et nouvelles, sans réécrire les paiements ni dupliquer les contrats.
 
-Les salaires individuels dépendent du niveau et de la marge du club. Les budgets annuels de référence vont de 250 000 à 800 000 €. Le plafond ordinaire réserve 15 %, tient compte des employés, licences et déplacements, et autorise jusqu'à 65 % du budget pour les joueurs.
+Les offres et recrutements futurs utilisent l’échelle du club. Le plafond salarial des joueurs déduit le personnel, les licences et les déplacements des revenus de référence ; un remplaçant pour blessure peut porter les dépenses à 99,5 % de ces revenus. Les aides prévues utilisent une référence stable, indépendante de la masse salariale.
 
-Un remplaçant médical nécessaire peut porter ces limites à 90 % de dépenses totales et 70 % pour les joueurs, avec au moins 10 % de réserve. La règle s'applique à l'utilisateur et aux clubs automatiques.
+La trésorerie initiale couvre deux paies, les licences, deux mois de déplacements et une marge de 10 %, arrondie au millier d’euros supérieur. Elle concerne les nouvelles parties ou celles sans mouvement au jour initial. Les parties avancées conservent leur trésorerie et leur historique.
 
-La référence des salaires techniques représente jusqu'à 22,5 % du budget, pondérée par spécialité, qualité et capacité. L'entraînement n'ajoute aucun coût quotidien.
+Le joueur peut recruter du personnel sans plafond salarial. Les clubs automatiques vérifient leur marge. L’entraînement n’ajoute aucun coût quotidien.
 
-L'utilisateur peut recruter entraîneurs et directeur financier sans plafond salarial et assume le coût mensuel affiché. Les clubs automatiques vérifient toujours leur marge.
-
-Dans Finances, **Réinvestir l'excédent dans les recrutements** affecte de 0 à 90 % de l'excédent supplémentaire prévu à l'augmentation du plafond. Le calcul déduit la marge déjà incluse dans le plafond ordinaire, les salaires du personnel, licences, déplacements et primes versées. Les aides non accordées sont exclues. Le curseur affiche les augmentations mensuelle et annuelle et le résultat en cas d'utilisation totale ; au moins 10 % de l'excédent supplémentaire est conservé.
-
-**Enregistrer le plafond salarial** conserve le réglage sans déplacer d'argent. Revenus, dépenses actuelles et indemnité du nouveau contrat sont vérifiés à la signature. Avec une augmentation active, les remplaçants médicaux utilisent la même marge. Une prévision réduite peut limiter les nouveaux contrats sans modifier ceux déjà signés. Le pourcentage vaut pour la saison courante et revient à zéro la suivante.
-
-Une prolongation sans paiement supplémentaire maintenant ou réduisant le salaire mensuel est autorisée même au-delà du plafond. Les augmentations restent soumises aux contrôles habituels.
+**Réinvestir l’excédent dans les recrutements** affecte jusqu’à 90 % de la marge supplémentaire aux salaires. Les aides en attente n’augmentent pas ce plafond. Les prolongations sans prime à salaire égal ou inférieur restent possibles au-delà du plafond. Les évolutions de l’effectif ou du financement peuvent modifier les prévisions.

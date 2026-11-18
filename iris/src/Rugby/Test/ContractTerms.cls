@@ -3,6 +3,8 @@ Class Rugby.Test.ContractTerms Extends %RegisteredObject
 ClassMethod Assert(ok As %Boolean, text As %String) { do ##class(Rugby.Test.Suite).Assert(ok,text) }
 ClassMethod Run()
 {
+    set funded=##class(Rugby.Service.Store).Get("Club","c1"),funded.salaryAnnualIncome=funded.%Get("salaryAnnualIncome",10000000)+10000000
+    do ##class(Rugby.Service.Store).Put("Club",funded)
     do ..Assert((##class(Rugby.Service.ContractTerms).Preferred(24,"a")>=2)&&(##class(Rugby.Service.ContractTerms).Preferred(24,"a")<=3),"Young players prefer two or three years")
     do ..Assert((##class(Rugby.Service.ContractTerms).Preferred(25)=5)&&(##class(Rugby.Service.ContractTerms).Preferred(32)=5)&&(##class(Rugby.Service.ContractTerms).Preferred(33)=1),"Preference boundaries follow age")
     for age=22,28,35 {

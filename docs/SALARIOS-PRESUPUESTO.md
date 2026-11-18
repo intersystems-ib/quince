@@ -2,26 +2,14 @@
 
 [Español](SALARIOS-PRESUPUESTO.md) · [English](en/SALARIOS-PRESUPUESTO.md) · [Français](fr/SALARIOS-PRESUPUESTO.md) · [Índice](README.md)
 
-Importes y negociación mensuales; las nóminas se pagan al cerrar el mes, prorrateadas por días.
+Los salarios y las ofertas se expresan por mes. Las nóminas se pagan al cierre mensual, prorrateadas por días.
 
-| Grupo | Referencia mensual |
-|---|---:|
-| Honor alto | 850–2.400 € |
-| Honor medio | 800–2.000 € |
-| Honor bajo | 450–1.400 € |
-| Élite | 300–1.100 € |
-| Cantera | 30–100 € |
+La escala inicial de jugadores, cantera, técnicos y financiero se ajusta a los ingresos anuales previstos por patrocinios, ayudas, abonados, concesión del bar y taquilla. Se reserva aproximadamente un 2 % después de salarios, fichas y desplazamientos. Los salarios conservan sus diferencias individuales y la cantera cobra menos. La reducción se aplica una vez a partidas existentes y nuevas; no modifica pagos anteriores ni duplica contratos.
 
-Los salarios individuales dependen de calidad y margen del club. El presupuesto anual de referencia es de 250.000–800.000 €. El límite ordinario reserva el 15 % y contempla empleados, fichas y viajes; jugadores hasta el 65 % del presupuesto.
+Las referencias de futuras ofertas y contrataciones usan la escala del club. El límite ordinario de jugadores descuenta empleados, fichas y viajes de los ingresos de referencia; los recambios por lesión pueden usar hasta el 99,5 % de esos ingresos. Las subvenciones previstas parten de una referencia estable, independiente de la nómina contratada.
 
-Un recambio necesario por lesión puede elevar esos límites al 90 % de gasto total y 70 % en jugadores. Se conserva al menos un 10 % de reserva. La regla vale para usuario y rivales.
+El fondo inicial cubre dos mensualidades de nóminas, fichas, dos meses de viajes y un 10 % de colchón, redondeado a miles de euros. Se aplica a partidas nuevas o aún sin movimientos en su día inicial. Las partidas avanzadas conservan su tesorería e historial.
 
-La referencia para calcular salarios técnicos es de hasta el 22,5 % del presupuesto, ponderada por especialidad, calidad y capacidad. Entrenar no añade costes diarios.
+El usuario puede contratar empleados sin límite salarial. Los rivales comprueban su margen. Entrenar no genera costes adicionales diarios.
 
-El usuario puede contratar entrenadores y financiero sin límite salarial; asume el gasto mensual mostrado. Los equipos automáticos siguen comprobando su margen antes de contratar.
-
-En Finanzas, **Reinvertir superávit en fichajes** permite ampliar el límite destinando entre el 0% y el 90% del superávit adicional previsto. El cálculo descuenta el margen ya incluido en el límite ordinario, los salarios de empleados, fichas, viajes y primas abonadas. Las subvenciones pendientes de concesión quedan excluidas. La barra muestra la ampliación mensual y anual y el resultado previsto si se utiliza todo el límite; se conserva al menos el 10% del superávit adicional.
-
-El ajuste requiere **Guardar límite salarial**, no mueve dinero y se revisa con los ingresos y gastos vigentes al negociar fichajes. También se comprueba la prima del nuevo contrato. Con una ampliación activa, los recambios por lesión respetan el mismo margen financiero. Una menor previsión puede reducir el margen para nuevas contrataciones, sin alterar contratos firmados. El porcentaje corresponde a la temporada en curso y vuelve a cero al comenzar la siguiente.
-
-Las renovaciones sin pagos adicionales que mantienen o reducen el salario mensual se permiten aunque el club ya supere el límite. Las subidas siguen sujetas a la validación salarial.
+**Reinvertir superávit en fichajes** permite dedicar hasta el 90 % del margen adicional a salarios. Las subvenciones pendientes no amplían ese límite. Las renovaciones sin prima que mantienen o reducen el salario se permiten aunque el club supere el límite. Los cambios posteriores de plantilla o financiación pueden alterar la previsión.

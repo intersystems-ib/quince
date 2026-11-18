@@ -1,6 +1,6 @@
 Class Rugby.Service.FinancialPlanning Extends %RegisteredObject
 {
-Parameter VERSION = "2.1.0";
+Parameter VERSION = "2.2.0";
 ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject) As %DynamicObject
 {
     set payroll=##class(Rugby.Service.Payroll).Summary(c.id,0),managed=o.director.%Get("id")'="",quality=o.director.%Get("quality",35),success=##class(Rugby.Service.Finance).Success(c),agreements=##class(Rugby.Service.Store).All("FinancialAgreement","clubId",c.id),slots={},private=0,bar=0
@@ -16,7 +16,8 @@ ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObje
     set price=s.%Get("seasonTicketPrice",15000),members=s.%Get("members",0),campaign=s.%Get("campaignIncome",0)
     if ('s.%Get("campaignComplete",0))&&managed { set members=+$justify(##class(Rugby.Service.Finance).Budget(c)*.125*(.8+(quality*.004))/price,0,0),campaign=members*price }
     set ticketPlan=..TicketForecast(c,s,members),tickets=ticketPlan.total
-    set costs=payroll.annualProjectedCosts,targetFactor=.98+(quality*.0005),other=private+bar+campaign+tickets,needed=+$justify((costs*targetFactor)-other,0,0),unsubsidizedGap=$select(needed>0:needed,1:0),needed=unsubsidizedGap\2,grants=0
+    // Aid uses a stable operating reference, so reducing wages cannot erase its forecast.
+    set costs=payroll.annualProjectedCosts,fundingReference=##class(Rugby.Service.Finance).Budget(c)*.85,targetFactor=.98+(quality*.0005),other=private+bar+campaign+tickets,needed=+$justify((fundingReference*targetFactor)-other,0,0),unsubsidizedGap=$select(needed>0:needed,1:0),needed=unsubsidizedGap\2,grants=0
     for i=0:1:s.grants.%Size()-1 { set grants=grants+s.grants.%Get(i).amount }
     if ('s.%Get("grantsComplete",0))&&managed set grants=needed
     set income=other+grants

@@ -1,27 +1,15 @@
-# Wages and budget
+# Salaries and budgets
 
 [Español](../SALARIOS-PRESUPUESTO.md) · [English](SALARIOS-PRESUPUESTO.md) · [Français](../fr/SALARIOS-PRESUPUESTO.md) · [Index](README.md)
 
-Amounts and negotiations are monthly. Payroll is paid at month-end, prorated by days.
+Salaries and offers are monthly. Payroll is paid at month end and prorated by days.
 
-| Group | Monthly reference |
-|---|---:|
-| Top Honor | €850–2,400 |
-| Mid-table Honor | €800–2,000 |
-| Lower Honor | €450–1,400 |
-| Élite | €300–1,100 |
-| Academy | €30–100 |
+Initial player, academy, coaching and financial director wages follow projected annual sponsorship, grants, season tickets, bar concession and gate receipts. Around 2% remains after payroll, registration and travel. Individual salary differences and lower academy wages are retained. Existing and new saves receive a one-time adjustment without rewriting previous payments or duplicating contracts.
 
-Individual wages depend on quality and club headroom. Annual reference budgets range from €250,000 to €800,000. The ordinary wage limit reserves 15%, accounts for employees, registrations and travel, and allows players up to 65% of budget.
+Future offers and hiring use the club scale. The ordinary player wage limit deducts staff, registration and travel from reference income; injury cover can use up to 99.5% of that income. Projected grants use a stable funding reference independent of contracted payroll.
 
-Necessary injury cover can increase those limits to 90% total expenditure and 70% player expenditure, retaining at least a 10% reserve. The rule applies to the user and automatic clubs.
+Opening cash covers two payrolls, registrations, two months of travel and a 10% buffer, rounded up to thousands of euros. This applies to new saves or untouched opening-day saves. Advanced saves retain their cash and ledger.
 
-Coaching salary references use up to 22.5% of budget, weighted by specialism, quality and ability. Training adds no daily costs.
+Human managers can hire employees without a salary cap. AI clubs check affordability. Training has no additional daily charge.
 
-The user may hire coaches and a finance director without a wage cap and accepts the displayed monthly cost. Automatic clubs still check their headroom.
-
-In Finances, **Reinvest surplus in signings** allocates 0–90% of projected additional surplus to expand the limit. The calculation deducts margin already included in the ordinary ceiling, staff wages, registrations, travel and paid signing fees. Unawarded grants are excluded. The slider shows monthly and annual increases and the result at full utilisation; at least 10% of additional surplus is retained.
-
-**Save wage limit** persists the setting without moving cash. Current income, expenses and the new contract's fee are checked when signing. With an active increase, injury cover uses the same financial margin. Lower forecasts can reduce headroom for new contracts without altering signed ones. The percentage applies to the current season and resets to zero next season.
-
-Renewals without extra payments that maintain or reduce monthly wages are allowed even if the club is already above its limit. Wage increases still require the normal checks.
+**Reinvest surplus in transfers** allocates up to 90% of additional headroom to wages. Pending grants do not increase that limit. Fee-free renewals at the same or a lower wage remain possible over the cap. Subsequent squad or funding changes may alter the forecast.
