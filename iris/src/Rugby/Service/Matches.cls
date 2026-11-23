@@ -23,7 +23,7 @@ ClassMethod Create(b As %DynamicObject, key As %String) As %DynamicObject
     do ##class(Rugby.Service.Rivals).EnsureLineup(rival,club.day)
     set m={"id":(id),"clubId":(##class(Rugby.Service.Store).ManagedClub()),"fixtureId":(f.id),"homeId":(f.homeId),"awayId":(f.awayId),"homeName":(home.name),"awayName":(away.name),"homeColor":(home.color),"awayColor":(away.color),"lineupId":(lineup.id),"status":"scheduled","period":1,"clock":0,"speed":20,"credit":0,"homeScore":0,"awayScore":0,"possession":"home","x":50,"y":35,"phase":"restart","seed":(seed),"rng":(seed),"engineVersion":(##class(Rugby.Simulation.Engine).#VERSION),"sequence":0,"commandSequence":0,"settled":false,"homeSubs":0,"awaySubs":0,"homePlayers":[],"awayPlayers":[],"homeStats":{},"awayStats":{},"homeTactic":{},"awayTactic":{}}
     do ##class(Rugby.Service.Kits).Apply(m,home,away)
-    set m.groupId=f.%Get("groupId"),m.competitionType=f.%Get("competitionType"),m.competitionKey=f.%Get("competitionKey"),m.stage=f.%Get("stage","friendly"),m.round=f.%Get("round",0),m.date=f.%Get("date",club.date)
+    set m.divisionId=f.%Get("divisionId",416),m.groupId=f.%Get("groupId"),m.competitionType=f.%Get("competitionType"),m.competitionKey=f.%Get("competitionKey"),m.stage=f.%Get("stage","friendly"),m.round=f.%Get("round",0),m.date=f.%Get("date",club.date)
     set m.ticketPrice=##class(Rugby.Service.TicketPricing).Recommend(m).price,m.ticketPriceSource="recommended"
     do ##class(Rugby.Service.Store).Put("Match",m)
     set f.matchId=id
@@ -117,6 +117,8 @@ ClassMethod CheckCommand(m As %DynamicObject, b As %DynamicObject, side As %Stri
     if out.%Get("substituted",0) quit "El jugador ya ha sido sustituido."
     if in.status'="bench" quit "Solo puede entrar un suplente que no haya participado."
     if $isobject(in.%Get("injury")) quit "El suplente está lesionado."
+    if in.%Get("substituted",0)||(in.%Get("redCards",0)>0)||(in.%Get("sinBinUntil",0)>m.clock) quit "El suplente no está disponible."
+    if in.%IsDefined("available") { if 'in.available quit "El suplente no está disponible." }
     quit ""
 }
 ClassMethod Command(id As %String, b As %DynamicObject, key As %String, side As %String = "", source As %String = "user", current = "") As %DynamicObject
@@ -159,7 +161,12 @@ ClassMethod Commands(m As %DynamicObject, speedOnly As %Boolean = 0)
             set text=$select(c.type="speed":$select(b.speed=0:"Partido en pausa.",1:"Velocidad x"_b.speed),c.type="tactic":"Cambio táctico confirmado.",1:"Sustitución confirmada.")
             if (c.type="substitution")&&b.%IsDefined("changes") set text=$select(b.changes.%Size()=1:"Sustitución confirmada.",1:b.changes.%Size()_" sustituciones confirmadas.")
             if (c.type="tactic")&&(c.source="ai")&&$isobject(b.%Get("assessment")) set text="El rival ajusta su táctica. "_b.assessment.reason
-            do ##class(Rugby.Simulation.Engine).Event(m,"command",c.side,text,0,m.x,m.y,"",b.%Get("assessment"))
+            if (c.type="substitution")&&(c.source="ai") {
+                for change=0:1:changes.%Size()-1 {
+                    set pair=changes.%Get(change),message=$select(pair.%Get("reason")="injury":"Cambio del rival por lesión: ",1:"Cambio del rival por cansancio: ")_pair.%Get("inName")_" entra por "_pair.%Get("outName")_"."
+                    do ##class(Rugby.Simulation.Engine).Event(m,"command",c.side,message,0,m.x,m.y,pair.inId)
+                }
+            } else { do ##class(Rugby.Simulation.Engine).Event(m,"command",c.side,text,0,m.x,m.y,"",b.%Get("assessment")) }
         }
         do ##class(Rugby.Service.Store).Put("MatchCommand",c)
     }
@@ -180,25 +187,12 @@ ClassMethod Substitute(m As %DynamicObject, side As %String, pair As %DynamicObj
 }
 ClassMethod AI(m As %DynamicObject)
 {
-    set side=$select(m.homeId=##class(Rugby.Service.Store).ManagedClub():"away",1:"home"),players=m.%Get(side_"Players")
-    if m.%Get(side_"Subs")<8 {
-        set found=0
-        for i=0:1:players.%Size()-1 {
-            set p=players.%Get(i)
-            set injured=(p.status="injured")&&('p.%Get("substituted",0)),tired=(p.status="field")&&(p.energy<=66)&&(m.clock>=3000)
-            if ('injured)&&('tired) continue
-            for j=0:1:players.%Size()-1 {
-                set q=players.%Get(j)
-                set compatible=(p.position<=8)=(q.naturalPosition<=8)
-                if (q.status="bench")&&compatible {
-                    do ..Command(m.id,{"type":"substitution","outId":(p.playerId),"inId":(q.playerId)},"sub-"_m.clock,side,"ai",m)
-                    set found=1 quit
-                }
-            }
-            quit:found
-        }
+    for side="home","away" {
+        if m.%Get(side_"Id")=##class(Rugby.Service.Store).ManagedClub() continue
+        set changes=##class(Rugby.Simulation.Substitutions).Plan(m,side)
+        if changes.%Size()>0 { set command=..Command(m.id,{"type":"substitution","changes":(changes)},"sub-"_side_"-"_m.clock,side,"ai",m) }
+        do ##class(Rugby.Simulation.Tactics).Adapt(m,side)
     }
-    do ##class(Rugby.Simulation.Tactics).Adapt(m,side)
 }
 ClassMethod Settle(m As %DynamicObject)
 {
@@ -231,7 +225,7 @@ ClassMethod Settle(m As %DynamicObject)
 }
 ClassMethod PlayoffWinner(m As %DynamicObject)
 {
-    if ('$listfind($listbuild("quarterfinal","semifinal","final"),m.%Get("stage")))||(m.homeScore'=m.awayScore) quit
+    if ('$listfind($listbuild("quarterfinal","semifinal","final","access"),m.%Get("stage")))||(m.homeScore'=m.awayScore) quit
     set home=0,away=0
     for n=1:1:5 {
         if ##class(Rugby.Simulation.Engine).Random(m)<##class(Rugby.Simulation.Engine).Clamp(.45+(##class(Rugby.Simulation.Engine).Strength(m.homePlayers,"kicking")/200)) set home=home+1

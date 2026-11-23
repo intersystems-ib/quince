@@ -44,7 +44,7 @@ ClassMethod Create(b As %DynamicObject, key As %String) As %DynamicObject
         quit ##class(%DynamicObject).%FromJSON(^RugbyGames(id))
     }
     set %RugbyGame="template",%RugbyManagedClub="c1",club=##class(Rugby.Service.Store).Get("Club",b.%Get("clubId")),name=$zstrip(b.%Get("name"),"<>W")
-    if (club.competitionId'=b.%Get("divisionId"))||('$listfind($listbuild(416,417),b.%Get("divisionId"))) do ##class(Rugby.Service.Store).Fail(422,"DIVISION_CLUB","Elige un club de la división seleccionada.")
+    if (club.competitionId'=b.%Get("divisionId"))||('$listfind($listbuild(416,417,1401,1402),b.%Get("divisionId"))) do ##class(Rugby.Service.Store).Fail(422,"DIVISION_CLUB","Elige un club de la división seleccionada.")
     if ($length(name)<1)||($length(name)>60) do ##class(Rugby.Service.Store).Fail(422,"GAME_NAME","Da un nombre a la partida, de hasta 60 caracteres.")
     set id=$system.Util.CreateGUID(),%RugbyGame=id,%RugbyManagedClub=club.id
     do ##class(Rugby.Seed.Initial).Run()
@@ -54,6 +54,7 @@ ClassMethod Create(b As %DynamicObject, key As %String) As %DynamicObject
     set training=##class(Rugby.Service.Store).Get("TrainingPlan",club.id),weekly=##class(Rugby.Service.WeeklyTraining).Save(club.id,{"version":(training.version),"weekly":(##class(Rugby.Service.WeeklyTraining).Defaults())})
     set invitation=##class(Rugby.Service.FriendlyRequests).Tick(),progress=##class(Rugby.Service.AttributeProgress).Initialize()
     set staffMarket=##class(Rugby.Service.StaffMarket).Initialize(),initialContracts=##class(Rugby.Seed.Contracts).Initialize(),foreignMarket=##class(Rugby.Service.ForeignMarket).Initialize()
+    set frenchSquads=##class(Rugby.Service.FrenchSquads).Apply(),spanishEvidence=##class(Rugby.Service.SpanishMatchEvidence).Apply(),automaticLineups=##class(Rugby.Service.AutomaticLineup).Initialize()
     do ##class(Rugby.Service.Admin).Apply()
     do ##class(Rugby.Service.ClubRevenue).Initialize()
     set club=##class(Rugby.Service.Store).Get("Club",club.id),game.clubName=club.name

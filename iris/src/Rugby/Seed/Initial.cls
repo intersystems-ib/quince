@@ -94,6 +94,7 @@ ClassMethod Run()
         }
         do ##class(Rugby.Seed.Development).Run()
         do ##class(Rugby.Seed.Development).Profiles()
+        set france=##class(Rugby.Seed.France).Run(),frenchNames=##class(Rugby.Seed.FrenchNames).Apply()
         do ##class(Rugby.Seed.Competition).Run()
         do ##class(Rugby.Seed.Academy).Run()
         do ##class(Rugby.Seed.RealPlayers).Apply()

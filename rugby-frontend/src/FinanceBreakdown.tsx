@@ -3,7 +3,7 @@ import { getLocale, tr, useLocale } from './i18n';
 import type { FinancialView } from './types';
 
 export const financeMoney = (value: number) => new Intl.NumberFormat(getLocale(), { style: 'currency', currency: 'EUR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value / 100);
-const labels: Record<string, string> = { sponsorship: 'Patrocinios', grant: 'Subvenciones', memberships: 'Abonados', tickets: 'Taquilla', socialMembers: 'Socios', otherIncome: 'Otros ingresos', communityCosts: 'Escuelas y otras categorías', barConcession: 'Concesión de bar', bar: 'Bar anterior', barCosts: 'Costes de bar anteriores', financeWages: 'Financiero', registration: 'Fichas y participación', travel: 'Desplazamientos', training: 'Entrenamientos', wages: 'Plantilla', staffWages: 'Cuerpo técnico', transfer: 'Traspasos', match: 'Partidos anteriores' };
+const labels: Record<string, string> = { sponsorship: 'Patrocinios', grant: 'Patrocinios institucionales', memberships: 'Abonados', tickets: 'Taquilla', socialMembers: 'Socios', otherIncome: 'Otros ingresos', communityCosts: 'Escuelas y otras categorías', barConcession: 'Concesión de bar', bar: 'Bar anterior', barCosts: 'Costes de bar anteriores', financeWages: 'Financiero', registration: 'Fichas y participación', travel: 'Desplazamientos', training: 'Entrenamientos', wages: 'Plantilla', staffWages: 'Cuerpo técnico', transfer: 'Traspasos', match: 'Partidos anteriores' };
 
 function forecast(f: FinancialView) {
     const income = f.financialPlan?.projectedIncome ?? f.fundingReference;

@@ -38,7 +38,12 @@ ClassMethod Create(day As %Integer) As %DynamicObject
     if pos<=3 { do secondary.%Push($select(pos=1:3,1:1)) } else { do secondary.%Push($select(pos=8:6,pos<=8:8,pos=15:14,1:15)) }
     set p={"id":(id),"clubId":"","name":(name),"nationalityCode":(code),"nationality":(nationality),"age":(age),"birthDay":(day-(age*365)-(h#365)),"category":"senior","position":(pos),"secondary":(secondary),"energy":100,"morale":100,"available":true,"recoveryDay":0,"weeklyWage":100,"signingFee":(200000+((quality-50)*25000)),"contractStatus":"free","attributes":(attrs),"marketCreatedDay":(day),"foreignMarketVersion":(..#VERSION),"transferQualityVersion":(##class(Rugby.Service.TransferPool).#VERSION)}
     if ##class(Rugby.Service.TalentScale).Factor()<1 do ##class(Rugby.Service.TalentScale).Player(p)
-    set p.weeklyWage=##class(Rugby.Service.Payroll).Reference(p,"c1")
+    set p.marketDivisionId=$select(serial#4=0:1401,serial#4=1:1402,serial#4=2:416,1:417)
+    if ##class(Rugby.Service.Leagues).French(p.marketDivisionId)&&$isobject(##class(Rugby.Service.Store).Get("Club","fr-toulouse",0)) {
+        set p.attributes=##class(Rugby.Seed.France).Attributes($select(p.marketDivisionId=1401:78,1:65)+(h#8),pos,h,{}),p.talentScaleVersion=##class(Rugby.Service.TalentScale).#VERSION
+        set referenceClub=$select(p.marketDivisionId=1401:"fr-toulouse",1:"fr-agen")
+    } else { set referenceClub="c1" }
+    set p.weeklyWage=##class(Rugby.Service.Payroll).Reference(p,referenceClub)
     do ##class(Rugby.Service.Store).Put("Player",p)
     quit p
 }
@@ -73,7 +78,9 @@ ClassMethod Initialize(day As %Integer = "") As %DynamicObject
     set game=##class(Rugby.Service.Store).Game(),report={"gameId":(game),"version":(..#VERSION),"added":[]}
     if ..Active() quit report
     if day="" set day=##class(Rugby.Service.Store).Get("Club",##class(Rugby.Service.Store).ManagedClub()).day
-    set ids=##class(Rugby.Service.TransferPool).Select(day),^RugbyWorld(game,"transferPoolIds")=ids.%ToJSON(),^RugbyWorld(game,"foreignMarketVersion")=..#VERSION,^RugbyWorld(game,"foreignMarketLastDay")=day
+    set ids=##class(Rugby.Service.TransferPool).Select(day)
+    if $isobject(##class(Rugby.Service.Store).Get("Club","fr-toulouse",0)) set ids=[]
+    set ^RugbyWorld(game,"transferPoolIds")=ids.%ToJSON(),^RugbyWorld(game,"foreignMarketVersion")=..#VERSION,^RugbyWorld(game,"foreignMarketLastDay")=day
     set report.added=..Fill(day),report.nextDay=day+7
     quit report
 }

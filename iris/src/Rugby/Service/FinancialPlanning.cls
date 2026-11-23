@@ -4,27 +4,30 @@ Parameter VERSION = "3.0.0";
 ClassMethod Forecast(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject, includeCommunity As %Boolean = 1) As %DynamicObject
 {
     set payroll=##class(Rugby.Service.Payroll).Summary(c.id,0),managed=o.director.%Get("id")'="",quality=o.director.%Get("quality",35),success=##class(Rugby.Service.Finance).Success(c),agreements=##class(Rugby.Service.Store).All("FinancialAgreement","clubId",c.id),slots={},private=0,bar=0
+    set funding=managed&&(('##class(Rugby.Service.Leagues).French(c.competitionId))||##class(Rugby.Service.FrenchFinanceBalance).FundingWindow(c,s))
     for i=0:1:agreements.%Size()-1 { set a=agreements.%Get(i) if (a.startYear<=s.year)&&(a.endYear>=s.year)&&(a.slot>=1)&&(a.slot<=7) do slots.%Set(a.slot,a.annualAmount) }
     for slot=1:1:7 {
         set amount=slots.%Get(slot,0)
-        if (amount=0)&&managed {
+        if (amount=0)&&funding {
             set best=-1
             for option=1:1:2 { set terms=##class(Rugby.Service.Finance).OfferTerms(c,s,o,slot,option,success),score=terms.annualAmount*(1+((terms.years-1)*.015)) if score>best set best=score,amount=terms.annualAmount }
         }
         if slot=7 { set bar=amount } else { set private=private+amount }
     }
     set price=s.%Get("seasonTicketPrice",15000),members=s.%Get("members",0),campaign=s.%Get("campaignIncome",0)
-    if ('s.%Get("campaignComplete",0))&&managed { set members=+$justify(##class(Rugby.Service.Finance).Budget(c)*.125*(.8+(quality*.004))/price,0,0),campaign=members*price }
+    if ('s.%Get("campaignComplete",0))&&funding { set members=+$justify(##class(Rugby.Service.Finance).Budget(c)*.125*(.8+(quality*.004))/price,0,0),campaign=members*price }
     set ticketPlan=..TicketForecast(c,s,members),tickets=ticketPlan.total
     // Aid uses a stable operating reference, so reducing wages cannot erase its forecast.
     set costs=payroll.annualProjectedCosts,fundingReference=##class(Rugby.Service.Finance).Budget(c)*.85,targetFactor=.98+(quality*.0005),other=private+bar+campaign+tickets,needed=+$justify((fundingReference*targetFactor)-other,0,0),unsubsidizedGap=$select(needed>0:needed,1:0),needed=unsubsidizedGap\2,grants=0
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) set needed=##class(Rugby.Service.FrenchFunding).GrantTotal(c,s.year,quality,success)
+    if ##class(Rugby.Service.Leagues).French(c.competitionId)&&('##class(Rugby.Service.FrenchFinanceBalance).FundingWindow(c,s)) set needed=0
     for i=0:1:s.grants.%Size()-1 { set grants=grants+s.grants.%Get(i).amount }
-    if ('s.%Get("grantsComplete",0))&&managed set grants=needed
+    if ('s.%Get("grantsComplete",0))&&funding set grants=needed
     set income=other+grants,costs=costs-payroll.%Get("annualCommunityCosts",0),community={}
     if includeCommunity {
         set community=##class(Rugby.Service.ClubRevenue).Plan(c,s,o,costs,income),income=income+community.plannedMembersIncome+community.plannedOtherIncome,costs=costs+community.plannedCosts
     }
-    quit {"modelVersion":(..#VERSION),"projectedCosts":(costs),"projectedIncome":(income),"projectedMargin":(income-costs),"marginPercent":($select(costs>0:(income-costs)*100/costs,1:0)),"targetMarginPercent":2,"privateSponsors":(private),"barConcession":(bar),"memberships":(campaign),"tickets":(tickets),"ticketForecast":(ticketPlan),"community":(community),"publicGrants":(grants),"requiredGrants":(needed),"unsubsidizedGap":(unsubsidizedGap),"grantFactor":0.5,"directorQuality":(quality),"provisional":('s.%Get("grantsComplete",0))}
+    quit {"modelVersion":(..#VERSION),"projectedCosts":(costs),"projectedIncome":(income),"projectedMargin":(income-costs),"marginPercent":($select(costs>0:(income-costs)*100/costs,1:0)),"targetMarginPercent":($select(##class(Rugby.Service.Leagues).French(c.competitionId):community.%Get("targetOperatingMarginPercent",##class(Rugby.Service.FrenchFinanceBalance).TargetMargin(c,s,o)*100),1:2)),"privateSponsors":(private),"barConcession":(bar),"memberships":(campaign),"tickets":(tickets),"ticketForecast":(ticketPlan),"community":(community),"publicGrants":(grants),"requiredGrants":(needed),"unsubsidizedGap":(unsubsidizedGap),"grantFactor":($select(##class(Rugby.Service.Leagues).French(c.competitionId):1,1:.5)),"directorQuality":(quality),"provisional":('s.%Get("grantsComplete",0))}
 }
 ClassMethod TicketForecast(c As %DynamicObject, s As %DynamicObject, members As %Integer) As %DynamicObject
 {
@@ -36,6 +39,7 @@ ClassMethod TicketForecast(c As %DynamicObject, s As %DynamicObject, members As 
             if (f.%Get("status")="finished")||(f.%Get("status")="cancelled") continue
             if (f.%Get("homeId")="")||(f.%Get("awayId")="")||(f.%Get("date")="") continue
             if ##class(Rugby.Service.Competition).Year(f.date)'=s.year continue
+            if ##class(Rugby.Service.Leagues).French(c.competitionId)&&(f.%Get("day",c.day)<c.%Get("startDay",c.day)) continue
             set friendly=f.%Get("stage")="friendly",home=f.homeId=c.id
             if ('home)&&(('friendly)||(f.awayId'=c.id)) continue
             set ticketPrice=-1

@@ -1,6 +1,6 @@
 Class Rugby.Service.StaffMarket Extends %RegisteredObject
 {
-Parameter VERSION = "1.0.0";
+Parameter VERSION = "2.0.0";
 ClassMethod Remove(p As %DynamicObject) As %Boolean
 {
     set game=##class(Rugby.Service.Store).Game(),staff=##class(Rugby.Service.Store).All("TechnicalStaff")
@@ -20,12 +20,13 @@ ClassMethod Remove(p As %DynamicObject) As %Boolean
     kill ^RugbyWorld(game,"catalog","Coach",p.id),^RugbyWorld(game,"indexed","Coach",p.id)
     quit 1
 }
-ClassMethod Ensure(role As %String = "") As %DynamicObject
+ClassMethod Ensure(role As %String = "", country As %String = "ES") As %DynamicObject
 {
     set report={"created":[],"removed":[]},roles=##class(Rugby.Service.Staff).Roles(),free=##class(Rugby.Service.Store).All("Coach","clubId",""),used={},kept={},contracts=##class(Rugby.Service.Store).All("StaffContract")
     for i=0:1:contracts.%Size()-1 { set c=contracts.%Get(i) if c.%Get("kind","hire")="hire" do used.%Set(c.%Get("coachId"),1) }
     for i=0:1:free.%Size()-1 {
         set p=free.%Get(i)
+        if p.%Get("marketCountry","ES")'=country continue
         if (role'="")&&(p.role'=role) continue
         if used.%IsDefined(p.id)||($piece(p.id,"-",2)="coach")||(p.status="dismissed") {
             if ..Remove(p) do report.removed.%Push({"id":(p.id),"name":(p.name),"role":(p.role)})
@@ -41,13 +42,14 @@ ClassMethod Ensure(role As %String = "") As %DynamicObject
             set quality=$order(ordered(r.id,band,"")),id=""
             if quality'="" set id=$order(ordered(r.id,band,quality,""))
             if id'="" { do kept.%Set(id,1) continue }
-            set game=##class(Rugby.Service.Store).Game(),serial=$get(^RugbyWorld(game,"ids","StaffMarket"))+1,^RugbyWorld(game,"ids","StaffMarket")=serial,id="market-"_r.id_"-new-"_serial,quality=$piece("40,65,90",",",band)+(##class(Rugby.Service.Rivals).Hash(id,17341)#11)-5
-            set p={"id":(id),"clubId":"","name":(##class(Rugby.Seed.StaffNames).Generate(id)),"generatedNameVersion":"1.0.0","role":(r.id),"quality":(quality),"weeklyWage":(##class(Rugby.Service.Staff).Salary(r.id,quality)),"effectiveness":(##class(Rugby.Service.Staff).Multiplier(quality)),"status":"available"}
+            set game=##class(Rugby.Service.Store).Game(),serial=$get(^RugbyWorld(game,"ids","StaffMarket"))+1,^RugbyWorld(game,"ids","StaffMarket")=serial,id="market-"_r.id_"-"_country_"-new-"_serial,quality=$piece("40,65,90",",",band)+(##class(Rugby.Service.Rivals).Hash(id,17341)#11)-5
+            set p={"id":(id),"clubId":"","marketCountry":(country),"name":(##class(Rugby.Seed.StaffNames).Generate(id,0,country)),"generatedNameVersion":"1.0.0","role":(r.id),"quality":(quality),"weeklyWage":(##class(Rugby.Service.Staff).Salary(r.id,quality)),"effectiveness":(##class(Rugby.Service.Staff).Multiplier(quality)),"status":"available"}
             do ##class(Rugby.Service.Store).Put("Coach",p),kept.%Set(id,1),report.created.%Push({"id":(id),"name":(p.name),"role":(r.id)})
         }
     }
     for i=0:1:free.%Size()-1 {
         set p=free.%Get(i)
+        if p.%Get("marketCountry","ES")'=country continue
         if (role'="")&&(p.role'=role) continue
         if kept.%IsDefined(p.id) continue
         if '$isobject(##class(Rugby.Service.Store).Get("Coach",p.id,0)) continue
@@ -59,7 +61,7 @@ ClassMethod Initialize() As %DynamicObject
 {
     set game=##class(Rugby.Service.Store).Game()
     if $get(^RugbyWorld(game,"staffMarketVersion"))=..#VERSION quit {"gameId":(game),"created":[],"removed":[]}
-    set report=..Ensure(),report.gameId=game,^RugbyWorld(game,"staffMarketVersion")=..#VERSION
+    set adopted=##class(Rugby.Service.PersonnelMarkets).Initialize(),report=..Ensure("","ES"),report.france=..Ensure("","FR"),report.countryAdoption=adopted,report.gameId=game,^RugbyWorld(game,"staffMarketVersion")=..#VERSION
     quit report
 }
 ClassMethod InitializeAll() As %DynamicArray

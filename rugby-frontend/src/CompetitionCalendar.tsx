@@ -5,7 +5,7 @@ import { api } from './api';
 import { ErrorBox, Loading } from './components';
 import { FixtureCard } from './CompetitionFixtures';
 import type { Club, Competition, CupCompetition, Fixture } from './types';
-const stageNames: Record<string, string> = { regular: 'Liga regular', 'cup-group': 'Fase de grupos', quarterfinal: 'Cuartos de final', semifinal: 'Semifinales', final: 'Final' };
+const stageNames: Record<string, string> = { regular: 'Liga regular', 'cup-group': 'Fase de grupos', quarterfinal: 'Cuartos de final', semifinal: 'Semifinales', final: 'Final', access: 'Access Match' };
 export default function CompetitionCalendar({ id, club }: {
     id: string;
     club: Club;
@@ -17,7 +17,7 @@ export default function CompetitionCalendar({ id, club }: {
         return <Loading />;
     if (q.error)
         return <ErrorBox error={q.error}/>;
-    const c = q.data!, fixtures = [...c.regularFixtures, ...('quarterfinals' in c ? c.quarterfinals : []), ...c.semifinals, ...(c.final ? [c.final] : [])].sort((a, b) => a.day - b.day || a.id.localeCompare(b.id));
+    const c = q.data!, fixtures = [...c.regularFixtures, ...(c.quarterfinals ?? []), ...c.semifinals, ...(c.final ? [c.final] : []), ...(c.accessMatch ? [c.accessMatch] : [])].sort((a, b) => a.day - b.day || a.id.localeCompare(b.id));
     const names = Object.fromEntries(c.standings.map(r => [r.clubId, r.shortName || r.name]));
     const key = (f: Fixture) => `${f.stage}-${f.round ?? 0}`;
     const groups = [...new Map(fixtures.map(f => [key(f), `${stageNames[f.stage ?? 'regular'] ?? f.stage}${['regular', 'cup-group'].includes(f.stage ?? 'regular') ? ` · Jornada ${f.round}` : ''}`])).entries()];

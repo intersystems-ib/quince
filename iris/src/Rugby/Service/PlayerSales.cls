@@ -10,7 +10,7 @@ ClassMethod Listed(p As %DynamicObject) As %Boolean
 }
 ClassMethod CanBuy(p As %DynamicObject, buyer As %String) As %Boolean
 {
-    quit (p.clubId'=buyer)&&((p.clubId="")||..Listed(p))&&('p.%Get("retirementAnnounced",0))&&(p.%Get("contractStatus")'="retired")
+    quit (p.clubId'=buyer)&&((p.clubId="")||..Listed(p))&&('p.%Get("rosterArchived",0))&&('p.%Get("retirementAnnounced",0))&&(p.%Get("contractStatus")'="retired")
 }
 ClassMethod Fee(p As %DynamicObject) As %Integer { quit $select(p.clubId="":0,1:p.%Get("transferFee",0)) }
 ClassMethod Cost(p As %DynamicObject) As %Integer { quit $select(p.clubId="":p.%Get("signingFee",0),1:..Fee(p)) }

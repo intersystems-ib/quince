@@ -5642,5 +5642,237 @@
   "Traspasos": [
     "Transfers",
     "Transferts"
+  ],
+  "Todas las ligas": [
+    "All leagues",
+    "Toutes les ligues"
+  ],
+  "Eliminatoria previa": [
+    "Qualifying playoff",
+    "Barrages"
+  ],
+  "Bonus defensivo: perder por cinco puntos o menos": [
+    "Defensive bonus: lose by five points or fewer",
+    "Bonus défensif : défaite de cinq points ou moins"
+  ],
+  "equipos": [
+    "teams",
+    "équipes"
+  ],
+  "jornadas": [
+    "rounds",
+    "journées"
+  ],
+  "Clubes. La misma pasión.": [
+    "Clubs. The same passion.",
+    "Des clubs. Une même passion."
+  ],
+  "RUGBY · TEMPORADA 2026/27": [
+    "RUGBY · 2026/27 SEASON",
+    "RUGBY · SAISON 2026/27"
+  ],
+  "Equipos de España y Francia, según las competiciones oficiales de FERugby y LNR.": [
+    "Spanish and French teams from the official FERugby and LNR competitions.",
+    "Clubs espagnols et français des compétitions officielles FERugby et LNR."
+  ],
+  "Identidades verificadas en FER y LNR. Las medias, edades, salarios, canteras y resultados de las partidas son simulados. ": [
+    "Identities verified through FER and LNR. Ratings, ages, wages, academies and game results are simulated. ",
+    "Identités vérifiées auprès de la FER et de la LNR. Notes, âges, salaires, centres de formation et résultats du jeu sont simulés. "
+  ],
+  "Fuente oficial ": [
+    "Official source ",
+    "Source officielle "
+  ],
+  "Referencia LNR": [
+    "LNR reference",
+    "Référence LNR"
+  ],
+  "1.º — Ganador 4.º/5.º": [
+    "1st — Winner 4th/5th",
+    "1er — Vainqueur 4e/5e"
+  ],
+  "2.º — Ganador 3.º/6.º": [
+    "2nd — Winner 3rd/6th",
+    "2e — Vainqueur 3e/6e"
+  ],
+  "Access Match": [
+    "Access Match",
+    "Access Match"
+  ],
+  "Subcampeón de Pro D2 — 13.º del Top 14": [
+    "Pro D2 runner-up — 13th in Top 14",
+    "Finaliste de Pro D2 — 13e du Top 14"
+  ],
+  "Plaza de descenso a Pro D2": [
+    "Relegation place to Pro D2",
+    "Place de relégation en Pro D2"
+  ],
+  "Patrocinios institucionales": [
+    "Institutional sponsorships",
+    "Partenariats institutionnels"
+  ],
+  "Patrocinio institucional · {0}": [
+    "Institutional sponsorship · {0}",
+    "Partenariat institutionnel · {0}"
+  ],
+  "Conserva al menos el 10% del superávit adicional. Los patrocinios institucionales pendientes no cuentan para ampliar el límite.": [
+    "Keep at least 10% of the additional surplus. Pending institutional sponsorships cannot increase the limit.",
+    "Conservez au moins 10 % de l'excédent supplémentaire. Les partenariats institutionnels en attente ne permettent pas d'augmenter le plafond."
+  ],
+  "El financiero gestiona automáticamente patrocinios privados e institucionales, abonados y la concesión del bar durante septiembre.": [
+    "The finance director automatically handles private and institutional sponsorships, season tickets and the bar concession during September.",
+    "Le directeur financier gère automatiquement les partenariats privés et institutionnels, les abonnements et la concession de la buvette en septembre."
+  ],
+  "Firmado": [
+    "Signed",
+    "Signé"
+  ],
+  "Gran Bretaña": [
+    "Great Britain",
+    "Grande-Bretagne"
+  ],
+  "Tonga": [
+    "Tonga",
+    "Tonga"
+  ],
+  "Países Bajos": [
+    "Netherlands",
+    "Pays-Bas"
+  ],
+  "Bélgica": [
+    "Belgium",
+    "Belgique"
+  ],
+  "Alemania": [
+    "Germany",
+    "Allemagne"
+  ],
+  "Canadá": [
+    "Canada",
+    "Canada"
+  ],
+  "Samoa": [
+    "Samoa",
+    "Samoa"
+  ],
+  "República Democrática del Congo": [
+    "Democratic Republic of the Congo",
+    "République démocratique du Congo"
+  ],
+  "Estados Unidos": [
+    "United States",
+    "États-Unis"
+  ],
+  "Chile": [
+    "Chile",
+    "Chili"
+  ],
+  "Zimbabue": [
+    "Zimbabwe",
+    "Zimbabwe"
+  ],
+  "Polonia": [
+    "Poland",
+    "Pologne"
+  ],
+  "Austria": [
+    "Austria",
+    "Autriche"
+  ],
+  "Camerún": [
+    "Cameroon",
+    "Cameroun"
+  ],
+  "Rusia": [
+    "Russia",
+    "Russie"
+  ],
+  "Rumanía": [
+    "Romania",
+    "Roumanie"
+  ],
+  "Namibia": [
+    "Namibia",
+    "Namibie"
+  ],
+  "Suiza": [
+    "Switzerland",
+    "Suisse"
+  ],
+  "Titularidades": [
+    "Starts",
+    "Titularisations"
+  ],
+  "Convocatorias como suplente": [
+    "Bench selections",
+    "Présences sur le banc"
+  ],
+  "Referencia FER": [
+    "FER reference",
+    "Référence FER"
+  ],
+  "Los minutos excluyen las actas con cambios ambiguos o no disponibles.": [
+    "Minutes exclude match sheets with ambiguous or unavailable substitutions.",
+    "Les minutes excluent les feuilles avec des remplacements ambigus ou indisponibles."
+  ],
+  "Minutos reconstruidos": [
+    "Reconstructed minutes",
+    "Minutes reconstituées"
+  ],
+  "Alineación automática": [
+    "Automatic line-up",
+    "Composition automatique"
+  ],
+  "No hay suficientes jugadores disponibles para completar el XV.": [
+    "Not enough available players to complete the XV.",
+    "Pas assez de joueurs disponibles pour compléter le XV."
+  ],
+  "No hay suficientes delanteros o tres cuartos disponibles para completar el XV.": [
+    "Not enough available forwards or backs to complete the XV.",
+    "Pas assez d’avants ou de trois-quarts disponibles pour compléter le XV."
+  ],
+  " · Identidad y convocatorias verificadas en actas FER. Edad, salario y atributos simulados.": [
+    " · Identity and selections verified in FER match sheets. Age, salary and attributes are simulated.",
+    " · Identité et convocations vérifiées dans les feuilles FER. Âge, salaire et caractéristiques simulés."
+  ],
+  "Moldavia": [
+    "Moldova",
+    "Moldavie"
+  ],
+  "Finlandia": [
+    "Finland",
+    "Finlande"
+  ],
+  "Hungría": [
+    "Hungary",
+    "Hongrie"
+  ],
+  "Plantilla oficial LNR. Sin participación en las actas consultadas; características estimadas.": [
+    "Official LNR squad. No appearances in the reviewed match sheets; attributes are estimated.",
+    "Effectif officiel LNR. Aucune participation dans les feuilles consultées ; caractéristiques estimées."
+  ],
+  "Elige la mayor media por posición y un banquillo equilibrado con cobertura de puestos. Energía y moral desempatan. Guarda para confirmar.": [
+    "Selects the highest average by position and a balanced bench covering key roles. Energy and morale break ties. Save to confirm.",
+    "Choisit la meilleure moyenne par poste et un banc équilibré couvrant les postes clés. Énergie et moral départagent les égalités. Enregistrez pour confirmer."
+  ],
+  "Cambio del rival por lesión: {0} entra por {1}.": [
+    "Opposition injury substitution: {0} replaces {1}.",
+    "Changement adverse pour blessure : {0} remplace {1}."
+  ],
+  "Cambio del rival por cansancio: {0} entra por {1}.": [
+    "Opposition fatigue substitution: {0} replaces {1}.",
+    "Changement adverse pour fatigue : {0} remplace {1}."
+  ],
+  "Con ventaja en el último tramo, buscamos controlar el territorio y ampliar la diferencia con puntos seguros.": [
+    "With a late lead, we aim to control territory and extend the margin with safe points.",
+    "En tête en fin de match, nous cherchons à contrôler le territoire et à creuser l’écart avec des points sûrs."
+  ],
+  "La diferencia permite empatar o remontar con un golpe a palos.": [
+    "The gap allows us to draw level or take the lead with a penalty goal.",
+    "L’écart permet d’égaliser ou de passer devant avec une pénalité."
+  ],
+  "El marcador exige buscar el ensayo antes de que termine el partido.": [
+    "The score demands a try before the match ends.",
+    "Le score impose de chercher l’essai avant la fin du match."
   ]
 }

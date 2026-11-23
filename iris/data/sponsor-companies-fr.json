@@ -1,0 +1,6 @@
+{
+  "notice": "Entreprises fictives pour la simulation.",
+  "sectors": ["Groupe", "Assurances", "Transports", "Énergies", "Construction", "Industries", "Services", "Technologies", "Logistique", "Distribution", "Immobilier", "Conseil", "Équipements", "Solutions", "Alimentation", "Mobilités", "Ingénierie", "Banque", "Mutuelle", "Investissements", "Télécommunications", "Matériaux", "Automobile", "Environnement", "Électronique", "Emballages", "Menuiseries", "Travaux publics", "Numérique", "Agroalimentaire", "Hôtellerie", "Bâtiment"],
+  "barSectors": ["Brasserie", "Maison gourmande", "Comptoir", "Les Tables", "Saveurs", "Restauration", "Bistro", "Cuisine"],
+  "brands": ["Aubépine", "Belleforge", "Clairval", "Montbrun", "Valdor", "Riveclaire", "Beaulac", "Novélia", "Élan", "Horizon", "Grandchêne", "Lumière", "Soléane", "Capavenir", "Clairmont", "Rochebelle", "Belorizon", "Auréole", "Valfleuri", "Ormeau", "Alizé", "Montfleury", "Terranova", "Arcélia", "Boisclair", "Fontenelle", "Rivélia", "Côtebrune", "Soleval", "Équinoxe", "Méridiane", "Aubéval", "Nouvelles Rives", "Grand Large", "Belle Source", "Cèdre Bleu", "Arc-en-Ciel", "Champdor", "Clairavenir", "Rocheval", "Monts et Vallées", "Plein Essor", "Valléane", "Terrefranche", "Riveargent", "Nouvel Élan", "Bleu Céleste", "Belle Étoile"]
+}

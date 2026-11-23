@@ -1,0 +1,422 @@
+{
+  "fr-toulouse": {
+    "budget": 5583700000,
+    "salaryCap": 1380000000,
+    "city": "Toulouse",
+    "color": "#d7252d",
+    "stadium": {
+      "name": "Stade Ernest-Wallon",
+      "capacity": 19000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "user-reference",
+    "shortName": "Toulouse"
+  },
+  "fr-lyon": {
+    "budget": 4478900000,
+    "salaryCap": 1110000000,
+    "city": "Lyon",
+    "color": "#b51f2a",
+    "stadium": {
+      "name": "Matmut Stadium de Gerland",
+      "capacity": 25000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Lyon"
+  },
+  "fr-paris": {
+    "budget": 4237300000,
+    "salaryCap": 1110000000,
+    "city": "Paris",
+    "color": "#e94a91",
+    "stadium": {
+      "name": "Stade Jean-Bouin",
+      "capacity": 20000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Stade Français"
+  },
+  "fr-toulon": {
+    "budget": 3914800000,
+    "salaryCap": 1218000000,
+    "city": "Toulon",
+    "color": "#cc1825",
+    "stadium": {
+      "name": "Stade Mayol",
+      "capacity": 17500,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "user-reference",
+    "shortName": "Toulon"
+  },
+  "fr-bordeaux-begles": {
+    "budget": 3913800000,
+    "salaryCap": 1272000000,
+    "city": "Bordeaux",
+    "color": "#6c163d",
+    "stadium": {
+      "name": "Stade Chaban-Delmas",
+      "capacity": 34400,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "user-reference",
+    "shortName": "Bordeaux-Bègles"
+  },
+  "fr-la-rochelle": {
+    "budget": 3827900000,
+    "salaryCap": 1216000000,
+    "city": "La Rochelle",
+    "color": "#e2b92b",
+    "stadium": {
+      "name": "Stade Marcel-Deflandre",
+      "capacity": 16700,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "user-reference",
+    "shortName": "La Rochelle"
+  },
+  "fr-clermont": {
+    "budget": 3536800000,
+    "salaryCap": 1110000000,
+    "city": "Clermont-Ferrand",
+    "color": "#edc631",
+    "stadium": {
+      "name": "Stade Marcel-Michelin",
+      "capacity": 19000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Clermont"
+  },
+  "fr-montpellier": {
+    "budget": 3198000000,
+    "salaryCap": 1110000000,
+    "city": "Montpellier",
+    "color": "#143d71",
+    "stadium": {
+      "name": "GGL Stadium",
+      "capacity": 15697,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Montpellier"
+  },
+  "fr-pau": {
+    "budget": 3067000000,
+    "salaryCap": 1110000000,
+    "city": "Pau",
+    "color": "#197950",
+    "stadium": {
+      "name": "Stade du Hameau",
+      "capacity": 18426,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Pau"
+  },
+  "fr-bayonne": {
+    "budget": 3051600000,
+    "salaryCap": 1110000000,
+    "city": "Bayonne",
+    "color": "#66bce4",
+    "stadium": {
+      "name": "Stade Jean-Dauger",
+      "capacity": 18069,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Bayonne"
+  },
+  "fr-castres": {
+    "budget": 2634000000,
+    "salaryCap": 1110000000,
+    "city": "Castres",
+    "color": "#205ca3",
+    "stadium": {
+      "name": "Stade Pierre-Fabre",
+      "capacity": 12500,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Castres"
+  },
+  "fr-racing-92": {
+    "budget": 2580800000,
+    "salaryCap": 1110000000,
+    "city": "Paris La Défense",
+    "color": "#75badd",
+    "stadium": {
+      "name": "Paris La Défense Arena",
+      "capacity": 30000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Racing 92"
+  },
+  "fr-perpignan": {
+    "budget": 2301100000,
+    "salaryCap": 1110000000,
+    "city": "Perpignan",
+    "color": "#c23226",
+    "stadium": {
+      "name": "Stade Aimé-Giral",
+      "capacity": 14593,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Perpignan"
+  },
+  "fr-vannes": {
+    "budget": 2350000000,
+    "salaryCap": 1110000000,
+    "city": "Vannes",
+    "color": "#173f6e",
+    "stadium": {
+      "name": "Stade de la Rabine",
+      "capacity": 12000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Vannes"
+  },
+  "fr-provence-rugby": {
+    "budget": 2000000000,
+    "salaryCap": 0,
+    "city": "Aix-en-Provence",
+    "color": "#202020",
+    "stadium": {
+      "name": "Stade Maurice-David",
+      "capacity": 8500,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Provence"
+  },
+  "fr-brive": {
+    "budget": 1700000000,
+    "salaryCap": 0,
+    "city": "Brive-la-Gaillarde",
+    "color": "#202020",
+    "stadium": {
+      "name": "Stade Amédée-Domenech",
+      "capacity": 15000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Brive"
+  },
+  "fr-grenoble": {
+    "budget": 1300000000,
+    "salaryCap": 0,
+    "city": "Grenoble",
+    "color": "#c62630",
+    "stadium": {
+      "name": "Stade des Alpes",
+      "capacity": 20068,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Grenoble"
+  },
+  "fr-biarritz": {
+    "budget": 1250000000,
+    "salaryCap": 0,
+    "city": "Biarritz",
+    "color": "#c82732",
+    "stadium": {
+      "name": "Parc des Sports Aguiléra",
+      "capacity": 14800,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Biarritz"
+  },
+  "fr-nevers": {
+    "budget": 1236000000,
+    "salaryCap": 0,
+    "city": "Nevers",
+    "color": "#d4b531",
+    "stadium": {
+      "name": "Stade du Pré-Fleuri",
+      "capacity": 7500,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Nevers"
+  },
+  "fr-oyonnax": {
+    "budget": 1220000000,
+    "salaryCap": 0,
+    "city": "Oyonnax",
+    "color": "#c71e32",
+    "stadium": {
+      "name": "Stade Charles-Mathon",
+      "capacity": 11400,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Oyonnax"
+  },
+  "fr-montauban": {
+    "budget": 1405100000,
+    "salaryCap": 0,
+    "city": "Montauban",
+    "color": "#27835e",
+    "stadium": {
+      "name": "Stade Sapiac",
+      "capacity": 11000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "user-2025-26",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Montauban"
+  },
+  "fr-agen": {
+    "budget": 1140000000,
+    "salaryCap": 0,
+    "city": "Agen",
+    "color": "#235b9e",
+    "stadium": {
+      "name": "Stade Armandie",
+      "capacity": 14000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Agen"
+  },
+  "fr-nice": {
+    "budget": 1050000000,
+    "salaryCap": 0,
+    "city": "Nice",
+    "color": "#d33b2c",
+    "stadium": {
+      "name": "Stade des Arboras",
+      "capacity": 3000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Nice"
+  },
+  "fr-beziers": {
+    "budget": 1000000000,
+    "salaryCap": 0,
+    "city": "Béziers",
+    "color": "#d52a30",
+    "stadium": {
+      "name": "Stade Raoul-Barrière",
+      "capacity": 18300,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Béziers"
+  },
+  "fr-valence-romans": {
+    "budget": 950000000,
+    "salaryCap": 0,
+    "city": "Valence",
+    "color": "#d33131",
+    "stadium": {
+      "name": "Stade Georges-Pompidou",
+      "capacity": 15000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Valence-Romans"
+  },
+  "fr-angouleme": {
+    "budget": 900000000,
+    "salaryCap": 0,
+    "city": "Angoulême",
+    "color": "#762c8e",
+    "stadium": {
+      "name": "Stade Chanzy",
+      "capacity": 8000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Angoulême"
+  },
+  "fr-colomiers": {
+    "budget": 850000000,
+    "salaryCap": 0,
+    "city": "Colomiers",
+    "color": "#2685be",
+    "stadium": {
+      "name": "Stade Michel-Bendichou",
+      "capacity": 11430,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Colomiers"
+  },
+  "fr-narbonne": {
+    "budget": 700000000,
+    "salaryCap": 0,
+    "city": "Narbonne",
+    "color": "#e47b20",
+    "stadium": {
+      "name": "Parc des Sports et de l’Amitié",
+      "capacity": 12000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Narbonne"
+  },
+  "fr-dax": {
+    "budget": 650000000,
+    "salaryCap": 0,
+    "city": "Dax",
+    "color": "#ce2831",
+    "stadium": {
+      "name": "Stade Maurice-Boyau",
+      "capacity": 7270,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Dax"
+  },
+  "fr-aurillac": {
+    "budget": 630000000,
+    "salaryCap": 0,
+    "city": "Aurillac",
+    "color": "#c62231",
+    "stadium": {
+      "name": "Stade Jean-Alric",
+      "capacity": 9000,
+      "capacityEstimated": true
+    },
+    "budgetBasis": "simulation-estimate",
+    "salaryCapBasis": "simulation-reference",
+    "shortName": "Aurillac"
+  }
+}

@@ -20,6 +20,7 @@ ClassMethod Tick() As %DynamicObject
         if '..FreeWeekend(club,date) continue
         for j=0:1:clubs.%Size()-1 {
             set rival=clubs.%Get(j)
+            if ##class(Rugby.Service.Leagues).Country(rival)'=##class(Rugby.Service.Leagues).Country(c) continue
             if (rival.id=club)||('..FreeWeekend(rival.id,date)) continue
             set score=##class(Rugby.Service.Rivals).Hash(rival.id_"-"_date,seed)
             if score>best set best=score,chosen=rival.id,chosenDate=date

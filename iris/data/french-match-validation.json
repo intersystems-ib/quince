@@ -1,0 +1,3629 @@
+{
+  "verifiedOn": "2026-11-23",
+  "matches": [
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j1/11819-bayonne-toulon/statistiques-du-match",
+      "date": "2026-09-05",
+      "teams": [
+        {
+          "clubId": "fr-bayonne",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-toulon",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j1/11821-castres-vannes/statistiques-du-match",
+      "date": "2026-09-05",
+      "teams": [
+        {
+          "clubId": "fr-castres",
+          "players": 23,
+          "officialScore": 29,
+          "points": 22.0,
+          "tries": 3.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        },
+        {
+          "clubId": "fr-vannes",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j1/11823-lyon-clermont/statistiques-du-match",
+      "date": "2026-09-05",
+      "teams": [
+        {
+          "clubId": "fr-lyon",
+          "players": 23,
+          "officialScore": 40,
+          "points": 40.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-clermont",
+          "players": 23,
+          "officialScore": 36,
+          "points": 36.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j1/11824-montpellier-pau/statistiques-du-match",
+      "date": "2026-09-05",
+      "teams": [
+        {
+          "clubId": "fr-montpellier",
+          "players": 23,
+          "officialScore": 19,
+          "points": 19.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-pau",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j1/11825-paris-perpignan/statistiques-du-match",
+      "date": "2026-09-05",
+      "teams": [
+        {
+          "clubId": "fr-paris",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-perpignan",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j1/11820-bordeaux-begles-racing-92/statistiques-du-match",
+      "date": "2026-09-05",
+      "teams": [
+        {
+          "clubId": "fr-bordeaux-begles",
+          "players": 23,
+          "officialScore": 64,
+          "points": 64.0,
+          "tries": 10.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-racing-92",
+          "players": 23,
+          "officialScore": 5,
+          "points": 5.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j1/11822-la-rochelle-toulouse/statistiques-du-match",
+      "date": "2026-09-06",
+      "teams": [
+        {
+          "clubId": "fr-la-rochelle",
+          "players": 23,
+          "officialScore": 30,
+          "points": 30.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-toulouse",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j2/11826-perpignan-castres/statistiques-du-match",
+      "date": "2026-09-12",
+      "teams": [
+        {
+          "clubId": "fr-perpignan",
+          "players": 24,
+          "officialScore": 43,
+          "points": 43.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-castres",
+          "players": 23,
+          "officialScore": 29,
+          "points": 29.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j2/11827-vannes-montpellier/statistiques-du-match",
+      "date": "2026-09-12",
+      "teams": [
+        {
+          "clubId": "fr-vannes",
+          "players": 23,
+          "officialScore": 12,
+          "points": 12.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-montpellier",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j2/11828-clermont-paris/statistiques-du-match",
+      "date": "2026-09-12",
+      "teams": [
+        {
+          "clubId": "fr-clermont",
+          "players": 23,
+          "officialScore": 25,
+          "points": 25.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-paris",
+          "players": 23,
+          "officialScore": 16,
+          "points": 16.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j2/11829-pau-bayonne/statistiques-du-match",
+      "date": "2026-09-12",
+      "teams": [
+        {
+          "clubId": "fr-pau",
+          "players": 23,
+          "officialScore": 70,
+          "points": 70.0,
+          "tries": 10.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-bayonne",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j2/11830-racing-92-lyon/statistiques-du-match",
+      "date": "2026-09-12",
+      "teams": [
+        {
+          "clubId": "fr-racing-92",
+          "players": 22,
+          "officialScore": 31,
+          "points": 31.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-lyon",
+          "players": 23,
+          "officialScore": 48,
+          "points": 48.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j2/11831-toulon-la-rochelle/statistiques-du-match",
+      "date": "2026-09-12",
+      "teams": [
+        {
+          "clubId": "fr-toulon",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-la-rochelle",
+          "players": 23,
+          "officialScore": 21,
+          "points": 21.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j2/11832-toulouse-bordeaux-begles/statistiques-du-match",
+      "date": "2026-09-13",
+      "teams": [
+        {
+          "clubId": "fr-toulouse",
+          "players": 23,
+          "officialScore": 48,
+          "points": 48.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-bordeaux-begles",
+          "players": 23,
+          "officialScore": 12,
+          "points": 12.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j3/11836-castres-toulon/statistiques-du-match",
+      "date": "2026-09-19",
+      "teams": [
+        {
+          "clubId": "fr-castres",
+          "players": 23,
+          "officialScore": 29,
+          "points": 29.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-toulon",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j3/11833-bayonne-clermont/statistiques-du-match",
+      "date": "2026-09-19",
+      "teams": [
+        {
+          "clubId": "fr-bayonne",
+          "players": 23,
+          "officialScore": 46,
+          "points": 46.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-clermont",
+          "players": 23,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j3/11837-la-rochelle-racing-92/statistiques-du-match",
+      "date": "2026-09-19",
+      "teams": [
+        {
+          "clubId": "fr-la-rochelle",
+          "players": 23,
+          "officialScore": 10,
+          "points": 10.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-racing-92",
+          "players": 22,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j3/11838-lyon-pau/statistiques-du-match",
+      "date": "2026-09-19",
+      "teams": [
+        {
+          "clubId": "fr-lyon",
+          "players": 23,
+          "officialScore": 51,
+          "points": 51.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-pau",
+          "players": 23,
+          "officialScore": 25,
+          "points": 25.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j3/11839-montpellier-perpignan/statistiques-du-match",
+      "date": "2026-09-19",
+      "teams": [
+        {
+          "clubId": "fr-montpellier",
+          "players": 23,
+          "officialScore": 50,
+          "points": 50.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-perpignan",
+          "players": 23,
+          "officialScore": 13,
+          "points": 13.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j3/11835-vannes-toulouse/statistiques-du-match",
+      "date": "2026-09-19",
+      "teams": [
+        {
+          "clubId": "fr-vannes",
+          "players": 23,
+          "officialScore": 23,
+          "points": 23.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-toulouse",
+          "players": 23,
+          "officialScore": 29,
+          "points": 29.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j3/11834-bordeaux-begles-paris/statistiques-du-match",
+      "date": "2026-09-20",
+      "teams": [
+        {
+          "clubId": "fr-bordeaux-begles",
+          "players": 23,
+          "officialScore": 40,
+          "points": 40.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-paris",
+          "players": 23,
+          "officialScore": 10,
+          "points": 10.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j4/11840-perpignan-bordeaux-begles/statistiques-du-match",
+      "date": "2026-09-26",
+      "teams": [
+        {
+          "clubId": "fr-perpignan",
+          "players": 23,
+          "officialScore": 38,
+          "points": 38.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-bordeaux-begles",
+          "players": 23,
+          "officialScore": 25,
+          "points": 25.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j4/11841-clermont-castres/statistiques-du-match",
+      "date": "2026-09-26",
+      "teams": [
+        {
+          "clubId": "fr-clermont",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-castres",
+          "players": 23,
+          "officialScore": 6,
+          "points": 6.0,
+          "tries": 0.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j4/11842-paris-lyon/statistiques-du-match",
+      "date": "2026-09-26",
+      "teams": [
+        {
+          "clubId": "fr-paris",
+          "players": 23,
+          "officialScore": 31,
+          "points": 31.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-lyon",
+          "players": 23,
+          "officialScore": 10,
+          "points": 10.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j4/11844-racing-92-bayonne/statistiques-du-match",
+      "date": "2026-09-26",
+      "teams": [
+        {
+          "clubId": "fr-racing-92",
+          "players": 22,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-bayonne",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j4/11845-toulon-vannes/statistiques-du-match",
+      "date": "2026-09-26",
+      "teams": [
+        {
+          "clubId": "fr-toulon",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-vannes",
+          "players": 23,
+          "officialScore": 10,
+          "points": 10.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j4/11843-pau-la-rochelle/statistiques-du-match",
+      "date": "2026-09-26",
+      "teams": [
+        {
+          "clubId": "fr-pau",
+          "players": 23,
+          "officialScore": 39,
+          "points": 39.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-la-rochelle",
+          "players": 23,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j4/11846-toulouse-montpellier/statistiques-du-match",
+      "date": "2026-09-27",
+      "teams": [
+        {
+          "clubId": "fr-toulouse",
+          "players": 22,
+          "officialScore": 40,
+          "points": 40.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-montpellier",
+          "players": 23,
+          "officialScore": 18,
+          "points": 18.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j5/11848-bordeaux-begles-lyon/statistiques-du-match",
+      "date": "2026-10-03",
+      "teams": [
+        {
+          "clubId": "fr-bordeaux-begles",
+          "players": 23,
+          "officialScore": 51,
+          "points": 51.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-lyon",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j5/11847-bayonne-paris/statistiques-du-match",
+      "date": "2026-10-03",
+      "teams": [
+        {
+          "clubId": "fr-bayonne",
+          "players": 23,
+          "officialScore": 35,
+          "points": 35.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-paris",
+          "players": 23,
+          "officialScore": 32,
+          "points": 25.0,
+          "tries": 4.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j5/11849-vannes-pau/statistiques-du-match",
+      "date": "2026-10-03",
+      "teams": [
+        {
+          "clubId": "fr-vannes",
+          "players": 23,
+          "officialScore": 40,
+          "points": 40.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-pau",
+          "players": 23,
+          "officialScore": 43,
+          "points": 43.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j5/11851-la-rochelle-clermont/statistiques-du-match",
+      "date": "2026-10-03",
+      "teams": [
+        {
+          "clubId": "fr-la-rochelle",
+          "players": 23,
+          "officialScore": 38,
+          "points": 38.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-clermont",
+          "players": 23,
+          "officialScore": 13,
+          "points": 13.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j5/11853-racing-92-perpignan/statistiques-du-match",
+      "date": "2026-10-03",
+      "teams": [
+        {
+          "clubId": "fr-racing-92",
+          "players": 23,
+          "officialScore": 55,
+          "points": 55.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-perpignan",
+          "players": 23,
+          "officialScore": 25,
+          "points": 25.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j5/11850-castres-toulouse/statistiques-du-match",
+      "date": "2026-10-03",
+      "teams": [
+        {
+          "clubId": "fr-castres",
+          "players": 23,
+          "officialScore": 7,
+          "points": 7.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-toulouse",
+          "players": 22,
+          "officialScore": 8,
+          "points": 8.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j5/11852-montpellier-toulon/statistiques-du-match",
+      "date": "2026-10-04",
+      "teams": [
+        {
+          "clubId": "fr-montpellier",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-toulon",
+          "players": 23,
+          "officialScore": 0,
+          "points": 0.0,
+          "tries": 0.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j6/11857-paris-montpellier/statistiques-du-match",
+      "date": "2026-10-10",
+      "teams": [
+        {
+          "clubId": "fr-paris",
+          "players": 23,
+          "officialScore": 30,
+          "points": 30.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-montpellier",
+          "players": 23,
+          "officialScore": 22,
+          "points": 22.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j6/11854-perpignan-vannes/statistiques-du-match",
+      "date": "2026-10-10",
+      "teams": [
+        {
+          "clubId": "fr-perpignan",
+          "players": 23,
+          "officialScore": 21,
+          "points": 21.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-vannes",
+          "players": 23,
+          "officialScore": 12,
+          "points": 12.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j6/11856-lyon-la-rochelle/statistiques-du-match",
+      "date": "2026-10-10",
+      "teams": [
+        {
+          "clubId": "fr-lyon",
+          "players": 22,
+          "officialScore": 16,
+          "points": 16.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-la-rochelle",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j6/11858-pau-castres/statistiques-du-match",
+      "date": "2026-10-10",
+      "teams": [
+        {
+          "clubId": "fr-pau",
+          "players": 23,
+          "officialScore": 35,
+          "points": 35.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-castres",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j6/11859-toulon-racing-92/statistiques-du-match",
+      "date": "2026-10-10",
+      "teams": [
+        {
+          "clubId": "fr-toulon",
+          "players": 23,
+          "officialScore": 29,
+          "points": 29.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-racing-92",
+          "players": 23,
+          "officialScore": 15,
+          "points": 15.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j6/11855-clermont-bordeaux-begles/statistiques-du-match",
+      "date": "2026-10-10",
+      "teams": [
+        {
+          "clubId": "fr-clermont",
+          "players": 23,
+          "officialScore": 22,
+          "points": 22.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-bordeaux-begles",
+          "players": 23,
+          "officialScore": 23,
+          "points": 23.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j6/11860-toulouse-bayonne/statistiques-du-match",
+      "date": "2026-10-11",
+      "teams": [
+        {
+          "clubId": "fr-toulouse",
+          "players": 23,
+          "officialScore": 45,
+          "points": 45.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-bayonne",
+          "players": 23,
+          "officialScore": 34,
+          "points": 34.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j7/11862-vannes-clermont/statistiques-du-match",
+      "date": "2026-10-24",
+      "teams": [
+        {
+          "clubId": "fr-vannes",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-clermont",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j7/11861-bayonne-lyon/statistiques-du-match",
+      "date": "2026-10-24",
+      "teams": [
+        {
+          "clubId": "fr-bayonne",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-lyon",
+          "players": 22,
+          "officialScore": 31,
+          "points": 31.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j7/11863-castres-paris/statistiques-du-match",
+      "date": "2026-10-24",
+      "teams": [
+        {
+          "clubId": "fr-castres",
+          "players": 23,
+          "officialScore": 16,
+          "points": 16.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-paris",
+          "players": 23,
+          "officialScore": 8,
+          "points": 8.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j7/11865-racing-92-montpellier/statistiques-du-match",
+      "date": "2026-10-24",
+      "teams": [
+        {
+          "clubId": "fr-racing-92",
+          "players": 23,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-montpellier",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j7/11867-toulouse-perpignan/statistiques-du-match",
+      "date": "2026-10-24",
+      "teams": [
+        {
+          "clubId": "fr-toulouse",
+          "players": 22,
+          "officialScore": 38,
+          "points": 31.0,
+          "tries": 5.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        },
+        {
+          "clubId": "fr-perpignan",
+          "players": 23,
+          "officialScore": 33,
+          "points": 33.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j7/11866-toulon-pau/statistiques-du-match",
+      "date": "2026-10-24",
+      "teams": [
+        {
+          "clubId": "fr-toulon",
+          "players": 23,
+          "officialScore": 41,
+          "points": 41.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-pau",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j7/11864-la-rochelle-bordeaux-begles/statistiques-du-match",
+      "date": "2026-10-25",
+      "teams": [
+        {
+          "clubId": "fr-la-rochelle",
+          "players": 23,
+          "officialScore": 19,
+          "points": 19.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-bordeaux-begles",
+          "players": 23,
+          "officialScore": 25,
+          "points": 25.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j8/11870-clermont-racing-92/statistiques-du-match",
+      "date": "2026-10-31",
+      "teams": [
+        {
+          "clubId": "fr-clermont",
+          "players": 23,
+          "officialScore": 37,
+          "points": 37.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-racing-92",
+          "players": 23,
+          "officialScore": 30,
+          "points": 30.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j8/11869-bordeaux-begles-bayonne/statistiques-du-match",
+      "date": "2026-10-31",
+      "teams": [
+        {
+          "clubId": "fr-bordeaux-begles",
+          "players": 23,
+          "officialScore": 19,
+          "points": 19.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-bayonne",
+          "players": 23,
+          "officialScore": 14,
+          "points": 14.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j8/11871-lyon-vannes/statistiques-du-match",
+      "date": "2026-10-31",
+      "teams": [
+        {
+          "clubId": "fr-lyon",
+          "players": 23,
+          "officialScore": 48,
+          "points": 48.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-vannes",
+          "players": 23,
+          "officialScore": 25,
+          "points": 25.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j8/11873-paris-la-rochelle/statistiques-du-match",
+      "date": "2026-10-31",
+      "teams": [
+        {
+          "clubId": "fr-paris",
+          "players": 23,
+          "officialScore": 43,
+          "points": 43.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-la-rochelle",
+          "players": 22,
+          "officialScore": 24,
+          "points": 17.0,
+          "tries": 2.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j8/11868-perpignan-toulon/statistiques-du-match",
+      "date": "2026-10-31",
+      "teams": [
+        {
+          "clubId": "fr-perpignan",
+          "players": 23,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-toulon",
+          "players": 23,
+          "officialScore": 25,
+          "points": 25.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j8/11872-montpellier-castres/statistiques-du-match",
+      "date": "2026-11-01",
+      "teams": [
+        {
+          "clubId": "fr-montpellier",
+          "players": 46,
+          "officialScore": 69,
+          "points": 138.0,
+          "tries": 20.0,
+          "unassignedPoints": -69.0,
+          "scoringValidation": "inconsistent-source"
+        },
+        {
+          "clubId": "fr-castres",
+          "players": 46,
+          "officialScore": 10,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": -10.0,
+          "scoringValidation": "inconsistent-source"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j8/11874-pau-toulouse/statistiques-du-match",
+      "date": "2026-11-01",
+      "teams": [
+        {
+          "clubId": "fr-pau",
+          "players": 23,
+          "officialScore": 34,
+          "points": 34.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-toulouse",
+          "players": 22,
+          "officialScore": 14,
+          "points": 14.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j9/11881-toulouse-clermont/statistiques-du-match",
+      "date": "2026-11-07",
+      "teams": [
+        {
+          "clubId": "fr-toulouse",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-clermont",
+          "players": 23,
+          "officialScore": 18,
+          "points": 18.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j9/11876-castres-racing-92/statistiques-du-match",
+      "date": "2026-11-07",
+      "teams": [
+        {
+          "clubId": "fr-castres",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-racing-92",
+          "players": 23,
+          "officialScore": 30,
+          "points": 30.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j9/11878-montpellier-lyon/statistiques-du-match",
+      "date": "2026-11-07",
+      "teams": [
+        {
+          "clubId": "fr-montpellier",
+          "players": 23,
+          "officialScore": 21,
+          "points": 21.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-lyon",
+          "players": 22,
+          "officialScore": 19,
+          "points": 19.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j9/11879-pau-perpignan/statistiques-du-match",
+      "date": "2026-11-07",
+      "teams": [
+        {
+          "clubId": "fr-pau",
+          "players": 23,
+          "officialScore": 63,
+          "points": 63.0,
+          "tries": 9.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-perpignan",
+          "players": 22,
+          "officialScore": 26,
+          "points": 21.0,
+          "tries": 3.0,
+          "unassignedPoints": 5.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j9/11880-toulon-paris/statistiques-du-match",
+      "date": "2026-11-07",
+      "teams": [
+        {
+          "clubId": "fr-toulon",
+          "players": 23,
+          "officialScore": 43,
+          "points": 43.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-paris",
+          "players": 23,
+          "officialScore": 23,
+          "points": 23.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j9/11875-vannes-bordeaux-begles/statistiques-du-match",
+      "date": "2026-11-08",
+      "teams": [
+        {
+          "clubId": "fr-vannes",
+          "players": 23,
+          "officialScore": 23,
+          "points": 23.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-bordeaux-begles",
+          "players": 23,
+          "officialScore": 14,
+          "points": 14.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://top14.lnr.fr/feuille-de-match/2026-2027/j9/11877-la-rochelle-bayonne/statistiques-du-match",
+      "date": "2026-11-08",
+      "teams": [
+        {
+          "clubId": "fr-la-rochelle",
+          "players": 23,
+          "officialScore": 22,
+          "points": 22.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-bayonne",
+          "players": 23,
+          "officialScore": 18,
+          "points": 18.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j1/12010-biarritz-nice/statistiques-du-match",
+      "date": "2026-08-27",
+      "teams": [
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 36,
+          "points": 29.0,
+          "tries": 4.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        },
+        {
+          "clubId": "fr-nice",
+          "players": 23,
+          "officialScore": 5,
+          "points": 5.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j1/12008-angouleme-colomiers/statistiques-du-match",
+      "date": "2026-08-27",
+      "teams": [
+        {
+          "clubId": "fr-angouleme",
+          "players": 23,
+          "officialScore": 38,
+          "points": 38.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j1/12009-beziers-oyonnax/statistiques-du-match",
+      "date": "2026-08-27",
+      "teams": [
+        {
+          "clubId": "fr-beziers",
+          "players": 22,
+          "officialScore": 21,
+          "points": 21.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 31,
+          "points": 24.0,
+          "tries": 3.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j1/12012-dax-narbonne/statistiques-du-match",
+      "date": "2026-08-27",
+      "teams": [
+        {
+          "clubId": "fr-dax",
+          "players": 23,
+          "officialScore": 57,
+          "points": 57.0,
+          "tries": 9.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-narbonne",
+          "players": 23,
+          "officialScore": 19,
+          "points": 19.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j1/12013-grenoble-aurillac/statistiques-du-match",
+      "date": "2026-08-27",
+      "teams": [
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 57,
+          "points": 57.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 33,
+          "points": 33.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j1/12014-nevers-montauban/statistiques-du-match",
+      "date": "2026-08-27",
+      "teams": [
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 21,
+          "points": 21.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-montauban",
+          "players": 23,
+          "officialScore": 25,
+          "points": 25.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j1/12007-provence-rugby-agen/statistiques-du-match",
+      "date": "2026-08-27",
+      "teams": [
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 44,
+          "points": 44.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 10,
+          "points": 10.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j1/12011-brive-valence-romans/statistiques-du-match",
+      "date": "2026-08-28",
+      "teams": [
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 23,
+          "points": 23.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-valence-romans",
+          "players": 23,
+          "officialScore": 21,
+          "points": 21.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j2/12017-colomiers-provence-rugby/statistiques-du-match",
+      "date": "2026-09-03",
+      "teams": [
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 13,
+          "points": 13.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 18,
+          "points": 18.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j2/12018-montauban-grenoble/statistiques-du-match",
+      "date": "2026-09-04",
+      "teams": [
+        {
+          "clubId": "fr-montauban",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j2/12016-aurillac-dax/statistiques-du-match",
+      "date": "2026-09-04",
+      "teams": [
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 65,
+          "points": 65.0,
+          "tries": 9.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-dax",
+          "players": 22,
+          "officialScore": 35,
+          "points": 35.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j2/12019-narbonne-nevers/statistiques-du-match",
+      "date": "2026-09-04",
+      "teams": [
+        {
+          "clubId": "fr-narbonne",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j2/12020-nice-beziers/statistiques-du-match",
+      "date": "2026-09-04",
+      "teams": [
+        {
+          "clubId": "fr-nice",
+          "players": 23,
+          "officialScore": 43,
+          "points": 43.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-beziers",
+          "players": 22,
+          "officialScore": 6,
+          "points": 6.0,
+          "tries": 0.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j2/12021-oyonnax-biarritz/statistiques-du-match",
+      "date": "2026-09-04",
+      "teams": [
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 47,
+          "points": 47.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 25,
+          "points": 18.0,
+          "tries": 2.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j2/12022-valence-romans-angouleme/statistiques-du-match",
+      "date": "2026-09-04",
+      "teams": [
+        {
+          "clubId": "fr-valence-romans",
+          "players": 23,
+          "officialScore": 39,
+          "points": 39.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-angouleme",
+          "players": 23,
+          "officialScore": 22,
+          "points": 22.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j2/12015-agen-brive/statistiques-du-match",
+      "date": "2026-09-04",
+      "teams": [
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 14,
+          "points": 14.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 37,
+          "points": 30.0,
+          "tries": 3.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j3/12026-biarritz-colomiers/statistiques-du-match",
+      "date": "2026-09-10",
+      "teams": [
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 38,
+          "points": 38.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j3/12024-angouleme-montauban/statistiques-du-match",
+      "date": "2026-09-11",
+      "teams": [
+        {
+          "clubId": "fr-angouleme",
+          "players": 23,
+          "officialScore": 45,
+          "points": 45.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-montauban",
+          "players": 22,
+          "officialScore": 7,
+          "points": 7.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j3/12023-provence-rugby-narbonne/statistiques-du-match",
+      "date": "2026-09-11",
+      "teams": [
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 47,
+          "points": 47.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-narbonne",
+          "players": 22,
+          "officialScore": 42,
+          "points": 42.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j3/12025-beziers-nevers/statistiques-du-match",
+      "date": "2026-09-11",
+      "teams": [
+        {
+          "clubId": "fr-beziers",
+          "players": 23,
+          "officialScore": 21,
+          "points": 21.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j3/12027-brive-nice/statistiques-du-match",
+      "date": "2026-09-11",
+      "teams": [
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 38,
+          "points": 38.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-nice",
+          "players": 23,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j3/12028-dax-valence-romans/statistiques-du-match",
+      "date": "2026-09-11",
+      "teams": [
+        {
+          "clubId": "fr-dax",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-valence-romans",
+          "players": 22,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j3/12030-oyonnax-aurillac/statistiques-du-match",
+      "date": "2026-09-11",
+      "teams": [
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 52,
+          "points": 52.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j3/12029-grenoble-agen/statistiques-du-match",
+      "date": "2026-09-11",
+      "teams": [
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 33,
+          "points": 33.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 39,
+          "points": 39.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j4/12032-aurillac-brive/statistiques-du-match",
+      "date": "2026-09-17",
+      "teams": [
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 29,
+          "points": 29.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j4/12037-nice-grenoble/statistiques-du-match",
+      "date": "2026-09-18",
+      "teams": [
+        {
+          "clubId": "fr-nice",
+          "players": 23,
+          "officialScore": 33,
+          "points": 33.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 37,
+          "points": 37.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j4/12033-colomiers-dax/statistiques-du-match",
+      "date": "2026-09-18",
+      "teams": [
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 66,
+          "points": 66.0,
+          "tries": 10.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-dax",
+          "players": 22,
+          "officialScore": 21,
+          "points": 21.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j4/12034-montauban-beziers/statistiques-du-match",
+      "date": "2026-09-18",
+      "teams": [
+        {
+          "clubId": "fr-montauban",
+          "players": 22,
+          "officialScore": 50,
+          "points": 50.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-beziers",
+          "players": 23,
+          "officialScore": 21,
+          "points": 21.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j4/12035-narbonne-angouleme/statistiques-du-match",
+      "date": "2026-09-18",
+      "teams": [
+        {
+          "clubId": "fr-narbonne",
+          "players": 23,
+          "officialScore": 31,
+          "points": 31.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-angouleme",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j4/12036-nevers-biarritz/statistiques-du-match",
+      "date": "2026-09-18",
+      "teams": [
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 22,
+          "points": 22.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j4/12038-valence-romans-provence-rugby/statistiques-du-match",
+      "date": "2026-09-18",
+      "teams": [
+        {
+          "clubId": "fr-valence-romans",
+          "players": 23,
+          "officialScore": 23,
+          "points": 23.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j4/12031-agen-oyonnax/statistiques-du-match",
+      "date": "2026-09-18",
+      "teams": [
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 19,
+          "points": 19.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j5/12043-brive-colomiers/statistiques-du-match",
+      "date": "2026-09-24",
+      "teams": [
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 41,
+          "points": 41.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j5/12041-beziers-narbonne/statistiques-du-match",
+      "date": "2026-09-25",
+      "teams": [
+        {
+          "clubId": "fr-beziers",
+          "players": 23,
+          "officialScore": 34,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        },
+        {
+          "clubId": "fr-narbonne",
+          "players": 23,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j5/12039-provence-rugby-aurillac/statistiques-du-match",
+      "date": "2026-09-25",
+      "teams": [
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j5/12040-angouleme-agen/statistiques-du-match",
+      "date": "2026-09-25",
+      "teams": [
+        {
+          "clubId": "fr-angouleme",
+          "players": 23,
+          "officialScore": 36,
+          "points": 36.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 22,
+          "points": 22.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j5/12042-biarritz-montauban/statistiques-du-match",
+      "date": "2026-09-25",
+      "teams": [
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 32,
+          "points": 32.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-montauban",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j5/12044-dax-nice/statistiques-du-match",
+      "date": "2026-09-25",
+      "teams": [
+        {
+          "clubId": "fr-dax",
+          "players": 23,
+          "officialScore": 45,
+          "points": 45.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-nice",
+          "players": 23,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j5/12046-oyonnax-nevers/statistiques-du-match",
+      "date": "2026-09-25",
+      "teams": [
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 56,
+          "points": 56.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 35,
+          "points": 35.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j5/12045-grenoble-valence-romans/statistiques-du-match",
+      "date": "2026-09-25",
+      "teams": [
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-valence-romans",
+          "players": 23,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j6/12051-montauban-brive/statistiques-du-match",
+      "date": "2026-10-08",
+      "teams": [
+        {
+          "clubId": "fr-montauban",
+          "players": 22,
+          "officialScore": 32,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 5.0,
+          "scoringValidation": "unassigned-team-points"
+        },
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j6/12048-angouleme-provence-rugby/statistiques-du-match",
+      "date": "2026-10-09",
+      "teams": [
+        {
+          "clubId": "fr-angouleme",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j6/12047-agen-dax/statistiques-du-match",
+      "date": "2026-10-09",
+      "teams": [
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 49,
+          "points": 49.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-dax",
+          "players": 23,
+          "officialScore": 30,
+          "points": 30.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j6/12052-narbonne-oyonnax/statistiques-du-match",
+      "date": "2026-10-09",
+      "teams": [
+        {
+          "clubId": "fr-narbonne",
+          "players": 23,
+          "officialScore": 14,
+          "points": 14.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 57,
+          "points": 57.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j6/12053-nice-nevers/statistiques-du-match",
+      "date": "2026-10-09",
+      "teams": [
+        {
+          "clubId": "fr-nice",
+          "players": 23,
+          "officialScore": 32,
+          "points": 32.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j6/12054-valence-romans-beziers/statistiques-du-match",
+      "date": "2026-10-09",
+      "teams": [
+        {
+          "clubId": "fr-valence-romans",
+          "players": 23,
+          "officialScore": 47,
+          "points": 47.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-beziers",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j6/12049-aurillac-biarritz/statistiques-du-match",
+      "date": "2026-10-09",
+      "teams": [
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 52,
+          "points": 52.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 33,
+          "points": 33.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j6/12050-grenoble-colomiers/statistiques-du-match",
+      "date": "2026-10-09",
+      "teams": [
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 23,
+          "points": 23.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j7/12062-oyonnax-valence-romans/statistiques-du-match",
+      "date": "2026-10-16",
+      "teams": [
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 51,
+          "points": 51.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-valence-romans",
+          "players": 23,
+          "officialScore": 25,
+          "points": 18.0,
+          "tries": 2.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j7/12055-beziers-aurillac/statistiques-du-match",
+      "date": "2026-10-16",
+      "teams": [
+        {
+          "clubId": "fr-beziers",
+          "players": 23,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 25,
+          "points": 25.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j7/12058-colomiers-narbonne/statistiques-du-match",
+      "date": "2026-10-16",
+      "teams": [
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 49,
+          "points": 49.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-narbonne",
+          "players": 21,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j7/12059-dax-montauban/statistiques-du-match",
+      "date": "2026-10-16",
+      "teams": [
+        {
+          "clubId": "fr-dax",
+          "players": 22,
+          "officialScore": 54,
+          "points": 49.0,
+          "tries": 6.0,
+          "unassignedPoints": 5.0,
+          "scoringValidation": "unassigned-team-points"
+        },
+        {
+          "clubId": "fr-montauban",
+          "players": 22,
+          "officialScore": 28,
+          "points": 21.0,
+          "tries": 3.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j7/12061-nice-provence-rugby/statistiques-du-match",
+      "date": "2026-10-16",
+      "teams": [
+        {
+          "clubId": "fr-nice",
+          "players": 22,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 34,
+          "points": 34.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j7/12056-biarritz-angouleme/statistiques-du-match",
+      "date": "2026-10-16",
+      "teams": [
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-angouleme",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j7/12060-nevers-agen/statistiques-du-match",
+      "date": "2026-10-16",
+      "teams": [
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 7,
+          "points": 7.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 38,
+          "points": 31.0,
+          "tries": 4.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j7/12057-brive-grenoble/statistiques-du-match",
+      "date": "2026-10-17",
+      "teams": [
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 14,
+          "points": 14.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j8/12068-montauban-oyonnax/statistiques-du-match",
+      "date": "2026-10-22",
+      "teams": [
+        {
+          "clubId": "fr-montauban",
+          "players": 22,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 23,
+          "points": 23.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j8/12069-narbonne-brive/statistiques-du-match",
+      "date": "2026-10-23",
+      "teams": [
+        {
+          "clubId": "fr-narbonne",
+          "players": 23,
+          "officialScore": 34,
+          "points": 34.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 26,
+          "points": 19.0,
+          "tries": 3.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j8/12063-agen-nice/statistiques-du-match",
+      "date": "2026-10-23",
+      "teams": [
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-nice",
+          "players": 23,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j8/12065-angouleme-dax/statistiques-du-match",
+      "date": "2026-10-23",
+      "teams": [
+        {
+          "clubId": "fr-angouleme",
+          "players": 23,
+          "officialScore": 49,
+          "points": 49.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-dax",
+          "players": 22,
+          "officialScore": 7,
+          "points": 7.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j8/12066-aurillac-nevers/statistiques-du-match",
+      "date": "2026-10-23",
+      "teams": [
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 41,
+          "points": 41.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 16,
+          "points": 16.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j8/12070-valence-romans-colomiers/statistiques-du-match",
+      "date": "2026-10-23",
+      "teams": [
+        {
+          "clubId": "fr-valence-romans",
+          "players": 23,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 23,
+          "points": 23.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j8/12064-provence-rugby-beziers/statistiques-du-match",
+      "date": "2026-10-23",
+      "teams": [
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 54,
+          "points": 54.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-beziers",
+          "players": 22,
+          "officialScore": 3,
+          "points": 3.0,
+          "tries": 0.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j8/12067-grenoble-biarritz/statistiques-du-match",
+      "date": "2026-10-23",
+      "teams": [
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 10,
+          "points": 10.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j9/12074-dax-provence-rugby/statistiques-du-match",
+      "date": "2026-10-29",
+      "teams": [
+        {
+          "clubId": "fr-dax",
+          "players": 23,
+          "officialScore": 16,
+          "points": 16.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 16,
+          "points": 16.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j9/12073-colomiers-agen/statistiques-du-match",
+      "date": "2026-10-30",
+      "teams": [
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 37,
+          "points": 37.0,
+          "tries": 6.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 19,
+          "points": 19.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j9/12071-beziers-grenoble/statistiques-du-match",
+      "date": "2026-10-30",
+      "teams": [
+        {
+          "clubId": "fr-beziers",
+          "players": 23,
+          "officialScore": 25,
+          "points": 25.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 27,
+          "points": 27.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j9/12075-montauban-narbonne/statistiques-du-match",
+      "date": "2026-10-30",
+      "teams": [
+        {
+          "clubId": "fr-montauban",
+          "players": 22,
+          "officialScore": 33,
+          "points": 33.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-narbonne",
+          "players": 22,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j9/12077-nice-aurillac/statistiques-du-match",
+      "date": "2026-10-30",
+      "teams": [
+        {
+          "clubId": "fr-nice",
+          "players": 23,
+          "officialScore": 29,
+          "points": 29.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 20,
+          "points": 20.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j9/12078-oyonnax-angouleme/statistiques-du-match",
+      "date": "2026-10-30",
+      "teams": [
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 22,
+          "points": 22.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-angouleme",
+          "players": 23,
+          "officialScore": 13,
+          "points": 13.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j9/12072-biarritz-valence-romans/statistiques-du-match",
+      "date": "2026-10-30",
+      "teams": [
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 34,
+          "points": 34.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-valence-romans",
+          "players": 22,
+          "officialScore": 30,
+          "points": 30.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j9/12076-nevers-brive/statistiques-du-match",
+      "date": "2026-10-30",
+      "teams": [
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 12,
+          "points": 12.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 33,
+          "points": 33.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j10/12079-agen-biarritz/statistiques-du-match",
+      "date": "2026-11-05",
+      "teams": [
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 52,
+          "points": 52.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j10/12083-brive-dax/statistiques-du-match",
+      "date": "2026-11-06",
+      "teams": [
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 71,
+          "points": 71.0,
+          "tries": 10.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-dax",
+          "players": 22,
+          "officialScore": 28,
+          "points": 28.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j10/12082-aurillac-montauban/statistiques-du-match",
+      "date": "2026-11-06",
+      "teams": [
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 60,
+          "points": 60.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-montauban",
+          "players": 23,
+          "officialScore": 8,
+          "points": 8.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j10/12084-colomiers-beziers/statistiques-du-match",
+      "date": "2026-11-06",
+      "teams": [
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 53,
+          "points": 53.0,
+          "tries": 8.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-beziers",
+          "players": 23,
+          "officialScore": 19,
+          "points": 19.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j10/12085-narbonne-nice/statistiques-du-match",
+      "date": "2026-11-06",
+      "teams": [
+        {
+          "clubId": "fr-narbonne",
+          "players": 21,
+          "officialScore": 26,
+          "points": 26.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-nice",
+          "players": 23,
+          "officialScore": 29,
+          "points": 29.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j10/12086-valence-romans-nevers/statistiques-du-match",
+      "date": "2026-11-06",
+      "teams": [
+        {
+          "clubId": "fr-valence-romans",
+          "players": 23,
+          "officialScore": 46,
+          "points": 46.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 12,
+          "points": 12.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j10/12081-angouleme-grenoble/statistiques-du-match",
+      "date": "2026-11-06",
+      "teams": [
+        {
+          "clubId": "fr-angouleme",
+          "players": 22,
+          "officialScore": 30,
+          "points": 30.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 24,
+          "points": 24.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j10/12080-provence-rugby-oyonnax/statistiques-du-match",
+      "date": "2026-11-06",
+      "teams": [
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 32,
+          "points": 32.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 23,
+          "points": 23.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j11/12087-aurillac-colomiers/statistiques-du-match",
+      "date": "2026-11-20",
+      "teams": [
+        {
+          "clubId": "fr-aurillac",
+          "players": 23,
+          "officialScore": 43,
+          "points": 43.0,
+          "tries": 7.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-colomiers",
+          "players": 23,
+          "officialScore": 19,
+          "points": 19.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j11/12088-beziers-dax/statistiques-du-match",
+      "date": "2026-11-20",
+      "teams": [
+        {
+          "clubId": "fr-beziers",
+          "players": 22,
+          "officialScore": 12,
+          "points": 12.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-dax",
+          "players": 22,
+          "officialScore": 17,
+          "points": 17.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j11/12089-biarritz-narbonne/statistiques-du-match",
+      "date": "2026-11-20",
+      "teams": [
+        {
+          "clubId": "fr-biarritz",
+          "players": 23,
+          "officialScore": 31,
+          "points": 24.0,
+          "tries": 3.0,
+          "unassignedPoints": 7.0,
+          "scoringValidation": "unassigned-team-points"
+        },
+        {
+          "clubId": "fr-narbonne",
+          "players": 22,
+          "officialScore": 30,
+          "points": 30.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j11/12090-grenoble-provence-rugby/statistiques-du-match",
+      "date": "2026-11-19",
+      "teams": [
+        {
+          "clubId": "fr-grenoble",
+          "players": 23,
+          "officialScore": 41,
+          "points": 41.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-provence-rugby",
+          "players": 23,
+          "officialScore": 30,
+          "points": 30.0,
+          "tries": 3.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j11/12091-montauban-agen/statistiques-du-match",
+      "date": "2026-11-20",
+      "teams": [
+        {
+          "clubId": "fr-montauban",
+          "players": 23,
+          "officialScore": 16,
+          "points": 16.0,
+          "tries": 1.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-agen",
+          "players": 23,
+          "officialScore": 15,
+          "points": 15.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j11/12092-nevers-angouleme/statistiques-du-match",
+      "date": "2026-11-20",
+      "teams": [
+        {
+          "clubId": "fr-nevers",
+          "players": 23,
+          "officialScore": 34,
+          "points": 34.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-angouleme",
+          "players": 23,
+          "officialScore": 18,
+          "points": 18.0,
+          "tries": 2.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j11/12093-nice-valence-romans/statistiques-du-match",
+      "date": "2026-11-20",
+      "teams": [
+        {
+          "clubId": "fr-nice",
+          "players": 23,
+          "officialScore": 35,
+          "points": 35.0,
+          "tries": 4.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        },
+        {
+          "clubId": "fr-valence-romans",
+          "players": 23,
+          "officialScore": 37,
+          "points": 37.0,
+          "tries": 5.0,
+          "unassignedPoints": 0.0,
+          "scoringValidation": "exact"
+        }
+      ]
+    },
+    {
+      "sourceUrl": "https://prod2.lnr.fr/feuille-de-match/2026-2027/j11/12094-oyonnax-brive/statistiques-du-match",
+      "date": "2026-11-20",
+      "teams": [
+        {
+          "clubId": "fr-oyonnax",
+          "players": 23,
+          "officialScore": 32,
+          "points": 0.0,
+          "tries": 0.0,
+          "unassignedPoints": 32.0,
+          "scoringValidation": "unassigned-team-points"
+        },
+        {
+          "clubId": "fr-brive",
+          "players": 23,
+          "officialScore": 22,
+          "points": 0.0,
+          "tries": 0.0,
+          "unassignedPoints": 22.0,
+          "scoringValidation": "unassigned-team-points"
+        }
+      ]
+    }
+  ]
+}

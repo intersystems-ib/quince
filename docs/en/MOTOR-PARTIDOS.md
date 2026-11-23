@@ -11,3 +11,5 @@ All speeds share the same sporting rules. Pause is manual or automatic at half-t
 See [Rules](REGLAS.md), [Tactics](TACTICAS.md), [Cards](DISCIPLINA.md) and [Injuries](LESIONES.md).
 
 Before kickoff, choose **Watch** for the live match with speed controls, or **Result**. Result simulates the first half on start, stops at half-time for substitutions and tactics, then completes the second half with **Go to fulltime**. Both modes use the same engine, including injuries, cards, added time, statistics and financial settlement; Result has no intermediate pauses. The mode is fixed at kickoff and survives reloads.
+
+Selection uses the highest average for each position and a balanced bench of five forwards and three backs, with positional cover and adjustments for availability. During matches, AI teams prioritise replacing injured and tired players with the best compatible reserves, up to eight substitutions. [Tactics](TACTICAS.md) adapt to score, time and energy in live, Result and abbreviated simulations.

@@ -11,6 +11,8 @@ ClassMethod Budget(club As %String) As %Integer
 }
 ClassMethod BaseAnnualCap(club As %String) As %Integer
 {
+    set c=##class(Rugby.Service.Store).Get("Club",club)
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) quit $select(c.competitionId=1401:c.%Get("regulatorySalaryCap",1100000000),1:##class(Rugby.Service.Finance).Budget(c)*.45)
     set funding=..Budget(club),reference=##class(Rugby.Service.Finance).Budget(##class(Rugby.Service.Store).Get("Club",club)),room=+$justify((reference*.85)-(funding*.18)-(reference*.03)-1650000,0,0),limit=+$justify(reference*.65,0,0)
     if ##class(Rugby.Service.MonthlyPayroll).Active() { set t=##class(Rugby.Service.MonthlyPayroll).Totals(club),director=$select(t.director>0:t.director,1:##class(Rugby.Service.MonthlyPayroll).DirectorMonthly(35,club)),room=+$justify((reference*.85)-((t.staff+director)*12)-(reference*.03)-1650000,0,0) }
     quit $select(room<limit:room,1:limit)
@@ -49,12 +51,17 @@ ClassMethod Band(c As %DynamicObject, category As %String = "senior") As %Dynami
         elseif rank<=7 { set tier="honor-middle",low=80000,high=200000 }
         else { set tier="honor-low",low=45000,high=140000 }
     }
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) {
+        if category="academy" { set low=60000,high=180000 }
+        else { set tier=c.competition,low=$select(c.competitionId=1401:800000,1:300000),high=$select(c.competitionId=1401:4500000,1:1400000) }
+    }
     // Whole-euro weekly wages stay inside the monthly band after conversion.
     quit {"tier":(tier),"monthlyMin":(low),"monthlyMax":(high),"weeklyMin":(((low*12+5199)\5200)*100),"weeklyMax":(((high*12)\5200)*100)}
 }
 ClassMethod Reference(p As %DynamicObject, club As %String, category As %String = "senior") As %Integer
 {
     set c=##class(Rugby.Service.Store).Get("Club",club),band=..Band(c,category),avg=c.%Get($select(category="academy":"qualityAcademyTarget",1:"qualitySeniorTarget"),60),score=##class(Rugby.Simulation.Engine).Clamp((##class(Rugby.Service.Development).Average(p)-avg+10)/20,0,1)
+    if ##class(Rugby.Service.Leagues).French(c.competitionId)&&(category="senior") quit ##class(Rugby.Service.MonthlyPayroll).Weekly(##class(Rugby.Seed.France).Wage(p.position)/12*$select(c.competitionId=1401:1,1:.36)*(.6+(.8*score)))
     quit (band.weeklyMin+((band.weeklyMax-band.weeklyMin)*(score**1.35)))\100*100
 }
 ClassMethod Used(club As %String, excluding As %String = "") As %Integer
@@ -72,7 +79,9 @@ ClassMethod CanPay(club As %String, pid As %String, wage As %Integer) As %Boolea
 ClassMethod MedicalWeeklyCap(club As %String) As %Integer
 {
     if ##class(Rugby.Service.SalaryBudget).Percent(club)>0 quit ..WeeklyCap(club)
-    set c=##class(Rugby.Service.Store).Get("Club",club),budget=##class(Rugby.Service.Finance).Budget(c),t=##class(Rugby.Service.MonthlyPayroll).Totals(club),director=$select(t.director>0:t.director,1:##class(Rugby.Service.MonthlyPayroll).DirectorMonthly(35,club)),room=(budget*.9)-((t.staff+director)*12)-(budget*.03)-1650000,limit=budget*.7,annual=$select(room<limit:room,1:limit)
+    set c=##class(Rugby.Service.Store).Get("Club",club)
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) quit ..WeeklyCap(club)
+    set budget=##class(Rugby.Service.Finance).Budget(c),t=##class(Rugby.Service.MonthlyPayroll).Totals(club),director=$select(t.director>0:t.director,1:##class(Rugby.Service.MonthlyPayroll).DirectorMonthly(35,club)),room=(budget*.9)-((t.staff+director)*12)-(budget*.03)-1650000,limit=budget*.7,annual=$select(room<limit:room,1:limit)
     quit (annual\5200)*100
 }
 ClassMethod CanPayMedical(club As %String, pid As %String, wage As %Integer) As %Boolean
@@ -82,6 +91,8 @@ ClassMethod CanPayMedical(club As %String, pid As %String, wage As %Integer) As 
 }
 ClassMethod Check(club As %String, pid As %String, wage As %Integer, fee As %Integer = 0)
 {
+    set c=##class(Rugby.Service.Store).Get("Club",club)
+    if (c.competitionId=1401)&&((..Used(club,pid)+wage)*52>c.regulatorySalaryCap) do ##class(Rugby.Service.Store).Fail(409,"SALARY_CAP","La oferta supera el límite salarial del Top 14.")
     if ##class(Rugby.Service.SalaryBudget).Percent(club)>0 {
         if '##class(Rugby.Service.SalaryBudget).Affordable(club,pid,wage,fee) do ##class(Rugby.Service.Store).Fail(409,"PAYROLL_LIMIT","La prima y el salario comprometen la reserva prevista. Revisa el margen en Finanzas.")
     }
@@ -96,8 +107,10 @@ ClassMethod Market(role As %String = "") As %DynamicArray
     set all=##class(Rugby.Service.Store).All("Coach","clubId",""),club=##class(Rugby.Service.Store).ManagedClub(),items=[],roles=##class(Rugby.Service.Staff).Roles(),valid=role=""
     for i=0:1:roles.%Size()-1 { if roles.%Get(i).id=role set valid=1 }
     if 'valid do ##class(Rugby.Service.Store).Fail(422,"STAFF_ROLE","Especialidad de entrenador desconocida.")
+    set country=##class(Rugby.Service.PersonnelMarkets).Country(club)
     for i=0:1:all.%Size()-1 {
         set p=all.%Get(i)
+        if p.%Get("marketCountry","ES")'=country continue
         if (role'="")&&(p.role'=role) continue
         if ..Active() set p.weeklyWage=..StaffWage(p.role,p.quality,club)
         set p.monthlyWage=##class(Rugby.Service.MonthlyPayroll).StaffMonthly(p.role,p.quality,club)
@@ -132,7 +145,11 @@ ClassMethod Summary(club As %String, flexible As %Boolean = 1) As %DynamicObject
     set b=##class(Rugby.Service.Finance).Budget(##class(Rugby.Service.Store).Get("Club",club)),weekly=senior+academy,coaches=##class(Rugby.Service.Staff).View(club),o=##class(Rugby.Service.Finance).Office(club),plan=##class(Rugby.Service.Store).Get("TrainingPlan",club),annual=weekly*53,reference=b,other=(coaches.weeklyWage+o.director.%Get("weeklyWage",0))*53+(reference*.03)+1650000
     if ##class(Rugby.Service.MonthlyPayroll).Active() {
         set t=##class(Rugby.Service.MonthlyPayroll).Totals(club),annual=t.players*12,other=((t.staff+t.director)*12)+(reference*.03)+1650000,community=##class(Rugby.Service.ClubRevenue).Costs(club),other=other+community,funding=##class(Rugby.Service.ClubRevenue).Reference(##class(Rugby.Service.Store).Get("Club",club))
-        quit {"budget":(funding),"budgetReference":(funding),"weeklyLimit":(weeklyCap),"weeklyPlayers":(weekly),"weeklyAvailable":(weeklyCap-weekly),"monthlyLimit":(cap/12),"monthlyPlayers":(t.players),"monthlyStaff":(t.staff),"monthlyDirector":(t.director),"monthlyAvailable":((cap/12)-t.players),"annualPlayers":(annual),"annualSenior":(t.senior*12),"annualAcademy":(t.academy*12),"annualStaff":(t.staff*12),"annualDirector":(t.director*12),"annualTraining":0,"annualRegistrations":(+$justify(reference*.03,0,0)),"annualTravelReserve":1650000,"annualSafetyReserve":(+$justify(funding*.02,0,0)),"annualCommunityCosts":(community),"annualProjectedCosts":(annual+other),"annualMargin":(funding-annual-other),"weeks":52,"paymentsPerYear":12,"payPeriod":"monthly","modelVersion":(..#VERSION)}
+        set annualStaff=t.staff*12,annualDirector=t.director*12,annualSenior=t.senior*12,annualAcademy=t.academy*12,annualRegistrations=+$justify(reference*.03,0,0),annualTravel=1650000
+        if ##class(Rugby.Service.Leagues).French(##class(Rugby.Service.Store).Get("Club",club).competitionId) {
+            set projection=##class(Rugby.Service.FrenchFinanceBalance).Wages(##class(Rugby.Service.Store).Get("Club",club),t),annual=projection.players,annualStaff=projection.staff,annualDirector=projection.director,annualRegistrations=projection.registration,annualTravel=projection.travel,other=annualStaff+annualDirector+annualRegistrations+annualTravel+community,annualSenior=$select(t.players>0:+$justify(annual*t.senior/t.players,0,0),1:0),annualAcademy=annual-annualSenior
+        }
+        quit {"budget":(funding),"budgetReference":(funding),"weeklyLimit":(weeklyCap),"weeklyPlayers":(weekly),"weeklyAvailable":(weeklyCap-weekly),"monthlyLimit":(cap/12),"monthlyPlayers":(t.players),"monthlyStaff":(t.staff),"monthlyDirector":(t.director),"monthlyAvailable":((cap/12)-t.players),"annualPlayers":(annual),"annualSenior":(annualSenior),"annualAcademy":(annualAcademy),"annualStaff":(annualStaff),"annualDirector":(annualDirector),"annualTraining":0,"annualRegistrations":(annualRegistrations),"annualTravelReserve":(annualTravel),"annualSafetyReserve":(+$justify(funding*.02,0,0)),"annualCommunityCosts":(community),"annualProjectedCosts":(annual+other),"annualMargin":(funding-annual-other),"weeks":52,"paymentsPerYear":12,"payPeriod":"monthly","modelVersion":(..#VERSION)}
     }
     quit {"budget":(b),"budgetReference":(reference),"weeklyLimit":(weeklyCap),"weeklyPlayers":(weekly),"weeklyAvailable":(weeklyCap-weekly),"annualPlayers":(annual),"annualSenior":(senior*53),"annualAcademy":(academy*53),"annualStaff":(coaches.weeklyWage*53),"annualDirector":(o.director.%Get("weeklyWage",0)*53),"annualTraining":0,"annualRegistrations":(+$justify(reference*.03,0,0)),"annualTravelReserve":1650000,"annualSafetyReserve":(+$justify(b*.15,0,0)),"annualProjectedCosts":(annual+other),"annualMargin":(b-annual-other),"weeks":53,"modelVersion":(..#VERSION)}
 }
@@ -143,7 +160,9 @@ ClassMethod Initialize() As %DynamicObject
     if ..Active() quit report
     set clubs=##class(Rugby.Service.Store).All("Club")
     for i=0:1:clubs.%Size()-1 {
-        set c=clubs.%Get(i),all=##class(Rugby.Service.Store).All("Player","clubId",c.id),changes=[],target=(..WeeklyCap(c.id)*.95)\100,minimum=0,preferred=0,entries={},ranges={}
+        set c=clubs.%Get(i)
+        if ##class(Rugby.Service.Leagues).French(c.competitionId) continue
+        set all=##class(Rugby.Service.Store).All("Player","clubId",c.id),changes=[],target=(..WeeklyCap(c.id)*.95)\100,minimum=0,preferred=0,entries={},ranges={}
         for j=0:1:all.%Size()-1 {
             set p=all.%Get(j),quality=##class(Rugby.Service.Development).Average(p),r=ranges.%Get(p.category)
             if '$isobject(r) { set r={"min":(quality),"max":(quality)} do ranges.%Set(p.category,r) }

@@ -34,3 +34,11 @@ test('composes translated competition labels without changing match identifiers'
  setLanguage('en');expect(fixtureLabel({stage:'regular',round:4})).toBe('League · Round 4');expect(fixtureShortLabel({stage:'regular',round:4})).toBe('R4');
  setLanguage('fr');expect(fixtureLabel({stage:'cup-group',groupId:'A',round:2,competitionType:'cup'})).toBe('Copa del Rey · Poule A · Journée 2');expect(fixtureLabel({stage:'final',competitionType:'cup'})).toBe('Copa del Rey · Finale');
 });
+
+
+test('localizes LNR nationalities in player details and lists',()=>{
+ setLanguage('es');expect(tr('Francia')).toBe('Francia');expect(tr('Nueva Zelanda')).toBe('Nueva Zelanda');
+ setLanguage('en');expect(tr('Francia')).toBe('France');expect(tr('Fiyi')).toBe('Fiji');expect(tr('República Democrática del Congo')).toBe('Democratic Republic of the Congo');
+ setLanguage('fr');expect(tr('Nueva Zelanda')).toBe('Nouvelle-Zélande');expect(tr('Escocia')).toBe('Écosse');expect(tr('Sudáfrica')).toBe('Afrique du Sud');
+ expect(tr('Apertura · 25 años · Nueva Zelanda · Primer equipo')).toContain('Nouvelle-Zélande');
+});

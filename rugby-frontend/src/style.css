@@ -273,3 +273,7 @@
   .finance-detail-card > .card-top h3 { font-size:15px; }
   .finance-detail-card dl > div { gap:10px; font-size:11px; }
 }
+
+.playoff-bracket-six{grid-template-columns:repeat(3,minmax(0,1fr))}@media(max-width:1100px){.playoff-bracket-six{grid-template-columns:minmax(0,1fr)}}
+
+.competition-access{margin-top:28px;max-width:560px}.competition-access>.muted{font-size:12px;margin-bottom:16px}.competition-table tr.access-place>td{background:#fbf0dc}

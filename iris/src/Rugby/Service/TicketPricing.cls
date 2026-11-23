@@ -8,12 +8,13 @@ ClassMethod Rank(c As %DynamicObject, date As %String) As %Integer
         set table=##class(Rugby.Service.Competition).Table(comp)
         for i=0:1:table.%Size()-1 { set row=table.%Get(i) if (row.clubId=c.id)&&(row.played>=3) { set rank=row.rank quit } }
     }
-    quit ##class(Rugby.Simulation.Engine).Clamp(rank,1,10)
+    quit ##class(Rugby.Simulation.Engine).Clamp(rank,1,##class(Rugby.Service.Leagues).Config(c.competitionId).teams)
 }
 ClassMethod Recommend(f As %DynamicObject) As %DynamicObject
 {
-    set home=##class(Rugby.Service.Store).Get("Club",f.homeId),away=##class(Rugby.Service.Store).Get("Club",f.awayId),date=f.%Get("date",home.date),stage=f.%Get("stage","friendly"),hr=..Rank(home,date),ar=..Rank(away,date),base=$select(home.competitionId=416:1200,1:900),factor=1,reasons=[]
+    set home=##class(Rugby.Service.Store).Get("Club",f.homeId),away=##class(Rugby.Service.Store).Get("Club",f.awayId),date=f.%Get("date",home.date),stage=f.%Get("stage","friendly"),hr=..Rank(home,date),ar=..Rank(away,date),base=$select(home.competitionId=1401:3000,home.competitionId=1402:1800,home.competitionId=416:1200,1:900),factor=1,reasons=[]
     if stage="friendly" { set factor=.65 do reasons.%Push("Partido amistoso") }
+    elseif stage="access" { set factor=2.3 do reasons.%Push("Access Match") }
     elseif stage="final" { set factor=2.5 do reasons.%Push("Final") }
     elseif stage="semifinal" { set factor=1.85 do reasons.%Push("Semifinal") }
     elseif stage="quarterfinal" { set factor=1.5 do reasons.%Push("Cuartos de final") }

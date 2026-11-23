@@ -19,3 +19,5 @@ HTTP integrations use `RUGBY_API_BASE`; outputs go to `RUGBY_TEST_ARTIFACTS`. Sc
 Visual checks cover desktop and mobile line-ups, training, contracts, calendar, finances, match controls and languages.
 
 From `rugby-frontend`, `npx playwright test advanceUntilEvent.spec.ts` checks meetings, matches, cancellation, schedule refresh, errors and day limits. `npx playwright test i18n.spec.ts` checks language catalogues, placeholders, terminology and API errors.
+
+`Rugby.Test.AdaptiveTactics` checks leads, comebacks, fatigue, independent reviews and reproducible abbreviated scores. `Rugby.Test.AISubstitutions` covers compatible replacements, exclusions, limits and final energy. Result mode and statistics tests verify integration.

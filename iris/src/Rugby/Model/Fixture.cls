@@ -2,9 +2,9 @@ Class Rugby.Model.Fixture Extends %Persistent
 {
 Property Key As %String(MAXLEN = 250) [ Required ];
 Index StableKey On Key [ IdKey ];
-Property Club As %String;
+Property Club As %String(MAXLEN = 250);
 Index ClubIndex On Club;
-Property Match As %String;
+Property Match As %String(MAXLEN = 250);
 Index MatchIndex On Match;
 Property Sequence As %Integer;
 Property Version As %Integer [ InitialExpression = 0 ];

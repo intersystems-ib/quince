@@ -2,7 +2,7 @@
 
 [Español](README.md) · [English](README.en.md) · [Français](README.fr.md)
 
-A rugby management game in Spanish, English and French, built with React, TypeScript and InterSystems IRIS. It includes twenty Honor and Élite clubs, 460 real player identities and private games with JWT authentication. Attributes, contracts and finances are simulated.
+A rugby management game in Spanish, English and French, built with React, TypeScript and InterSystems IRIS. It includes fifty Honor, Élite, Top 14 and Pro D2 clubs, with real FER and LNR player identities and private games with JWT authentication. Attributes, contracts and finances are simulated.
 
 ## Getting started
 
@@ -26,6 +26,8 @@ Create an account and a game, then choose a division and club. The season starts
 Live matches support pause, speed controls, substitutions and tactical changes, with automatic pauses at half-time and for your team's injuries. Competition separates standings, fixtures and player statistics into tabs. Wages are paid at month-end; the finance director negotiates September income.
 
 Your club displays injuries, player and staff signings, and retirement announcements from all clubs over the last seven in-game days. The language selector remembers your choice without reloading the game.
+
+[Automatic selection](docs/en/PLANTILLAS-REALES.md) chooses starters and a balanced bench. AI teams substitute injured or tired players and [adapt tactics](docs/en/TACTICAS.md) to score, time and energy. **Result** plays each half in one step, with half-time changes; **Watch** retains live play.
 
 ## Development and tests
 
@@ -59,3 +61,5 @@ The `iris-data` volume keeps games when containers stop or are recreated. `./scr
 - [API specification](docs/openapi.json): regenerate with `python scripts/generate_openapi.py`.
 
 [Full documentation index](docs/en/README.md).
+
+[Top 14 / Pro D2](docs/LIGAS-FRANCESAS.md).

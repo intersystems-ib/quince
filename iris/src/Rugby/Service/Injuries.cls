@@ -115,22 +115,7 @@ ClassMethod MatchTick(m As %DynamicObject, elapsed As %Integer)
 }
 ClassMethod Replace(m As %DynamicObject, side As %String)
 {
-    set players=m.%Get(side_"Players")
-    for i=0:1:players.%Size()-1 {
-        set out=players.%Get(i)
-        if (out.status'="injured")||out.%Get("substituted",0)||(m.%Get(side_"Subs",0)>=8) continue
-        set best="",score=-1
-        for j=0:1:players.%Size()-1 {
-            set candidate=players.%Get(j)
-            if candidate.status'="bench" continue
-            if (candidate.naturalPosition<=8)'=(out.position<=8) continue
-            set value=candidate.energy+$select(candidate.naturalPosition=out.position:100,1:0)
-            if value>score set score=value,best=candidate
-        }
-        if '$isobject(best) continue
-        set out.substituted=1,best.status="field",best.position=out.position
-        do ##class(Rugby.Simulation.Performance).ApplyMorale(best)
-        do m.%Set(side_"Subs",m.%Get(side_"Subs",0)+1)
-    }
+    set changes=##class(Rugby.Simulation.Substitutions).Plan(m,side,1)
+    do ##class(Rugby.Simulation.Substitutions).Apply(m,side,changes)
 }
 }

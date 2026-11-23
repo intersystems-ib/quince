@@ -13,11 +13,12 @@ ClassMethod BaseStaff(role As %String, quality As %Numeric, club As %String) As 
 {
     set c=##class(Rugby.Service.Store).Get("Club",club),roles=##class(Rugby.Service.Staff).Roles(),weight=80000,total=0
     for i=0:1:roles.%Size()-1 { set r=roles.%Get(i),total=total+r.baseWeeklyWage if r.id=role set weight=r.baseWeeklyWage }
-    quit ##class(Rugby.Service.Finance).Budget(c)*.225/12*weight/total*##class(Rugby.Service.Staff).Multiplier(quality)
+    quit ##class(Rugby.Service.Finance).Budget(c)*$select(##class(Rugby.Service.Leagues).French(c.competitionId):.05,1:.225)/12*weight/total*##class(Rugby.Service.Staff).Multiplier(quality)
 }
 ClassMethod BaseDirector(quality As %Numeric, club As %String) As %Numeric
 {
-    quit ##class(Rugby.Service.Finance).Budget(##class(Rugby.Service.Store).Get("Club",club))*.03/12*(20000+(quality*500))/70000
+    set c=##class(Rugby.Service.Store).Get("Club",club)
+    quit ##class(Rugby.Service.Finance).Budget(c)*$select(##class(Rugby.Service.Leagues).French(c.competitionId):.003,1:.03)/12*(20000+(quality*500))/70000
 }
 ClassMethod PlayerTotal(club As %String) As %Integer
 {

@@ -2,7 +2,7 @@
 
 [Español](README.md) · [English](README.en.md) · [Français](README.fr.md)
 
-Mánager de rugby en español, inglés y francés con React, TypeScript e InterSystems IRIS. Incluye veinte clubes de Honor y Élite, 460 identidades reales y partidas privadas con JWT. Atributos, contratos y economía son simulados.
+Mánager de rugby en español, inglés y francés con React, TypeScript e InterSystems IRIS. Incluye cincuenta clubes de Honor, Élite, Top 14 y Pro D2, con identidades reales de FER y LNR y partidas privadas con JWT. Atributos, contratos y economía son simulados.
 
 ## Arranque
 
@@ -26,6 +26,8 @@ Crea una cuenta y una partida, elige división y club. La temporada empieza el 1
 El directo admite pausa, velocidades, sustituciones y cambios tácticos; se detiene al descanso y ante lesiones propias. Competición reúne regular y playoffs. Las nóminas se pagan al final de mes y el financiero negocia los ingresos de septiembre.
 
 «Tu club» reúne las lesiones, fichajes de jugadores y empleados y anuncios de retirada de todos los clubes en los últimos siete días de la partida.
+
+La [alineación automática](docs/PLANTILLAS-REALES.md) selecciona titulares y un banquillo equilibrado. La IA realiza sustituciones por lesión o cansancio y [ajusta sus tácticas](docs/TACTICAS.md) al marcador, el tiempo y la energía. **Resultado** permite disputar cada parte de una vez, con cambios al descanso; **Visualizar** conserva el directo.
 
 ## Desarrollo y pruebas
 
@@ -58,3 +60,5 @@ El volumen `iris-data` conserva las partidas al detener o recrear contenedores. 
 - [API](docs/openapi.json): regenerar con `python scripts/generate_openapi.py`.
 
 [Índice completo de documentación](docs/README.md) · [Idiomas](docs/IDIOMAS.md) · [Almacenamiento](docs/almacenamiento.md).
+
+[Top 14 / Pro D2](docs/LIGAS-FRANCESAS.md).

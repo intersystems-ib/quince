@@ -25,7 +25,7 @@ ClassMethod Resolve(method As %String, resource As %String, id As %String, child
         if (method="GET")&&(child="") quit ##class(Rugby.Service.OpponentPreparation).Report(id,%RugbyQuery.%Get("lineupId"))
         if (method="POST")&&(child="apply") quit ##class(Rugby.Service.OpponentPreparation).Apply(id,b,key)
     }
-    if (resource="transfer-market")&&(method="GET") quit ..Paginate(##class(Rugby.Service.Transfers).Market())
+    if (resource="transfer-market")&&(method="GET") quit ..Paginate(##class(Rugby.Service.Transfers).Market(%RugbyQuery.%Get("divisionId",0)))
     if resource="negotiations" {
         if (method="GET")&&(id="") quit ..Paginate(##class(Rugby.Service.Transfers).List())
         if (method="GET")&&(child="") quit ##class(Rugby.Service.Transfers).Get(id)

@@ -71,7 +71,7 @@ ClassMethod Foul(m As %DynamicObject, side As %String, participants As %DynamicA
 }
 ClassMethod Aggregate(f As %DynamicObject, rng As %DynamicObject) As %DynamicObject
 {
-    set m={"clock":0,"status":"first","fixtureId":(f.id),"date":(f.%Get("date")),"rng":(rng.rng),"aggregate":true,"disciplineEvents":[],"injuryEvents":[],"homeSubs":0,"awaySubs":0,"homeStats":{},"awayStats":{}},seconds={"home":0,"away":0},participants=[],injuries=[]
+    set m={"clock":0,"period":1,"homeScore":0,"awayScore":0,"status":"first","fixtureId":(f.id),"date":(f.%Get("date")),"rng":(rng.rng),"aggregate":true,"disciplineEvents":[],"injuryEvents":[],"homeSubs":0,"awaySubs":0,"homeStats":{},"awayStats":{}},seconds={"home":0,"away":0},powerSeconds={"home":0,"away":0},baseline={"home":0,"away":0},participants=[],injuries=[]
     for side="home","away" {
         set l=##class(Rugby.Service.Store).Get("Lineup",f.%Get(side_"Id")_"-default"),players=[]
         for i=0:1:14+l.bench.%Size() {
@@ -79,30 +79,64 @@ ClassMethod Aggregate(f As %DynamicObject, rng As %DynamicObject) As %DynamicObj
             set s={"playerId":(p.id),"name":(p.name),"status":($select(starter:"field",1:"bench")),"attributes":(p.attributes),"playedSeconds":0,"position":($select(starter:i+1,1:p.position)),"naturalPosition":(p.position),"secondary":(p.secondary),"energy":(p.energy),"age":(p.age),"morale":(p.morale)}
             do ##class(Rugby.Simulation.Performance).ApplyMorale(s),players.%Push(s)
         }
-        do m.%Set(side_"Players",players)
+        do m.%Set(side_"Players",players),m.%Set(side_"Tactic",f.%Get(side_"Tactic",{"tempo":"normal","defense":"normal"}))
+        for i=0:1:players.%Size()-1 {
+            set p=players.%Get(i),abilities(side,i)=##class(Rugby.Service.Development).Average(p)
+            if i<15 do baseline.%Set(side,baseline.%Get(side)+(abilities(side,i)*(.65+(.35*p.energy/100))*(.9+(.1*p.morale/100))))
+        }
+    }
+    set plans=f.%Get("tacticalAssessments",{}),m.aiTacticalAssessments={}
+    for side="home","away" {
+        set plan=plans.%Get(side),other=$select(side="home":"away",1:"home")
+        if '$isobject(plan) set plan=##class(Rugby.Simulation.Tactics).Decide(m.%Get(side_"Players"),m.%Get(other_"Players"))
+        do plans.%Set(side,plan),m.aiTacticalAssessments.%Set(side,plan)
     }
     for step=1:1:240 {
-        set m.clock=step*20
+        set m.clock=(step-1)*20
+        for side="home","away" { set changes=##class(Rugby.Simulation.Substitutions).Plan(m,side) do ##class(Rugby.Simulation.Substitutions).Apply(m,side,changes) }
+        set m.clock=step*20,window=(step=1)||(step=121)||(step=230)||((step#40)=20)||((step#60)=30)
+        if window set currentPower={},energies={},counts={}
         for side="home","away" {
-            set players=m.%Get(side_"Players")
-            for i=0:1:players.%Size()-1 { set p=players.%Get(i) if p.status="field" { set p.playedSeconds=p.playedSeconds+20 do seconds.%Set(side,seconds.%Get(side)+20) } }
+            set players=m.%Get(side_"Players"),count=0,total=0,energy=0
+            for i=0:1:players.%Size()-1 {
+                set p=players.%Get(i)
+                if p.status="field" set p.playedSeconds=p.playedSeconds+20,count=count+1,energy=energy+p.energy,total=total+(abilities(side,i)*(.65+(.35*p.energy/100))*(.9+(.1*p.morale/100)))
+            }
+            do seconds.%Set(side,seconds.%Get(side)+(20*count)),powerSeconds.%Set(side,powerSeconds.%Get(side)+(20*total))
+            if window do currentPower.%Set(side,total),energies.%Set(side,energy),counts.%Set(side,count)
             if ##class(Rugby.Simulation.Engine).Random(m)<.055 do ..Foul(m,side)
         }
+        if window {
+            for side="home","away" {
+                set other=$select(side="home":"away",1:"home"),count=counts.%Get(side),energy=$select(count:energies.%Get(side)/count,1:0)
+                set decision=##class(Rugby.Simulation.Tactics).Context(plans.%Get(side),energy,m.clock,m.%Get(side_"Score")-m.%Get(other_"Score"))
+                do m.%Set(side_"Tactic",decision.tactic),m.aiTacticalAssessments.%Set(side,decision)
+            }
+            do ##class(Rugby.Simulation.AggregateScoring).Step(m,step,currentPower)
+        }
+        do ##class(Rugby.Simulation.Performance).Fatigue(m,20)
         do ##class(Rugby.Service.Injuries).MatchTick(m,20)
         for side="home","away" { do ##class(Rugby.Service.Injuries).Replace(m,side) }
         do ..Returns(m)
+        if step=120 {
+            set m.period=2,m.status="second"
+            for side="home","away" { set team=m.%Get(side_"Players") for i=0:1:team.%Size()-1 { set p=team.%Get(i) if p.status="field" set p.energy=##class(Rugby.Simulation.Engine).Clamp(p.energy+7,0,100) } }
+        }
     }
+    set f.tacticalAssessments=m.aiTacticalAssessments,f.tacticalVersion=##class(Rugby.Simulation.Tactics).#VERSION
     for side="home","away" {
+        do f.%Set(side_"Tactic",m.%Get(side_"Tactic"))
+        for key="Score","Tries","Conversions","PenaltyGoals","PenaltyAttempts" { do f.%Set(side_key,m.%Get(side_key,0)) }
         do f.%Set(side_"YellowCards",m.%Get(side_"Stats").%Get("yellowCards",0)),f.%Set(side_"RedCards",m.%Get(side_"Stats").%Get("redCards",0))
         set players=m.%Get(side_"Players")
         for i=0:1:players.%Size()-1 {
             set p=players.%Get(i)
-            if (i<15)||(p.playedSeconds>0) do participants.%Push({"side":(side),"playerId":(p.playerId),"playedSeconds":(p.playedSeconds),"morale":(p.morale),"positionMoralePenalty":(p.%Get("positionMoralePenalty",0)),"positionMoraleApplied":(p.%Get("positionMoraleApplied",0))})
+            if (i<15)||(p.playedSeconds>0) do participants.%Push({"side":(side),"playerId":(p.playerId),"playedSeconds":(p.playedSeconds),"morale":(p.morale),"positionMoralePenalty":(p.%Get("positionMoralePenalty",0)),"positionMoraleApplied":(p.%Get("positionMoraleApplied",0)),"energy":(p.energy)})
             if $isobject(p.%Get("injury")) do injuries.%Push({"playerId":(p.playerId),"injury":(p.injury)})
         }
     }
     set rng.rng=m.rng,f.disciplineVersion=..#VERSION,f.redCardRule="permanent",f.disciplineEvents=m.disciplineEvents,f.disciplineParticipants=participants,f.injuryEvents=m.injuryEvents,f.matchInjuries=injuries
-    set f.statisticsPlayers={"home":(m.homePlayers),"away":(m.awayPlayers)}
-    quit {"home":(seconds.home/72000),"away":(seconds.away/72000)}
+    set f.statisticsPlayers={"home":(m.homePlayers),"away":(m.awayPlayers)},f.playerEnergyVersion=##class(Rugby.Simulation.Substitutions).#VERSION
+    quit {"home":(seconds.home/72000),"away":(seconds.away/72000),"homeStrength":($select(baseline.home>0:powerSeconds.home/(baseline.home*4800),1:0)),"awayStrength":($select(baseline.away>0:powerSeconds.away/(baseline.away*4800),1:0))}
 }
 }

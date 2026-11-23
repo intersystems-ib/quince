@@ -2,11 +2,13 @@
 
 [Español](../RIVALES.md) · [English](../en/RIVALES.md) · [Français](RIVALES.md) · [Index](README.md)
 
-Les dix-neuf clubs automatiques agissent à l'avance des jours, avec des décisions reproductibles par graine. Ils gèrent composition, entraînement, fatigue, jeunes, prolongations, employés et recrutements.
+Les clubs automatiques des quatre ligues agissent à l'avance des jours, avec des décisions reproductibles par graine. Ils gèrent composition, entraînement, fatigue, jeunes, prolongations, employés et recrutements.
+
+La sélection privilégie la meilleure moyenne par poste et un banc équilibré de cinq avants et trois trois-quarts, couvrant les postes selon les disponibilités. Pendant les matchs, l’IA remplace en priorité blessés et joueurs fatigués par les meilleurs remplaçants compatibles, dans la limite de huit changements. Les [tactiques](TACTICAS.md) s’adaptent au score, au temps et à l’énergie, en direct, en mode Résultat et en simulation abrégée.
 
 Les programmes privilégient postes, faiblesses et récupération. Les centres de formation conservent vingt jeunes et utilisent leur entraîneur. Les révisions techniques et d'effectif sont périodiques.
 
-Limites par saison : deux recrutements ordinaires, deux promotions et jusqu'à six remplaçants médicaux ; maximum 28 seniors, ou 30 avec couverture des blessures. Les absences longues sont examinées quotidiennement. Les offres se départagent par salaire puis classement et respectent trésorerie et réserve salariale. Les joueurs excédentaires peuvent être mis en vente.
+Limites par saison : deux recrutements ordinaires, deux promotions et jusqu'à six remplaçants médicaux ; les recrutements ordinaires s’arrêtent à 28 seniors et les recrutements médicaux à 30. Les absences longues sont examinées quotidiennement. Les offres se départagent par salaire puis classement et respectent trésorerie et réserve salariale. Les joueurs excédentaires peuvent être mis en vente.
 
 L'utilisateur reçoit au maximum une invitation à un amical par mois, sur un week-end libre pour les deux clubs. Calendrier permet d'accepter ou de refuser ; l'acceptation n'est jamais automatique.
 

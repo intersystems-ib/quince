@@ -177,16 +177,7 @@ ClassMethod Step(m As %DynamicObject)
         do m.%Set(side_"Score",m.%Get(side_"Score")+points)
         set p.stats.points=p.stats.points+points
     }
-    for team="home","away" {
-        set a=m.%Get(team_"Players"),tac=m.%Get(team_"Tactic")
-        for i=0:1:a.%Size()-1 {
-            set q=a.%Get(i)
-            if q.status="field" {
-                set loss=(.22+$select(tac.tempo="fast":.10,tac.tempo="slow":-.04,1:0)+$select(tac.defense="high":.06,tac.defense="low":-.04,1:0))*(1.3-(q.attributes.stamina/150))
-                set q.energy=..Clamp(q.energy-loss,0,100)
-            }
-        }
-    }
+    do ##class(Rugby.Simulation.Performance).Fatigue(m,elapsed)
     do ..Event(m,type,side,text,points,oldX,oldY,pid)
     set endPart=##class(Rugby.Simulation.PeriodEnd).Dead(m,type)
     do ##class(Rugby.Service.Injuries).MatchTick(m,elapsed)

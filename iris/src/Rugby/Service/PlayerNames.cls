@@ -8,4 +8,15 @@ ClassMethod Spanish(seed As %Integer) As %String
     if surname2>=surname1 set surname2=surname2+1
     quit $list(given,first)_" "_$list(surnames,surname1)_" "_$list(surnames,surname2)
 }
+ClassMethod French(seed As %Integer) As %String
+{
+    set given="Louis,Antoine,Hugo,Mathieu,Thomas,Maxime,Lucas,Pierre,Jules,Arthur,Clément,Paul,Théo,Alexandre,Émile,Baptiste,Nicolas,Julien,François,Gabriel,Romain,Valentin,Adrien,Simon,Victor,Étienne,Florian,Camille,Bastien,Quentin,Thibault,Félix"
+    set last="Martin,Moreau,Bernard,Petit,Dubois,Laurent,Durand,Lefèvre,Garcia,Roux,Faure,André,Mercier,Blanc,Guérin,Boyer,Chevalier,François,Legrand,Gauthier,Garnier,Bonnet,Girard,Lefebvre,Rousseau,Vincent,Muller,Lambert,Fontaine,Henry,Roussel,Masson,Leroy,Morin,Fournier,Robin,Clément,Nicolas,Dupont,Marchand"
+    quit $piece(given,",",1+(seed#32))_" "_$piece(last,",",1+((seed\32)#40))
+}
+ClassMethod ForClub(club As %DynamicObject, seed As %Integer) As %String
+{
+    if ##class(Rugby.Service.Leagues).French(club.competitionId) quit ..French(seed)
+    quit ..Spanish(seed)
+}
 }

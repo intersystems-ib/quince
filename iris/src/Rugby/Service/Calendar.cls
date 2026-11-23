@@ -13,9 +13,12 @@ ClassMethod Date(club As %String, date As %String) As %Integer
 ClassMethod Busy(club As %String, date As %String) As %Boolean
 {
     set all=##class(Rugby.Service.Store).All("Fixture","day",##class(Rugby.Service.SeasonCalendar).Day(date)),busy=##class(Rugby.Service.Cup).Reserved(##class(Rugby.Service.Competition).Year(date),date)
-    set c=##class(Rugby.Service.Store).Get("Club",club),league=##class(Rugby.Service.Store).Get("Competition","league-"_c.competitionId_"-"_##class(Rugby.Service.Competition).Year(date),0)
+    set c=##class(Rugby.Service.Store).Get("Club",club)
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) set busy=date=##class(Rugby.Service.AccessMatch).Date(##class(Rugby.Service.Competition).Year(date))
+    set league=##class(Rugby.Service.Store).Get("Competition","league-"_c.competitionId_"-"_##class(Rugby.Service.Competition).Year(date),0)
     if $isobject(league) {
         if date=league.finalDate set busy=1
+        if ##class(Rugby.Service.Leagues).French(c.competitionId)&&(date=league.%Get("quarterfinalDate")) set busy=1
         for i=0:1:league.semifinalDates.%Size()-1 { if date=league.semifinalDates.%Get(i) set busy=1 }
     }
     for i=0:1:all.%Size()-1 {
@@ -38,9 +41,10 @@ ClassMethod Options(club As %String, date As %String) As %DynamicObject
         set clubs=##class(Rugby.Service.Store).All("Club"),dh=[],elite=[],pool=[],ids=[]
         for i=0:1:clubs.%Size()-1 {
             set p=clubs.%Get(i)
+            if ##class(Rugby.Service.Leagues).Country(p)'=##class(Rugby.Service.Leagues).Country(##class(Rugby.Service.Store).Get("Club",club)) continue
             if (p.id=club)||(..Busy(p.id,date)) continue
             do pool.%Push(p.id)
-            if p.competitionId=416 { do dh.%Push(p.id) } else { do elite.%Push(p.id) }
+            if (p.competitionId=416)||(p.competitionId=1401) { do dh.%Push(p.id) } else { do elite.%Push(p.id) }
         }
         if pool.%Size()<3 do ##class(Rugby.Service.Store).Fail(409,"NO_OPPONENTS","No hay tres rivales disponibles para ese día. Elige otra fecha.")
         if dh.%Size() do ids.%Push(dh.%Get($random(dh.%Size())))

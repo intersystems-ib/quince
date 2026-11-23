@@ -3,15 +3,16 @@ Class Rugby.Service.YouthIntake Extends %RegisteredObject
 ClassMethod Build(c As %DynamicObject, year As %Integer, day As %Integer, quality As %Numeric, slot As %Integer, count As %Integer, position As %Integer) As %DynamicObject
 {
     set seed=##class(Rugby.Service.Rivals).Seed(),id=c.id_"-intake-"_year_"-"_slot,h=##class(Rugby.Service.Rivals).Hash(id,seed),serial=100000+(year*10)+slot
-    set p=##class(Rugby.Seed.Academy).Create(c,position,serial),p.id=id,p.name=##class(Rugby.Service.PlayerNames).Spanish(h),p.age=16+(h#3),p.birthDay=day-(p.age*365)-((h\3)#300),p.signedDay=day,p.payrollStartDay=day+1
+    set p=##class(Rugby.Seed.Academy).Create(c,position,serial),p.id=id,p.name=##class(Rugby.Service.PlayerNames).ForClub(c,h),p.age=16+(h#3),p.birthDay=day-(p.age*365)-((h\3)#300),p.signedDay=day,p.payrollStartDay=day+1
     if ##class(Rugby.Service.TalentScale).Factor()<1 do ##class(Rugby.Service.TalentScale).Player(p)
-    set quality=##class(Rugby.Simulation.Engine).Clamp(quality,0,100),scale=##class(Rugby.Service.TalentScale).Factor(),base=##class(Rugby.Service.Development).Average(p)
+    set quality=##class(Rugby.Simulation.Engine).Clamp(quality,0,100),scale=$select(##class(Rugby.Service.Leagues).French(c.competitionId):1,1:##class(Rugby.Service.TalentScale).Factor()),base=##class(Rugby.Service.Development).Average(p)
     set variation=((slot-((count+1)/2))*2.4)+((h#101)/50)-1,target=##class(Rugby.Simulation.Engine).Clamp(base+(((quality-50)*.18+variation)*scale),12,75*scale),offset=target-base,catalog=##class(Rugby.Service.Development).Catalog()
     for i=0:1:16 { set attr=catalog.%Get(i).id do p.attributes.%Set(attr,+$justify(##class(Rugby.Simulation.Engine).Clamp(p.attributes.%Get(attr)+offset,1,100),0,6)) }
     if ##class(Rugby.Service.Payroll).Active() set p.weeklyWage=##class(Rugby.Service.Payroll).Reference(p,c.id,"academy"),p.seniorWeeklyWage=##class(Rugby.Service.Payroll).Reference(p,c.id)
     if ##class(Rugby.Service.MonthlyPayroll).Active() set p.monthlyWage=##class(Rugby.Service.Payroll).Monthly(p.weeklyWage)
     set p.contractYears=3,p.youthIntakeYear=year,p.youthIntakeCoachQuality=quality,p.youthIntakeAverage=##class(Rugby.Service.Development).Average(p),p.average=p.youthIntakeAverage,p.form=p.average
     do ##class(Rugby.Service.Seasons).Contract(p,year+2)
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) do ##class(Rugby.Service.FrenchAcademyTerms).Arrival(c,p,year)
     quit p
 }
 ClassMethod Arrive(c As %DynamicObject, year As %Integer, day As %Integer) As %DynamicObject

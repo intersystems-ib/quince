@@ -38,6 +38,9 @@ ClassMethod Ensure(year As %Integer)
     set id="cup-"_year
     if $isobject(##class(Rugby.Service.Store).Get("Competition",id,0)) quit
     set dates=..Dates(year),exempt=..Exemptions(year),clubs=##class(Rugby.Service.Store).All("Club"),teams=[],pool=[],seed=1+(##class(Rugby.Service.Rivals).Hash(id,##class(Rugby.Service.Rivals).Seed())#2147483646),rng={"rng":(seed)}
+    set eligible=[]
+    for ci=0:1:clubs.%Size()-1 { set candidate=clubs.%Get(ci) if '##class(Rugby.Service.Leagues).French(candidate.competitionId) do eligible.%Push(candidate) }
+    set clubs=eligible
     for i=0:1:clubs.%Size()-1 { set cid=clubs.%Get(i).id do teams.%Push(cid) if (cid'=exempt.%Get(0))&&(cid'=exempt.%Get(1)) do pool.%Push(cid) }
     if teams.%Size()'=20 do ##class(Rugby.Service.Store).Fail(422,"CUP_TEAMS","La Copa necesita los veinte clubes de Honor y Élite.")
     if year=2026 { set pool=["c19","c3","c16","c13","c6","c20","c1","c14","c9","c18","c5","c17","c11","c10","c12","c8","c4","c15"] }

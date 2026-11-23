@@ -12,6 +12,7 @@ ClassMethod Apply() As %DynamicObject
     set game=##class(Rugby.Service.Store).Game(),agreements=##class(Rugby.Service.Store).All("FinancialAgreement"),seasons=##class(Rugby.Service.Store).All("FinancialSeason"),result={"gameId":(game),"agreements":0,"grants":0,"seasons":0}
     for i=0:1:agreements.%Size()-1 {
         set a=agreements.%Get(i),c=##class(Rugby.Service.Store).Get("Club",a.clubId),year=##class(Rugby.Service.Competition).Year(c.date)
+        if ##class(Rugby.Service.Leagues).French(c.competitionId) continue
         if a.endYear<year continue
         set changed=..Sponsor(a)
         if (a.%Get("kind")="grant")&&(a.%Get("fundingReductionVersion")'=..#VERSION) {
@@ -21,6 +22,7 @@ ClassMethod Apply() As %DynamicObject
     }
     for i=0:1:seasons.%Size()-1 {
         set s=seasons.%Get(i),c=##class(Rugby.Service.Store).Get("Club",s.clubId),year=##class(Rugby.Service.Competition).Year(c.date)
+        if ##class(Rugby.Service.Leagues).French(c.competitionId) continue
         if s.year<year continue
         if s.%Get("fundingReductionVersion")=..#VERSION continue
         for j=0:1:s.offers.%Size()-1 { set changed=..Sponsor(s.offers.%Get(j)) }
@@ -41,7 +43,7 @@ ClassMethod InitializeAll() As %DynamicArray
 {
     set oldGame=##class(Rugby.Service.Store).Game(),oldClub=##class(Rugby.Service.Store).ManagedClub(),reports=[]
     lock +^RugbyWrite:30
-    if '$test do ##class(Rugby.Service.Store).Fail(409,"BUSY","Ajustando subvenciones y patrocinios.")
+    if '$test do ##class(Rugby.Service.Store).Fail(409,"BUSY","Ajustando patrocinios institucionales y patrocinios.")
     try {
         tstart
         set games=["template"],gid=""

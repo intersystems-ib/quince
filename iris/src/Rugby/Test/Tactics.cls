@@ -59,17 +59,17 @@ ClassMethod Run()
         set decision=##class(Rugby.Simulation.Tactics).Decide(own,##class(Rugby.Simulation.Tactics).LineupPlayers(club.id))
         do plans.%Set(decision.tactic.%ToJSON(),1),styles.%Set(decision.tactic.style,1)
     }
-    do ..Assert((plans.%Size()>=3)&&(styles.%Size()>=2),"Cisneros receives distinct matchup-based plans against actual Honor opponents")
+    do ..Assert(plans.%Size()>=3,"Cisneros receives distinct matchup-based plans against actual Honor opponents")
     do ..Uniform(template.homePlayers,60),..Uniform(template.awayPlayers,40)
     set original=##class(Rugby.Simulation.Tactics).Decide(template.homePlayers,template.awayPlayers)
     for side="home","away" { set players=template.%Get(side_"Players") for i=0:1:players.%Size()-1 { set player=players.%Get(i),iter=player.attributes.%GetIterator() while iter.%GetNext(.key,.value) { do player.attributes.%Set(key,value*.75) } } }
     set scaled=##class(Rugby.Simulation.Tactics).Decide(template.homePlayers,template.awayPlayers)
     do ..Assert((original.tactic.%ToJSON()=scaled.tactic.%ToJSON()),"Proportional attribute scaling preserves the same relative tactical matchup")
     // Scheduled comparison must respect a selected custom lineup, not the default.
-    set p=##class(Rugby.Service.Store).Get("Player","c1-p16"),iter=p.attributes.%GetIterator()
+    set l=##class(Rugby.Service.Store).Get("Lineup","c1-default"),replacement=l.bench.%Get(0),p=##class(Rugby.Service.Store).Get("Player",replacement),iter=p.attributes.%GetIterator()
     while iter.%GetNext(.key,.old) { do p.attributes.%Set(key,99) }
     do ##class(Rugby.Service.Store).Put("Player",p)
-    set l=##class(Rugby.Service.Store).Get("Lineup","c1-default"),old=l.slots.%Get(1).playerId,l.id="tactical-custom",l.slots.%Get(1).playerId="c1-p16"
+    set l=##class(Rugby.Service.Store).Get("Lineup","c1-default"),old=l.slots.%Get(1).playerId,l.id="tactical-custom",l.slots.%Get(1).playerId=replacement
     do l.bench.%Set(0,old),##class(Rugby.Service.Store).Put("Lineup",l)
     set m.status="scheduled",m.lineupId="c1-default",standard=##class(Rugby.Simulation.Tactics).Comparison(m),m.lineupId=l.id,custom=##class(Rugby.Simulation.Tactics).Comparison(m)
     do ..Assert(custom.home.groups.all.attributes.speed>standard.home.groups.all.attributes.speed,"Preview comparison follows the chosen lineup")

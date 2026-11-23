@@ -1,4 +1,16 @@
 {
+  "ACCESS_PENDING": [
+    "The Access Match must be completed before the season can close.",
+    "L’Access Match doit être disputé avant la clôture de la saison."
+  ],
+  "STAFF_COUNTRY": [
+    "This coach belongs to another country's recruitment market.",
+    "Cet entraîneur appartient au marché de recrutement d’un autre pays."
+  ],
+  "FINANCIAL_COUNTRY": [
+    "This financial director belongs to another country's recruitment market.",
+    "Ce directeur financier appartient au marché de recrutement d’un autre pays."
+  ],
   "GAME_NOT_FOUND": [
     "This game could not be found.",
     "Cette partie est introuvable."

@@ -17,9 +17,12 @@ ClassMethod Create(club As %DynamicObject, position As %Integer, serial As %Inte
     }
     set secondary=[]
     if position>3 do secondary.%Push($select(position<=8:8,1:15))
-    set p={"id":(club.id_"-academy-"_serial),"clubId":(club.id),"nationalityCode":"ES","nationality":"España","name":(##class(Rugby.Service.PlayerNames).Spanish(##class(Rugby.Service.Rivals).Hash(club.id_"-academy-"_serial,##class(Rugby.Service.Rivals).Seed()))),"age":(age),"birthDay":(club.day-(age*365)-((serial*47)#300)),"signedDay":(club.day),"category":"academy","position":(position),"secondary":(secondary),"energy":100,"morale":100,"available":true,"recoveryDay":0,"weeklyWage":(..Wage(age,serial)),"seniorWeeklyWage":(44500+((serial#12)*1500)),"attributes":(attrs),"developmentCeiling":(80+(serial#20))}
+    set p={"id":(club.id_"-academy-"_serial),"clubId":(club.id),"nationalityCode":"ES","nationality":"España","name":(##class(Rugby.Service.PlayerNames).ForClub(club,##class(Rugby.Service.Rivals).Hash(club.id_"-academy-"_serial,##class(Rugby.Service.Rivals).Seed()))),"age":(age),"birthDay":(club.day-(age*365)-((serial*47)#300)),"signedDay":(club.day),"category":"academy","position":(position),"secondary":(secondary),"energy":100,"morale":100,"available":true,"recoveryDay":0,"weeklyWage":(..Wage(age,serial)),"seniorWeeklyWage":(44500+((serial#12)*1500)),"attributes":(attrs),"developmentCeiling":(80+(serial#20))}
     if club.%Get("qualityVersion")'="" do ##class(Rugby.Seed.Quality).Adjust(p,club.qualityAcademyOffset,club.qualityVersion,club.id)
     if ##class(Rugby.Service.Payroll).Active() set p.weeklyWage=##class(Rugby.Service.Payroll).Reference(p,club.id,"academy"),p.seniorWeeklyWage=##class(Rugby.Service.Payroll).Reference(p,club.id)
+    if ##class(Rugby.Service.Leagues).French(club.competitionId) {
+        set p.nationalityCode="FR",p.nationality="Francia",p.attributes=##class(Rugby.Seed.France).Attributes(club.%Get("qualityAcademyTarget",50),position,serial,{}),p.talentScaleVersion=##class(Rugby.Service.TalentScale).#VERSION,p.developmentCeiling=95
+    }
     quit p
 }
 ClassMethod Run()

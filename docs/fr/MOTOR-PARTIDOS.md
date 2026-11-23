@@ -11,3 +11,5 @@ Toutes les vitesses suivent les mêmes règles sportives. La pause est manuelle 
 Voir [Règles](REGLAS.md), [Tactiques](TACTICAS.md), [Cartons](DISCIPLINA.md) et [Blessures](LESIONES.md).
 
 Avant le coup d’envoi, choisissez **Visualiser** pour le direct avec réglage de vitesse ou **Résultat**. Résultat simule la première mi-temps au lancement, s’arrête à la pause pour les remplacements et la tactique, puis termine la seconde avec **Aller au résultat final**. Les deux modes utilisent le même moteur : blessures, cartons, temps additionnel, statistiques et bilan financier. Résultat ne présente pas de pauses intermédiaires. Le mode est fixé au lancement et conservé après rechargement.
+
+La sélection privilégie la meilleure moyenne par poste et un banc équilibré de cinq avants et trois trois-quarts, couvrant les postes selon les disponibilités. Pendant les matchs, l’IA remplace en priorité blessés et joueurs fatigués par les meilleurs remplaçants compatibles, dans la limite de huit changements. Les [tactiques](TACTICAS.md) s’adaptent au score, au temps et à l’énergie, en direct, en mode Résultat et en simulation abrégée.

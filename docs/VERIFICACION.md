@@ -19,3 +19,5 @@ Las integraciones HTTP utilizan `RUGBY_API_BASE` y guardan resultados en `RUGBY_
 Las comprobaciones visuales abarcan alineación, entrenamiento, contratos, calendario, finanzas y controles del partido en escritorio y móvil.
 
 `cd rugby-frontend; npx playwright test advanceUntilEvent.spec.ts` verifica paradas en reuniones y partidos, cancelación, actualización del calendario, errores y límite de días.
+
+`Rugby.Test.AdaptiveTactics` comprueba ventajas, remontadas, cansancio, revisiones independientes y marcador reproducible en simulación abreviada. `Rugby.Test.AISubstitutions` cubre relevos compatibles, exclusiones, límites y energía final. Las pruebas de Resultado y estadísticas verifican su integración.

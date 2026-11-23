@@ -1,6 +1,6 @@
 Class Rugby.Simulation.Tactics Extends %RegisteredObject
 {
-Parameter VERSION = "1.1.0";
+Parameter VERSION = "1.2.0";
 ClassMethod LineupPlayers(club As %String, lineupId As %String = "") As %DynamicArray
 {
     if lineupId="" set lineupId=club_"-default"
@@ -81,17 +81,52 @@ ClassMethod Decide(own As %DynamicArray, opponent As %DynamicArray, clock As %In
     set tempo="normal"
     if (a.energy>=70)&&(a.all.stamina>=(a.quality*.9))&&(staminaEdge>=-5)&&(((style="hands")&&(hands>3))||((hands>=5)&&(hands>=(kicking-3)))) set tempo="fast"
     if (a.energy<50)||((clock>=3000)&&(gap>0)) set tempo="slow"
-    if (clock>=3000)&&(gap<0)&&(a.energy>=45) set tempo="fast"
+
     set penalty="auto"
     if (a.energy>=70)&&(paceEdge>=10)&&(paceEdge>(packEdge+2))&&(hands>(kicking+3)) { set penalty="quick" }
     elseif (packEdge>=8)&&(lineoutEdge>=5) { set penalty="touch" }
     elseif (a.kicking>=(a.quality*1.15))&&(packEdge<5)&&(hands<=kicking) { set penalty="posts" }
-    if clock>=3600 set penalty="auto"
+    set decision={"version":(..#VERSION),"clock":(clock),"scoreGap":(gap),"tactic":{"style":(style),"tempo":(tempo),"defense":(pressure),"penaltyPriority":(penalty)},"reason":(reason),"opportunities":{"hands":(hands),"kicking":(kicking),"defense":(defenseEdge),"pace":(paceEdge),"stamina":(staminaEdge),"pack":(packEdge),"lineout":(lineoutEdge)},"ownProfile":(a),"opponentProfile":(b)}
+    quit ..Context(decision,a.energy,clock,gap)
+}
+ClassMethod Context(base As %DynamicObject, energy As %Numeric, clock As %Integer, gap As %Integer) As %DynamicObject
+{
+    // Reuse the pre-match unit comparison for abbreviated matches.
+    set decision={"version":(..#VERSION),"tactic":(base.tactic),"reason":(base.%Get("matchupReason",base.reason)),"matchupReason":(base.%Get("matchupReason",base.reason)),"opportunities":(base.opportunities),"ownProfile":(base.ownProfile),"opponentProfile":(base.opponentProfile)},a=decision.ownProfile,o=decision.opportunities
+    set style=decision.tactic.style,tempo=decision.tactic.tempo,pressure=decision.tactic.defense,penalty=decision.tactic.%Get("penaltyPriority","auto"),reason=decision.reason
+    set hands=o.hands,kicking=o.kicking,paceEdge=o.pace,packEdge=o.pack,defenseEdge=o.defense
+    if (energy<65)&&(pressure="high") set pressure="normal"
+    if (energy<55)&&(tempo="fast") set tempo="normal"
+    set remaining=$select(clock<4800:4800-clock,1:0),objective="matchup"
+    if (clock>=3600)&&(gap>0) {
+        set objective="protect",tempo="slow",penalty="posts"
+        if kicking>=(hands-5) set style="kicking"
+        if energy<65 set pressure="low"
+        set reason=reason_" Con ventaja en el último tramo, buscamos controlar el territorio y ampliar la diferencia con puntos seguros."
+    }
+    if (clock>=3600)&&(gap<0) {
+        set objective=$select(gap>=-3:"points",1:"try")
+        if energy>=55 set tempo="fast"
+        if (energy>=65)&&(defenseEdge>=-5)&&(a.all.discipline>=(a.quality*.9)) set pressure="high"
+        if objective="points" {
+            set penalty="posts",reason=reason_" La diferencia permite empatar o remontar con un golpe a palos."
+        } else {
+            set penalty=$select((energy>=65)&&(hands>(kicking+3))&&(paceEdge>packEdge):"quick",1:"touch")
+            if penalty="quick" set style="hands"
+            set reason=reason_" El marcador exige buscar el ensayo antes de que termine el partido."
+        }
+    }
+    if (clock>=4200)&&(gap=0) set objective="breakTie",penalty="posts"
+    // Fatigue takes precedence over chasing the score.
+    if energy<50 set tempo="slow"
+    if energy<45 set pressure="low"
     if tempo="fast" set reason=reason_" La energía y la resistencia permiten explotar los espacios a un ritmo alto."
     if tempo="slow" set reason=reason_" Conviene dosificar el esfuerzo y controlar el tramo restante."
     if pressure="low" set reason=reason_" Reducir la presión conserva energía ante el desequilibrio defensivo o el cansancio."
     if pressure="high" set reason=reason_" La ventaja defensiva y de movilidad permite presionar con mayor intensidad."
-    quit {"version":(..#VERSION),"clock":(clock),"scoreGap":(gap),"tactic":{"style":(style),"tempo":(tempo),"defense":(pressure),"penaltyPriority":(penalty)},"reason":(reason),"opportunities":{"hands":(hands),"kicking":(kicking),"defense":(defenseEdge),"pace":(paceEdge),"stamina":(staminaEdge),"pack":(packEdge),"lineout":(lineoutEdge)},"ownProfile":(a),"opponentProfile":(b)}
+    set decision.clock=clock,decision.scoreGap=gap,decision.energy=energy,decision.remainingSeconds=remaining,decision.objective=objective
+    set decision.tactic={"style":(style),"tempo":(tempo),"defense":(pressure),"penaltyPriority":(penalty)},decision.reason=reason
+    quit decision
 }
 ClassMethod Relative(own As %Numeric, opponent As %Numeric) As %Numeric
 {
@@ -101,13 +136,29 @@ ClassMethod Relative(own As %Numeric, opponent As %Numeric) As %Numeric
 }
 ClassMethod Adapt(m As %DynamicObject, side As %String, initial As %Boolean = 0)
 {
-    if 'initial&&(m.clock<m.%Get("aiNextTacticalReview",0)) quit
-    set other=$select(side="home":"away",1:"home"),decision=..Decide(m.%Get(side_"Players"),m.%Get(other_"Players"),##class(Rugby.Simulation.PeriodEnd).Display(m),m.%Get(side_"Score")-m.%Get(other_"Score"),m.%Get(other_"Tactic")),current=m.%Get(side_"Tactic")
-    set decision.side=side,m.aiTacticalAssessment=decision,m.aiNextTacticalReview=m.clock+600,m.tacticalVersion=..#VERSION
-    if initial { do m.%Set(side_"Tactic",decision.tactic) quit }
+    set other=$select(side="home":"away",1:"home"),clock=##class(Rugby.Simulation.PeriodEnd).Display(m),gap=m.%Get(side_"Score")-m.%Get(other_"Score"),energy=0,count=0
+    set players=m.%Get(side_"Players")
+    for i=0:1:players.%Size()-1 { set p=players.%Get(i) if p.status="field" set energy=energy+p.energy,count=count+1 }
+    set energy=$select(count:energy/count,1:0),band=$select(energy<45:0,energy<50:1,energy<55:2,energy<65:3,energy<70:4,1:5)
+    if '$isobject(m.%Get("aiTacticalReviews")) set m.aiTacticalReviews={}
+    set previous=m.aiTacticalReviews.%Get(side),review=initial||('$isobject(previous))
+    if $isobject(previous) {
+        set elapsed=m.clock-previous.clock,otherCount=##class(Rugby.Simulation.Discipline).Count(m.%Get(other_"Players"))
+        set changed=(gap'=previous.gap)||(band'=previous.band)||(count'=previous.count)||(otherCount'=previous.otherCount)
+        set urgent=(m.period'=previous.period)||(m.%Get(side_"Subs",0)'=previous.subs)
+        set review=review||(elapsed>=300)||((elapsed>=60)&&changed)||(urgent&&(elapsed>0))
+        if (elapsed>0)&&(m.%Get("aiNextTacticalReview",1)=0) set review=1
+    }
+    if 'review quit
+    set decision=..Decide(players,m.%Get(other_"Players"),clock,gap,m.%Get(other_"Tactic")),current=m.%Get(side_"Tactic")
+    do m.aiTacticalReviews.%Set(side,{"clock":(m.clock),"gap":(gap),"band":(band),"count":(count),"otherCount":(##class(Rugby.Simulation.Discipline).Count(m.%Get(other_"Players"))),"period":(m.period),"subs":(m.%Get(side_"Subs",0))})
+    if '$isobject(m.%Get("aiTacticalAssessments")) set m.aiTacticalAssessments={}
+    set decision.side=side,m.aiTacticalAssessment=decision,m.aiNextTacticalReview=m.clock+300,m.tacticalVersion=..#VERSION
+    do m.aiTacticalAssessments.%Set(side,decision)
+    if initial||m.%Get("aggregate",0) { do m.%Set(side_"Tactic",decision.tactic) quit }
     set chosen=decision.tactic
     if (chosen.style=current.style)&&(chosen.tempo=current.tempo)&&(chosen.defense=current.defense)&&(chosen.%Get("penaltyPriority","auto")=current.%Get("penaltyPriority","auto")) quit
-    set command=##class(Rugby.Service.Matches).Command(m.id,{"type":"tactic","tactic":(chosen),"assessment":(decision)},"adaptive-"_m.clock,side,"ai",m)
+    set command=##class(Rugby.Service.Matches).Command(m.id,{"type":"tactic","tactic":(chosen),"assessment":(decision)},"adaptive-"_side_"-"_m.clock,side,"ai",m)
 }
 ClassMethod Modifier(own As %DynamicObject, opponent As %DynamicObject) As %Numeric
 {

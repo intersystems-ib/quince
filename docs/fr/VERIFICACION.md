@@ -19,3 +19,5 @@ Les intégrations HTTP utilisent `RUGBY_API_BASE` et enregistrent leurs résulta
 Les vérifications visuelles couvrent compositions, entraînements, contrats, calendrier, finances, commandes de match et langues sur ordinateur et mobile.
 
 Depuis `rugby-frontend`, `npx playwright test advanceUntilEvent.spec.ts` vérifie réunions, matchs, arrêt, actualisation du calendrier, erreurs et limite de jours. `npx playwright test i18n.spec.ts` vérifie catalogues, paramètres, terminologie et erreurs d'API.
+
+`Rugby.Test.AdaptiveTactics` vérifie avantages, remontées, fatigue, révisions indépendantes et scores reproductibles en simulation abrégée. `Rugby.Test.AISubstitutions` couvre compatibilité, exclusions, limites et énergie finale. Les tests du mode Résultat et des statistiques vérifient l’intégration.

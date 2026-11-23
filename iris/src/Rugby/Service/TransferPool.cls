@@ -4,7 +4,7 @@ Parameter VERSION = "1.0.0";
 Parameter LIMIT = 20;
 ClassMethod Eligible(p As %DynamicObject) As %Boolean
 {
-    quit (p.clubId="")&&p.available&&('p.%Get("transferMarketRemoved",0))&&('p.%Get("retirementAnnounced",0))&&(p.%Get("contractStatus")'="retired")
+    quit (p.clubId="")&&p.available&&('p.%Get("rosterArchived",0))&&('p.%Get("transferMarketRemoved",0))&&('p.%Get("retirementAnnounced",0))&&(p.%Get("contractStatus")'="retired")
 }
 ClassMethod Pending(day As %Integer) As %DynamicObject
 {
@@ -60,9 +60,11 @@ ClassMethod Contains(id As %String) As %Boolean
 ClassMethod Rankings() As %DynamicObject
 {
     set ranks={},year=##class(Rugby.Service.Seasons).Year()
-    for division=416,417 {
+    set divisions=##class(Rugby.Service.Leagues).ClubIds()
+    for di=0:1:divisions.%Size()-1 {
+        set division=divisions.%Get(di)
         set comp=##class(Rugby.Service.Store).Get("Competition","league-"_division_"-"_year),table=##class(Rugby.Service.Competition).Table(comp)
-        for i=0:1:table.%Size()-1 { set row=table.%Get(i) do ranks.%Set(row.clubId,row.rank+$select(division=416:0,1:10)) }
+        for i=0:1:table.%Size()-1 { set row=table.%Get(i) do ranks.%Set(row.clubId,row.rank+$select(division=1401:0,division=1402:20,division=416:40,1:50)) }
     }
     quit ranks
 }

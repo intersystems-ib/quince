@@ -1,15 +1,16 @@
 Class Rugby.Seed.StaffNames Extends %RegisteredObject
 {
 Parameter VERSION = "1.1.0";
-ClassMethod Generate(id As %String, force As %Boolean = 0) As %String
+ClassMethod Generate(id As %String, force As %Boolean = 0, country As %String = "") As %String
 {
     set game=##class(Rugby.Service.Store).Game(),existing=##class(Rugby.Service.Store).Get("Coach",id,0)
+    if country="" set country=$select($isobject(existing):existing.%Get("marketCountry","ES"),$piece(id,"-",3)="FR":"FR",1:"ES")
     if ('force)&&$isobject(existing)&&(existing.%Get("generatedNameVersion")'="") quit existing.name
     set role=$select($isobject(existing):existing.role,$piece(id,"-",1)="market":$piece(id,"-",2),1:""),free=##class(Rugby.Service.Store).All("Coach","clubId",""),given={}
-    for i=0:1:free.%Size()-1 { set p=free.%Get(i) if (p.id'=id)&&(p.role=role) do given.%Set($piece(p.name," ",1),1) }
+    for i=0:1:free.%Size()-1 { set p=free.%Get(i) if (p.id'=id)&&(p.role=role)&&(p.%Get("marketCountry","ES")=country) do given.%Set($piece(p.name," ",1),1) }
     set attempt=0
     for {
-        set seed=##class(Rugby.Service.Rivals).Hash("staff-"_id_"-"_attempt,17341),name=##class(Rugby.Service.PlayerNames).Spanish(seed),owner=$get(^RugbyWorld(game,"staffNameOwner",name))
+        set seed=##class(Rugby.Service.Rivals).Hash("staff-"_id_"-"_attempt,17341),name=$select(country="FR":##class(Rugby.Service.PlayerNames).French(seed),1:##class(Rugby.Service.PlayerNames).Spanish(seed)),owner=$get(^RugbyWorld(game,"staffNameOwner",name))
         quit:((owner="")||(owner=id))&&((given.%Size()>=32)||('given.%IsDefined($piece(name," ",1))))
         set attempt=attempt+1
     }

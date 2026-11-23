@@ -35,7 +35,7 @@ ClassMethod InitializeAll() As %DynamicArray
 {
     set oldGame=##class(Rugby.Service.Store).Game(),oldClub=##class(Rugby.Service.Store).ManagedClub(),reports=[]
     lock +^RugbyWrite:30
-    if '$test do ##class(Rugby.Service.Store).Fail(409,"BUSY","Revisando subvenciones.")
+    if '$test do ##class(Rugby.Service.Store).Fail(409,"BUSY","Revisando patrocinios institucionales.")
     try {
         tstart
         set games=["template"],gid=""

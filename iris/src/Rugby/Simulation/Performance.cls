@@ -1,5 +1,18 @@
 Class Rugby.Simulation.Performance Extends %RegisteredObject
 {
+ClassMethod Fatigue(m As %DynamicObject, elapsed As %Integer)
+{
+    for team="home","away" {
+        set a=m.%Get(team_"Players"),tac=m.%Get(team_"Tactic")
+        for i=0:1:a.%Size()-1 {
+            set q=a.%Get(i)
+            if q.status="field" {
+                set loss=(.22+$select(tac.tempo="fast":.10,tac.tempo="slow":-.04,1:0)+$select(tac.defense="high":.06,tac.defense="low":-.04,1:0))*(1.3-(q.attributes.stamina/150))
+                set q.energy=##class(Rugby.Simulation.Engine).Clamp(q.energy-(loss*elapsed/20),0,100)
+            }
+        }
+    }
+}
 ClassMethod MoralePenalty(p As %DynamicObject) As %Integer
 {
     if (p.position<=8)=(p.naturalPosition<=8) quit 0

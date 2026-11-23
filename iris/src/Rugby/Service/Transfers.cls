@@ -57,19 +57,26 @@ ClassMethod SeedMarket(year As %Integer)
 ClassMethod Asking(p As %DynamicObject, kind As %String = "signing") As %Integer
 {
     set base=p.%Get("previousWeeklyWage",p.weeklyWage)
-    if (kind="signing")&&(p.clubId="")&&##class(Rugby.Service.Payroll).Active() set base=##class(Rugby.Service.Payroll).Reference(p,##class(Rugby.Service.Store).ManagedClub())
+    if (kind="signing")&&(p.clubId="")&&##class(Rugby.Service.Payroll).Active() {
+        set reference=##class(Rugby.Service.Store).ManagedClub(),market=p.%Get("marketDivisionId",416),own=##class(Rugby.Service.Store).Get("Club",reference)
+        if ##class(Rugby.Service.Leagues).French(market) { set reference=$select(market=1401:"fr-toulouse",1:"fr-agen") }
+        elseif ##class(Rugby.Service.Leagues).French(own.competitionId) { set reference="c1" }
+        set base=##class(Rugby.Service.Payroll).Reference(p,reference)
+    }
     if (p.category="academy")&&(kind'="renewal") set base=p.%Get("seniorWeeklyWage",45000)
     set base=##class(Rugby.Simulation.Engine).Clamp(base,100,5000000)
     quit ((base+99)\100)*100
 }
-ClassMethod Market() As %DynamicArray
+ClassMethod Market(division As %Integer = 0) As %DynamicArray
 {
     set players=##class(Rugby.Service.TransferPool).Players(),items=[],club=##class(Rugby.Service.Store).Get("Club",##class(Rugby.Service.Store).ManagedClub())
     for i=0:1:players.%Size()-1 {
         set p=players.%Get(i)
         if p.clubId=club.id continue
         set p.transferFee=##class(Rugby.Service.PlayerSales).Fee(p),p.marketClubName="Agente libre"
-        if p.clubId'= "" set p.marketClubName=##class(Rugby.Service.Store).Get("Club",p.clubId).name
+        set p.marketDivisionId=p.%Get("marketDivisionId",416)
+        if p.clubId'= "" { set seller=##class(Rugby.Service.Store).Get("Club",p.clubId),p.marketClubName=seller.name,p.marketDivisionId=seller.competitionId }
+        if (division>0)&&(p.marketDivisionId'=division) continue
         if p.%Get("retirementAnnounced",0)||(p.%Get("contractStatus")="retired") continue
         set p.age=(club.day-p.birthDay)\365,p.askingWeeklyWage=..Asking(p),p.signingFee=p.%Get("signingFee",0),p.nationalityCode=p.%Get("nationalityCode","ES"),p.nationality=p.%Get("nationality","España")
         do items.%Push(##class(Rugby.Service.Development).FreeProfile(p))

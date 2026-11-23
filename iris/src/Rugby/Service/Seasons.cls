@@ -33,6 +33,7 @@ ClassMethod Announce(day As %Integer) As %DynamicArray
     set players=##class(Rugby.Service.Store).All("Player"),final=..FinalDay(year),seed=##class(Rugby.Service.Rivals).Seed()
     for i=0:1:players.%Size()-1 {
         set p=players.%Get(i)
+        if p.%Get("rosterArchived",0) continue
         if (p.%Get("retirementDecisionYear",-1)=year)||(p.%Get("contractStatus")="retired")||p.%Get("retirementAnnounced",0) continue
         set age=(final-p.birthDay)\365,chance=..RetirementChance(age),p.retirementDecisionYear=year
         if (##class(Rugby.Service.Rivals).Hash(p.id_"-retirement-"_year,seed)#100)<chance {
@@ -145,10 +146,35 @@ ClassMethod Exchange(year As %Integer, date As %String) As %DynamicObject
     do ##class(Rugby.Service.Store).Put("Competition",honor),##class(Rugby.Service.Store).Put("Competition",elite)
     quit {"promotedClubId":(up),"relegatedClubId":(down),"changes":(changes)}
 }
+ClassMethod ExchangeFrance(year As %Integer, date As %String) As %DynamicObject
+{
+    set top=##class(Rugby.Service.Store).Get("Competition","league-1401-"_year),second=##class(Rugby.Service.Store).Get("Competition","league-1402-"_year),table=##class(Rugby.Service.Competition).Table(top),down=table.%Get(table.%Size()-1).clubId,up=second.championId
+    if up="" do ##class(Rugby.Service.Store).Fail(409,"CHAMPION_PENDING","Pro D2 debe tener campeón antes del ascenso.")
+    set access=##class(Rugby.Service.AccessMatch).Ensure(year)
+    if '$isobject(access) do ##class(Rugby.Service.Store).Fail(409,"ACCESS_PENDING","Falta definir el Access Match.")
+    if (access.status'="finished")||(access.%Get("winnerId")="") do ##class(Rugby.Service.Store).Fail(409,"ACCESS_PENDING","Debe disputarse el Access Match antes de cerrar la temporada.")
+    set promoted=[(up)],relegated=[(down)]
+    if access.winnerId=access.homeId { do promoted.%Push(access.homeId),relegated.%Push(access.awayId) }
+    for direction=1:1:2 {
+        set clubs=$select(direction=1:promoted,1:relegated)
+        for i=0:1:clubs.%Size()-1 {
+            set cid=clubs.%Get(i),c=##class(Rugby.Service.Store).Get("Club",cid),old=c.competitionId,c.competitionId=$select(direction=1:1401,1:1402),c.competition=##class(Rugby.Service.Leagues).Config(c.competitionId).name,c.previousCompetitionId=old,c.divisionChangedDate=date,c.divisionChangedSeason=year+1
+            set c.regulatorySalaryCap=$select(direction=1:1110000000,1:0),c.budgetReference=+$justify(c.budgetReference*$select(direction=1:1.5,1:.65),0,0)
+            do ##class(Rugby.Service.Store).Put("Club",c)
+            if (cid=##class(Rugby.Service.Store).ManagedClub())&&$data(^RugbyGames(##class(Rugby.Service.Store).Game())) { set g=##class(%DynamicObject).%FromJSON(^RugbyGames(##class(Rugby.Service.Store).Game())),g.divisionId=c.competitionId,g.division=c.competition,^RugbyGames(g.id)=g.%ToJSON() }
+        }
+    }
+    set top.relegatedClubId=down,second.promotedClubId=up,top.relegatedClubIds=relegated,second.promotedClubIds=promoted,top.accessWinnerId=access.winnerId,second.accessWinnerId=access.winnerId
+    do ##class(Rugby.Service.Store).Put("Competition",top),##class(Rugby.Service.Store).Put("Competition",second)
+    quit {"promotedClubId":(up),"relegatedClubId":(down),"promotedClubIds":(promoted),"relegatedClubIds":(relegated),"accessWinnerId":(access.winnerId)}
+}
 ClassMethod Tick(day As %Integer) As %DynamicObject
 {
     set year=..Year(),game=##class(Rugby.Service.Store).Game(),result={"closed":false,"seasonYear":(year)},last=0,ready=1
-    for division=416,417 {
+    set access=##class(Rugby.Service.AccessMatch).Ensure(year)
+    set divisions=##class(Rugby.Service.Leagues).ClubIds()
+    for di=0:1:divisions.%Size()-1 {
+        set division=divisions.%Get(di)
         set comp=##class(Rugby.Service.Store).Get("Competition","league-"_division_"-"_year)
         if comp.phase'="finished" set ready=0
         set fixtures=##class(Rugby.Service.Competition).Fixtures(comp.id)
@@ -174,9 +200,13 @@ ClassMethod Tick(day As %Integer) As %DynamicObject
             if retiring { do retired.%Push(p.id) } else { do released.%Push(p.id) }
         }
     }
-    set exchange=..Exchange(year,date),clubs=##class(Rugby.Service.Store).All("Club")
+    set exchange=..Exchange(year,date)
+    if $isobject(##class(Rugby.Service.Store).Get("Competition","league-1401-"_year,0)) set exchange.france=..ExchangeFrance(year,date)
+    set clubs=##class(Rugby.Service.Store).All("Club")
     do ##class(Rugby.Service.Competition).Ensure(year+1)
-    for division=416,417 {
+    set divisions=##class(Rugby.Service.Leagues).ClubIds()
+    for di=0:1:divisions.%Size()-1 {
+        set division=divisions.%Get(di)
         set comp=##class(Rugby.Service.Store).Get("Competition","league-"_division_"-"_year),comp.closedDate=date,comp.nextSeasonYear=year+1
         do ##class(Rugby.Service.Store).Put("Competition",comp)
     }

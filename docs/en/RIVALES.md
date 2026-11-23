@@ -2,11 +2,13 @@
 
 [Español](../RIVALES.md) · [English](RIVALES.md) · [Français](../fr/RIVALES.md) · [Index](README.md)
 
-Nineteen automatic clubs act as days advance, using seed-reproducible decisions. They manage selection, training, fatigue, academies, renewals, employees and recruitment.
+The AI clubs across all four leagues act as days advance, using seed-reproducible decisions. They manage selection, training, fatigue, academies, renewals, employees and recruitment.
+
+Selection uses the highest average for each position and a balanced bench of five forwards and three backs, with positional cover and adjustments for availability. During matches, AI teams prioritise replacing injured and tired players with the best compatible reserves, up to eight substitutions. [Tactics](TACTICAS.md) adapt to score, time and energy in live, Result and abbreviated simulations.
 
 Plans prioritise positions, weaknesses and recovery. Academies maintain twenty players and use their own coach. Technical and squad reviews are periodic.
 
-Season limits are two ordinary signings, two promotions and up to six medical replacements, with at most 28 seniors or 30 with injury cover. Long absences are reviewed daily. Offers compete on wages then league position and respect cash and wage reserves. Surplus players can be listed for transfer.
+Season limits are two ordinary signings, two promotions and up to six medical replacements, ordinary recruitment stops at 28 seniors and medical recruitment at 30. Long absences are reviewed daily. Offers compete on wages then league position and respect cash and wage reserves. Surplus players can be listed for transfer.
 
 The user receives at most one friendly invitation per month, for a weekend free for both clubs. Calendar allows acceptance or rejection; there is no automatic acceptance.
 

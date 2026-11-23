@@ -22,6 +22,7 @@ ClassMethod Calculate(club As %String, signingFee As %Integer = 0) As %DynamicOb
         if (m.type="transfer")&&(m.amount<0)&&(##class(Rugby.Service.Competition).Year(m.date)=year) set fees=fees-m.amount
     }
     set base=##class(Rugby.Service.Payroll).BaseAnnualCap(club),other=payroll.annualProjectedCosts-payroll.annualPlayers+fees,pool=+$justify(income-other-base,0,0),pool=$select(pool>0:pool,1:0),percent=..Percent(club),extra=(pool*percent/100)\1,maxExtra=(pool*..#MAXPERCENT/100)\1
+    if c.competitionId=1401 { set extra=$select(base+extra>c.regulatorySalaryCap:c.regulatorySalaryCap-base,1:extra),maxExtra=$select(base+maxExtra>c.regulatorySalaryCap:c.regulatorySalaryCap-base,1:maxExtra) }
     quit {"year":(year),"version":(o.version),"percent":(percent),"maxPercent":(..#MAXPERCENT),"baseAnnualLimit":(base),"surplusAtBaseLimit":(pool),"maxAdditionalAnnual":(maxExtra),"additionalAnnual":(extra),"annualLimit":(base+extra),"projectedIncome":(income),"otherAnnualCosts":(other),"currentAnnualPlayers":(payroll.annualPlayers),"currentSurplus":(income-other-payroll.annualPlayers),"surplusAtLimit":(income-other-base-extra),"minimumReserve":(pool-maxExtra),"provisional":(forecast.provisional)}
 }
 ClassMethod Affordable(club As %String, pid As %String, wage As %Integer, fee As %Integer = 0) As %Boolean

@@ -116,16 +116,17 @@ ClassMethod Coach(c As %DynamicObject, day As %Integer) As %DynamicObject
     set market=##class(Rugby.Service.Store).All("Coach","clubId",""),candidate="",best=-1,generated=0
     for i=0:1:market.%Size()-1 {
         set coach=market.%Get(i)
+        if coach.%Get("marketCountry","ES")'=##class(Rugby.Service.Leagues).Country(c) continue
         if (coach.role'=worst.role)||(coach.quality<(worst.quality+2))||(coach.quality>(worst.quality+8)) continue
         set value=(coach.quality-worst.quality)/(1+coach.weeklyWage)
         if value>best set candidate=coach,best=value
     }
     if '$isobject(candidate) {
         set quality=worst.quality+2+(..Hash(c.id_"-"_day,..Seed())#4),id="ai-coach-"_c.id_"-"_day
-        set candidate={"id":(id),"clubId":"","name":"","generatedNameVersion":"1.0.0","role":(worst.role),"quality":(quality),"weeklyWage":(##class(Rugby.Service.Staff).Salary(worst.role,quality)),"effectiveness":(##class(Rugby.Service.Staff).Multiplier(quality)),"status":"available"},generated=1
+        set candidate={"id":(id),"clubId":"","marketCountry":(##class(Rugby.Service.Leagues).Country(c)),"name":"","generatedNameVersion":"1.0.0","role":(worst.role),"quality":(quality),"weeklyWage":(##class(Rugby.Service.Staff).Salary(worst.role,quality)),"effectiveness":(##class(Rugby.Service.Staff).Multiplier(quality)),"status":"available"},generated=1
     }
     if '##class(Rugby.Service.MonthlyPayroll).CanHire(c.id,candidate.role,##class(Rugby.Service.MonthlyPayroll).StaffMonthly(candidate.role,candidate.quality,c.id)) quit {"hired":false,"reason":"payrollLimit"}
-    if generated { set candidate.name=##class(Rugby.Seed.StaffNames).Generate(candidate.id) do ##class(Rugby.Service.Store).Put("Coach",candidate) }
+    if generated { set candidate.name=##class(Rugby.Seed.StaffNames).Generate(candidate.id,0,##class(Rugby.Service.Leagues).Country(c)) do ##class(Rugby.Service.Store).Put("Coach",candidate) }
     set assigned=##class(Rugby.Service.Staff).Assign(c.id,candidate.id,"ai-staff-"_day)
     quit {"hired":true,"coachId":(candidate.id),"role":(candidate.role),"beforeQuality":(worst.quality),"quality":(candidate.quality),"weeklyWage":(candidate.weeklyWage)}
 }
@@ -268,16 +269,15 @@ ClassMethod Surplus(c As %DynamicObject, day As %Integer) As %String
 }
 ClassMethod Rating(p As %DynamicObject, pos As %Integer) As %Numeric
 {
-    set fit=$select(p.position=pos:1,(p.position<=8)=(pos<=8):.85,1:.6)
-    quit ##class(Rugby.Service.Development).Average(p)*fit*(.6+(.4*p.energy/100))
+    quit ##class(Rugby.Service.AutomaticLineup).Score(p,pos)
 }
 ClassMethod Pick(players As %DynamicArray, used As %DynamicObject, pos As %Integer, specialist As %Boolean = 0) As %String
 {
     set id="",best=-1
     for i=0:1:players.%Size()-1 {
         set p=players.%Get(i)
-        if (p.category'="senior")||('p.available)||used.%IsDefined(p.id) continue
-        if specialist&&(p.position'=pos) continue
+        if (p.category'="senior")||('p.available)||p.%Get("retired",0)||used.%IsDefined(p.id) continue
+        if specialist&&('##class(Rugby.Service.AutomaticLineup).Covers(p,[(pos)])) { if (p.%Get("ferReference",p.%Get("lnrReference",{})).%Get("positionCounts",{}).%Get(pos,0)=0) continue }
         set value=..Rating(p,pos)
         if value>best set best=value,id=p.id
     }
@@ -287,7 +287,8 @@ ClassMethod EnsureLineup(c As %DynamicObject, day As %Integer) As %DynamicObject
 {
     set game=##class(Rugby.Service.Store).Game(),signature=..RosterSignature(##class(Rugby.Service.Store).All("Player","clubId",c.id),1),saved=$get(^RugbyWorld(game,"aiLineupState",c.id)),state={"signature":"","day":(day-1)},reason=""
     if saved'="" set state=##class(%DynamicObject).%FromJSON(saved)
-    if state.signature'=signature { set reason="rosterOrAvailability" }
+    if state.%Get("selectionVersion")'=##class(Rugby.Service.AutomaticLineup).#VERSION { set reason="selectionRules" }
+    elseif state.signature'=signature { set reason="rosterOrAvailability" }
     elseif (state.day'=day)&&..MatchNear(c.id,day) { set reason="matchPreparation" }
     if reason'="" do ..Lineup(c,day)
     quit {"updated":(reason'=""),"reason":(reason)}
@@ -295,26 +296,15 @@ ClassMethod EnsureLineup(c As %DynamicObject, day As %Integer) As %DynamicObject
 ClassMethod Lineup(c As %DynamicObject, day As %Integer = "")
 {
     if day="" set day=c.day
-    set players=##class(Rugby.Service.Store).All("Player","clubId",c.id),l=##class(Rugby.Service.Store).Get("Lineup",c.id_"-default"),slots=[],bench=[],used={}
-    set previous=##class(%DynamicObject).%FromJSON(l.%ToJSON())
-    for pos=1:1:15 {
-        set id=..Pick(players,used,pos,1)
-        if id="" set id=..Pick(players,used,pos)
-        if id="" do ##class(Rugby.Service.Store).Fail(409,"AI_LINEUP","El rival no dispone de jugadores suficientes para el puesto "_pos)
-        do used.%Set(id,1),slots.%Push({"position":(pos),"playerId":(id)})
-    }
-    for pos=1:1:3 { set id=..Pick(players,used,pos,1) if id'="" { do used.%Set(id,1),bench.%Push(id) } }
-    set maxBench=$select(bench.%Size()=3:8,1:7)
-    for pos=4,8,9,10,15 { quit:bench.%Size()>=maxBench  set id=..Pick(players,used,pos) if id'="" { do used.%Set(id,1),bench.%Push(id) } }
-    set l.slots=slots,l.bench=bench,l.captainId=slots.%Get(8).playerId,l.tactic={"style":"balanced","tempo":"normal","defense":"normal"},valid=##class(Rugby.Service.Management).Validate(l)
+    set players=##class(Rugby.Service.Store).All("Player","clubId",c.id),previous=##class(Rugby.Service.Store).Get("Lineup",c.id_"-default"),l=##class(Rugby.Service.AutomaticLineup).Build(previous,players),slots=l.slots,bench=l.bench,valid=##class(Rugby.Service.Management).Validate(l)
     if 'valid.valid do ##class(Rugby.Service.Store).Fail(409,"AI_LINEUP",valid.errors.%ToJSON())
-    set changed=(previous.bench.%ToJSON()'=bench.%ToJSON())||(previous.captainId'=l.captainId)||(previous.tactic.%ToJSON()'=l.tactic.%ToJSON())||(previous.slots.%Size()'=15)
+    set changed=(previous.bench.%ToJSON()'=bench.%ToJSON())||(previous.captainId'=l.captainId)||(previous.slots.%Size()'=15)
     for i=0:1:14 { if previous.slots.%Get(i).playerId'=slots.%Get(i).playerId set changed=1 }
     if changed {
         do ##class(Rugby.Service.Store).Put("Lineup",l)
         for i=0:1:14 { set slot=slots.%Get(i),slot.id=l.id_"-"_(i+1),slot.clubId=c.id do ##class(Rugby.Service.Store).Put("LineupSlot",slot) }
     }
-    set state={"signature":(..RosterSignature(players,1)),"day":(day)}
+    set state={"signature":(..RosterSignature(players,1)),"day":(day),"selectionVersion":(##class(Rugby.Service.AutomaticLineup).#VERSION)}
     set ^RugbyWorld(##class(Rugby.Service.Store).Game(),"aiLineupState",c.id)=state.%ToJSON()
 }
 ClassMethod Day(day As %Integer, deferSave As %Boolean = 0) As %DynamicObject
@@ -389,6 +379,10 @@ ClassMethod SettleFixture(f As %DynamicObject)
             set starter=i<l.slots.%Size(),pid=$select(starter:l.slots.%Get(i).playerId,1:l.bench.%Get(i-l.slots.%Size())),p=##class(Rugby.Service.Store).Get("Player",pid),cost=$select(starter:21+(..Hash(f.id_"-"_pid,..Seed())#9),1:3)
             if starter&&f.%IsDefined("disciplineParticipants") {
                 for j=0:1:f.disciplineParticipants.%Size()-1 { set participation=f.disciplineParticipants.%Get(j) if participation.playerId=pid set cost=cost*(participation.playedSeconds/4800) }
+            }
+            if f.%Get("playerEnergyVersion")'="" {
+                set cost=0
+                for j=0:1:f.disciplineParticipants.%Size()-1 { set participation=f.disciplineParticipants.%Get(j) if (participation.playerId=pid)&&participation.%IsDefined("energy") set p.energy=participation.energy }
             }
             set p.energy=##class(Rugby.Simulation.Engine).Clamp(p.energy-cost,0,100),injuries=f.%Get("matchInjuries",[])
             for j=0:1:injuries.%Size()-1 { set report=injuries.%Get(j) if report.playerId=pid set p.injury=report.injury,p.available=0,p.recoveryDay=report.injury.recoveryDay }

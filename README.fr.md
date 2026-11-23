@@ -2,7 +2,7 @@
 
 [Español](README.md) · [English](README.en.md) · [Français](README.fr.md)
 
-Jeu de gestion de rugby en espagnol, anglais et français, développé avec React, TypeScript et InterSystems IRIS. Il comprend vingt clubs de Honor et Élite, 460 identités réelles de joueurs et des parties privées avec authentification JWT. Les attributs, contrats et finances sont simulés.
+Jeu de gestion de rugby en espagnol, anglais et français, développé avec React, TypeScript et InterSystems IRIS. Il comprend cinquante clubs de Honor, Élite, Top 14 et Pro D2, avec les identités réelles de joueurs FER et LNR et des parties privées avec authentification JWT. Les attributs, contrats et finances sont simulés.
 
 ## Démarrage
 
@@ -26,6 +26,8 @@ Créez un compte et une partie, puis choisissez une division et un club. La sais
 Les matchs en direct proposent pause, vitesses, remplacements et changements tactiques. Ils s'arrêtent automatiquement à la mi-temps et lors d'une blessure dans votre équipe. Compétition sépare classement, calendrier et statistiques des joueurs en onglets. Les salaires sont versés en fin de mois ; le directeur financier négocie les recettes de septembre.
 
 Votre club présente les blessures, recrutements de joueurs et de personnel et annonces de retraite de tous les clubs sur les sept derniers jours de jeu. Le sélecteur de langue mémorise votre choix sans recharger la partie.
+
+La [composition automatique](docs/fr/PLANTILLAS-REALES.md) choisit les titulaires et un banc équilibré. L’IA remplace les blessés ou les joueurs fatigués et [adapte ses tactiques](docs/fr/TACTICAS.md) au score, au temps et à l’énergie. **Résultat** joue chaque période en une étape avec des changements à la pause ; **Visualiser** conserve le direct.
 
 ## Développement et tests
 
@@ -59,3 +61,5 @@ Le volume `iris-data` conserve les parties lors de l'arrêt ou de la recréation
 - [Spécification de l'API](docs/openapi.json) : régénération avec `python scripts/generate_openapi.py`.
 
 [Index complet de la documentation](docs/fr/README.md).
+
+[Top 14 / Pro D2](docs/LIGAS-FRANCESAS.md).

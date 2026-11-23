@@ -4,6 +4,7 @@ Parameter VERSION = "2.0.0";
 ClassMethod Hash(text As %String) As %Integer { quit ##class(Rugby.Service.Rivals).Hash(text,##class(Rugby.Service.Rivals).Seed()) }
 ClassMethod Budget(c As %DynamicObject) As %Integer
 {
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) quit c.%Get("budgetReference",1200000000)
     if c.%Get("divisionBudgetReference",0)>0 quit c.divisionBudgetReference
     set h=..Hash("budget-"_c.id),amount=300000+(h#75001)
     if $listfind($listbuild("c2","c3","c8"),c.id) { set amount=650000+(h#150001) }
@@ -14,6 +15,7 @@ ClassMethod Budget(c As %DynamicObject) As %Integer
 }
 ClassMethod Funding(c As %DynamicObject) As %Integer
 {
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) quit +$justify(..Budget(c)*$select(c.competitionId=1401:.3675,1:.3975),0,0)
     set budget=..Budget(c),grants=(budget*.12125)\1,members=((budget*.1175)\15000)*15000
     // Minimum of the seven agreements plus conservative grants and memberships; no tickets.
     quit 6000000+grants+members
@@ -28,13 +30,14 @@ ClassMethod Success(c As %DynamicObject) As %Numeric
         for i=0:1:table.%Size()-1 { set row=table.%Get(i) if (row.clubId=c.id)&&(row.played>=3) set rank=row.rank,found=1 }
         if found quit
     }
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) quit ##class(Rugby.Simulation.Engine).Clamp(1-(rank-1)/##class(Rugby.Service.Leagues).Config(c.competitionId).teams,0,1)
     quit $select(c.competitionId=416:.4,1:0)+(.6*(10-rank)/9)
 }
 ClassMethod Company(c As %DynamicObject, year As %Integer, slot As %Integer, option As %Integer) As %String
 {
-    set game=##class(Rugby.Service.Store).Game(),key=c.id_"-"_year_"-"_slot_"-"_option
+    set game=##class(Rugby.Service.Store).Game(),french=##class(Rugby.Service.Leagues).French(c.competitionId),key=$select(french:"FR-",1:"")_c.id_"-"_year_"-"_slot_"-"_option
     if $data(^RugbyWorld(game,"companyByOffer",key)) quit ^RugbyWorld(game,"companyByOffer",key)
-    set stream=##class(%Stream.FileCharacter).%New(),stream.TranslateTable="UTF8",sc=stream.LinkToFile("/opt/rugby/data/sponsor-companies.json")
+    set stream=##class(%Stream.FileCharacter).%New(),stream.TranslateTable="UTF8",sc=stream.LinkToFile("/opt/rugby/data/sponsor-companies"_$select(french:"-fr",1:"")_".json")
     if $system.Status.IsError(sc) throw ##class(%Exception.StatusException).CreateFromStatus(sc)
     set catalog=##class(%DynamicObject).%FromJSON(stream),sectors=$select(slot=7:catalog.barSectors,1:catalog.sectors),attempt=0
     for {
@@ -51,6 +54,7 @@ ClassMethod OfferTerms(c As %DynamicObject, s As %DynamicObject, o As %DynamicOb
 {
     set h=..Hash(c.id_"-agreement-"_s.year_"-"_slot_"-"_option),years=1+(h#3),score=##class(Rugby.Simulation.Engine).Clamp((success*.75)+(o.director.%Get("quality",35)*.0025)+(((h#11)-5)*.005),0,1)
     set low=$select(slot=1:3000000,slot=7:2500000,1:100000),high=$select(slot=1:8000000,slot=7:4500000,1:500000),amount=+$justify(low+((high-low)*score),0,0),kind=$select(slot=7:"barConcession",1:"sponsorship"),category=$select(slot=1:"principal",slot=7:"bar",1:"secondary")
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) set amount=+$justify(..Budget(c)*$select(slot=1:.12+(.08*score),slot=7:.01+(.005*score),1:.018+(.012*score)),0,0)
     quit {"years":(years),"annualAmount":(amount),"kind":(kind),"category":(category)}
 }
 ClassMethod Offer(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject, slot As %Integer, option As %Integer, success As %Numeric) As %DynamicObject
@@ -109,6 +113,7 @@ ClassMethod Attendance(c As %DynamicObject) As %Integer
     if c.id="c10" set base=700+(h#201)
     if $listfind($listbuild("c1","c9"),c.id) set base=500+(h#301)
     if c.competitionId=417 set base=250+(h#351)
+    if ##class(Rugby.Service.Leagues).French(c.competitionId) set base=(c.stadium.capacity*.72)\1
     quit base
 }
 ClassMethod Office(club As %String) As %DynamicObject { quit ##class(Rugby.Service.Store).Get("FinancialOffice",club) }
@@ -124,9 +129,12 @@ ClassMethod Initialize() As %DynamicObject
         set candidates=[]
         for tier=1:1:3 {
             set quality=$select(tier=1:35,tier=2:65,1:90),h=..Hash("director-"_c.id_"-"_tier),name=$piece("Laura,Daniel,Elena,Marcos,Clara,Andrés",",",1+(h#6))_" "_$piece("Soler,Navarro,Ortega,Rivas,Molina,Vidal",",",1+((h\6)#6))
-            do candidates.%Push({"id":(c.id_"-finance-"_tier),"name":(name),"quality":(quality),"weeklyWage":(20000+(quality*500))})
+            if ##class(Rugby.Service.Leagues).French(c.competitionId) set name=##class(Rugby.Service.PlayerNames).French(h)
+            set candidate={"marketCountry":(##class(Rugby.Service.Leagues).Country(c)),"id":(c.id_"-finance-"_tier),"name":(name),"quality":(quality),"weeklyWage":(20000+(quality*500))}
+            if ##class(Rugby.Service.Leagues).French(c.competitionId) set candidate.monthlyWage=##class(Rugby.Service.MonthlyPayroll).BaseDirector(quality,c.id),candidate.weeklyWage=##class(Rugby.Service.MonthlyPayroll).Weekly(candidate.monthlyWage)
+            do candidates.%Push(candidate)
         }
-        set office={"id":(c.id),"clubId":(c.id),"director":{},"candidates":(candidates),"budgetReference":(..Budget(c)),"baseAttendance":(..Attendance(c)),"lastPayrollDay":(c.day),"salaryAccrued":0,"adoptedDate":(c.date),"modelVersion":(..#VERSION)}
+        set office={"marketCountry":(##class(Rugby.Service.Leagues).Country(c)),"id":(c.id),"clubId":(c.id),"director":{},"candidates":(candidates),"budgetReference":(..Budget(c)),"baseAttendance":(..Attendance(c)),"lastPayrollDay":(c.day),"salaryAccrued":0,"adoptedDate":(c.date),"modelVersion":(..#VERSION)}
         if c.id'=##class(Rugby.Service.Store).ManagedClub() set office.director=candidates.%Get(1+(..Hash("ai-finance-"_c.id)#2))
         do ##class(Rugby.Service.Store).Put("FinancialOffice",office)
         set report.offices=report.offices+1
@@ -151,6 +159,7 @@ ClassMethod Hire(club As %String, b As %DynamicObject, key As %String) As %Dynam
     set found=0
     for i=0:1:o.candidates.%Size()-1 { set candidate=o.candidates.%Get(i) if candidate.id=b.%Get("candidateId") set chosen=candidate,found=1 }
     if 'found do ##class(Rugby.Service.Store).Fail(422,"FINANCIAL_CANDIDATE","Elige un financiero disponible.")
+    if chosen.%Get("marketCountry",##class(Rugby.Service.PersonnelMarkets).Country(club))'=##class(Rugby.Service.PersonnelMarkets).Country(club) do ##class(Rugby.Service.Store).Fail(422,"FINANCIAL_COUNTRY","Este financiero pertenece al mercado de otro país.")
     if o.director.%Get("id")=chosen.id do ##class(Rugby.Service.Store).Fail(409,"FINANCIAL_EMPLOYED","Este financiero ya está contratado.")
     set chosen.monthlyWage=##class(Rugby.Service.MonthlyPayroll).DirectorMonthly(chosen.quality,club),chosen.weeklyWage=##class(Rugby.Service.MonthlyPayroll).Weekly(chosen.monthlyWage)
     set chosen.payrollStartDay=##class(Rugby.Service.Store).Get("Club",club).day
@@ -177,7 +186,7 @@ ClassMethod Deals(c As %DynamicObject, s As %DynamicObject, o As %DynamicObject)
     if (day>=14)&&('s.grantsComplete) {
         set financialPlan=##class(Rugby.Service.FinancialPlanning).Forecast(c,s,o),total=financialPlan.requiredGrants,localShare=##class(Rugby.Service.PublicGrants).Split(c.id,year,total)
         for n=1:1:2 {
-            set h=..Hash(c.id_"-grant-"_year_"-"_n),institution=$select(n=1:"Ayuntamiento",1:$piece("Instituto público de deporte,Agencia pública de actividad física,Fundación pública deportiva",",",1+(h#3)))_" de "_c.city,amount=$select(n=1:localShare,1:total-localShare)
+            set institution=##class(Rugby.Service.FrenchFunding).GrantName(c,year,n),amount=$select(n=1:localShare,1:total-localShare)
             do s.grants.%Push({"id":(s.id_"-grant-"_n),"name":(institution),"amount":(amount),"awardedOn":(c.date),"status":"awarded","fundingReductionVersion":(##class(Rugby.Service.FundingReduction).#VERSION)})
         }
         do s.%Set("grantsComplete",1,"boolean")
@@ -207,7 +216,7 @@ ClassMethod Tick(club As %String)
             set paid=$get(^RugbyWorld(##class(Rugby.Service.Store).Game(),"agreementPaid",a.id,s.year)),remaining=$select(a.annualAmount>paid:a.annualAmount-paid,1:0),amount=remaining\(10-monthIndex)
             if amount {
                 set kind=a.%Get("kind","sponsorship")
-                do ##class(Rugby.Service.Management).Money(c,amount,kind,$select(kind="barConcession":"Canon de concesión de bar · ",kind="grant":"Subvención · ",1:"Patrocinio · ")_a.name,key)
+                do ##class(Rugby.Service.Management).Money(c,amount,kind,$select(kind="barConcession":"Canon de concesión de bar · ",kind="grant":"Patrocinio institucional · ",1:"Patrocinio · ")_a.name,key)
                 set ^RugbyWorld(##class(Rugby.Service.Store).Game(),"agreementPaid",a.id,s.year)=paid+amount
             }
         }
@@ -269,7 +278,7 @@ ClassMethod Forecast(f As %DynamicObject, price As %Integer = -1, seasonOverride
     if $isobject(seasonOverride) set s=seasonOverride
     set pricing=##class(Rugby.Service.TicketPricing).Recommend(f)
     if price<0 set price=f.%Get("ticketPrice",pricing.price)
-    set multiplier=$select(stage="friendly":.65,(stage="semifinal")||(stage="final"):2.5,stage="quarterfinal":1.6,home.city=away.city:2.7,1:1),opponentPull=$select(pricing.awayRank<=3:1.15,pricing.awayRank>=8:.9,1:1),multiplier=multiplier*opponentPull,demand=##class(Rugby.Simulation.Engine).Clamp(1+((pricing.price-price)/2500),.25,1.6),attendance=+$justify(o.baseAttendance*multiplier*(.9+((seed#21)*.01))*demand,0,0),members=0
+    set multiplier=$select(stage="friendly":.65,(stage="semifinal")||(stage="final")||(stage="access"):2.5,stage="quarterfinal":1.6,home.city=away.city:2.7,1:1),opponentPull=$select(pricing.awayRank<=3:1.15,pricing.awayRank>=8:.9,1:1),multiplier=multiplier*opponentPull,demand=##class(Rugby.Simulation.Engine).Clamp(1+((pricing.price-price)/2500),.25,1.6),attendance=+$justify(o.baseAttendance*multiplier*(.9+((seed#21)*.01))*demand,0,0),members=0
     if $isobject(home.%Get("stadium")) { set capacity=home.stadium.%Get("capacity",0) if capacity>0 set attendance=$select(attendance>capacity:capacity,1:attendance) }
     if (stage="regular")&&$isobject(s) set members=$select(s.members<attendance*.85:s.members,1:+$justify(attendance*.85,0,0))
     set tickets=(attendance-members)*price,bar=0,barCost=0
@@ -297,6 +306,7 @@ ClassMethod Settle(f As %DynamicObject, snapshot As %DynamicObject = "") As %Dyn
     set r=##class(%DynamicObject).%FromJSON(snapshot.%ToJSON()),r.barRevenue=0,r.barCosts=0,r.barModel="concession",r.modelVersion=..#VERSION,r.netRevenue=r.ticketRevenue,friendly=f.%Get("stage","friendly")="friendly",r.homeShare=0,r.awayShare=0
     for side="home","away" {
         set c=##class(Rugby.Service.Store).Get("Club",f.%Get(side_"Id")),base="economy-"_f.id,share=$select(friendly:.5,side="home":1,1:0),net=0
+        if ##class(Rugby.Service.Leagues).French(c.competitionId)&&(f.%Get("day",c.day)<c.%Get("startDay",c.day)) continue
         for kind="ticketRevenue","barRevenue","barCosts" {
             set total=r.%Get(kind),amount=$select(share=0:0,(friendly)&&(side="away"):total-(total\2),friendly:total\2,1:total)
             if (kind="barCosts")&&friendly { set homeCost=(r.ticketRevenue\2)+(r.barRevenue\2)-(r.netRevenue\2),amount=$select(side="home":homeCost,1:total-homeCost) }

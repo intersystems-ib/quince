@@ -90,6 +90,6 @@ ClassMethod RecentCases(source As %DynamicObject)
         if f.id="recent-test-4" do ..Assert(f.competitionName="Amistoso","Friendlies are identified independently of league")
     }
     for i=1:1:11 { do ..Assert(seen.%IsDefined("recent-test-"_i)=((i<=4)||(i>=9)),"Both leagues, Cup, friendlies and knockout rounds are included; old, future, pending and archived fixtures are excluded") }
-    do ..Assert(result.clubs.%Size()=20,"Short names are provided for clubs in both divisions")
+    do ..Assert(result.clubs.%Size()=##class(Rugby.Service.Store).All("Club").%Size(),"Short names are provided for clubs in all available divisions")
 }
 }

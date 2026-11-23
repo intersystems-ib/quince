@@ -3,7 +3,7 @@ Class Rugby.Service.OpponentPreparation Extends %RegisteredObject
 Parameter VERSION = "1.4.0";
 ClassMethod Official(f As %DynamicObject) As %Boolean
 {
-    quit ('f.%Get("archived",0))&&$listfind($listbuild("regular","cup-group","quarterfinal","semifinal","final"),f.%Get("stage"))&&(f.homeId'="")&&(f.awayId'="")
+    quit ('f.%Get("archived",0))&&$listfind($listbuild("regular","cup-group","quarterfinal","semifinal","final","access"),f.%Get("stage"))&&(f.homeId'="")&&(f.awayId'="")
 }
 ClassMethod Fixture(id As %String) As %DynamicObject
 {

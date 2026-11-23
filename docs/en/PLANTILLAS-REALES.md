@@ -2,7 +2,13 @@
 
 [Español](../PLANTILLAS-REALES.md) · [English](PLANTILLAS-REALES.md) · [Français](../fr/PLANTILLAS-REALES.md) · [Index](README.md)
 
-Ten first-round match reports provide 460 identities: 230 per division, fifteen starters and eight replacements per club. These are not complete squads; ages, attributes and contracts are simulated. Academy players and new agents are generated.
+Squads include players selected across the available Honor and Élite rounds. The 460 first-round identities retain their IDs; additional players use their FER registration, without duplicates across clubs. Ages, attributes and contracts are simulated. Academy players and new agents are generated.
+
+Honor and Élite player references combine selections, starts, minutes reconstructed from substitutions and cards, and verified scoring from official match sheets. Ambiguous minutes and scoring totals that conflict with the final score are excluded. Tackles and metres are not invented.
+
+Ratings retain each club’s overall level while differentiating players within their division and positional family. AI selection combines these references with skills, energy, availability and observed positions. Player profiles show FER reference data separately from saved-game statistics.
+
+Refresh the compact summary with `python scripts/refresh_spanish_match_evidence.py` (requires `pdfplumber`). PDFs are not stored in the project.
 
 | Report | Competition | Home club | Away club |
 |---|---|---|---|
@@ -16,3 +22,9 @@ Ten first-round match reports provide 460 identities: 230 per division, fifteen 
 | 17735 | Élite | Torrealday Gernika | Real Ciencias Sevilla |
 | 17736 | Élite | Fénix Zaragoza | C.P. Les Abelles |
 | 17737 | Élite | Valencia RC | Industriales Las Rozas |
+
+Expanded squads share the original monthly payroll according to ability and participation. Negotiated signings and renewals retain their terms.
+
+**Automatic line-up** selects the highest average in each position, then fills a balanced bench of five forwards and three backs, covering props, hooker, lock, back row, scrum-half, fly-half and the outside backs. It selects the highest averages compatible with that coverage and adapts to availability. Energy and morale only break ties between equal averages. Tactics remain unchanged; review the draft before saving. AI clubs use the same criteria, reviewing selections before matches and after availability changes.
+
+During matches, AI prioritises injuries, then the most fatigued players, choosing the best healthy reserve compatible with the position. Fatigue changes require a meaningfully fresher replacement. The eight-change limit, no re-entry and disciplinary exclusions apply in live, Result and simulated matches; minutes and final energy reflect participation.

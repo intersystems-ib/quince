@@ -61,6 +61,8 @@ ClassMethod Identity(pid As %String, competition As %String) As %DynamicObject
         set result.name=rows.%Get("PlayerName"),result.clubId=rows.%Get("ClubId"),club=##class(Rugby.Service.Store).Get("Club",result.clubId,0)
         if $isobject(club) set result.clubName=club.%Get("shortName",club.name)
     }
+    set current=##class(Rugby.Service.Store).Get("Player",pid,0)
+    if $isobject(current) set result.name=current.name
     quit result
 }
 ClassMethod Top(id As %String) As %DynamicObject
