@@ -25,7 +25,7 @@ Crea una cuenta y una partida, elige división y club. La temporada empieza el 1
 
 El directo admite pausa, velocidades, sustituciones y cambios tácticos; se detiene al descanso y ante lesiones propias. Competición reúne regular y playoffs. Las nóminas se pagan al final de mes y el financiero negocia los ingresos de septiembre.
 
-«Tu club» reúne las lesiones, fichajes de jugadores y empleados y anuncios de retirada de todos los clubes en los últimos siete días de la partida.
+«Tu club» reúne las lesiones, fichajes de jugadores y empleados y anuncios de retirada de los clubes de su liga en los últimos siete días de la partida.
 
 La [alineación automática](docs/PLANTILLAS-REALES.md) selecciona titulares y un banquillo equilibrado. La IA realiza sustituciones por lesión o cansancio y [ajusta sus tácticas](docs/TACTICAS.md) al marcador, el tiempo y la energía. **Resultado** permite disputar cada parte de una vez, con cambios al descanso; **Visualizar** conserva el directo.
 

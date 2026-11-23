@@ -13,3 +13,5 @@ Competition has **Standings**, **Calendar** and **Statistics** tabs. Calendar ma
 The bottom Honor regular-season club is relegated; the Élite play-off champion is promoted. See [Seasons](TEMPORADAS-CONTRATOS.md).
 
 Copa del Rey includes twenty clubs from both divisions: six groups of three and two exempt teams. Group teams play once home and once away; the six group winners qualify. Quarter-finals, semi-finals and final are single matches. The 2026/27 edition follows the [FER groups and dates](https://ferugby.es/definidos-los-grupos-de-la-ntt-data-copa-de-s-m-el-rey-2026-27/); later editions use reproducible draws and nearby weekends. Honor and cup champions enter the next cup at the quarter-finals; a double winner gives the other direct place to the cup runner-up. Each season schedules the cup first, then the league on remaining free weekends.
+
+Competition queries return compact fixtures with dates, scores, venues, standings points and match links. Internal simulation details remain stored and are not repeated in the calendar, keeping the response small throughout the season.

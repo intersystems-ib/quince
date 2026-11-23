@@ -4,7 +4,7 @@ import { requestId } from './requestId';
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowRight, Check, LoaderCircle, TriangleAlert, X } from 'lucide-react';
-import { api } from './api';
+import { api, ApiError } from './api';
 import { advanceWithRefresh } from './advanceDay';
 import type { Club, Kit, Match, Tactic } from './types';
 import { pitchFormation, positions } from './positions';
@@ -16,7 +16,7 @@ export const statusLabels: Record<string, string> = { scheduled: 'Programado', f
 export function ErrorBox({ error, onDismiss }: {
     error: unknown;
     onDismiss?: () => void;
-}) { useLocale(); return <div role="alert" className="error"><TriangleAlert size={19}/><span>{localizedError(error)}</span>{localize(onDismiss && <button type="button" className="error-dismiss" aria-label={tr("Cerrar aviso")} onClick={onDismiss}><X size={17}/></button>)}</div>; }
+}) { useLocale(); return <div role="alert" className="error"><TriangleAlert size={19}/><span>{localizedError(error)}{error instanceof ApiError && error.requestId && <> · ID: <code>{error.requestId}</code></>}</span>{localize(onDismiss && <button type="button" className="error-dismiss" aria-label={tr("Cerrar aviso")} onClick={onDismiss}><X size={17}/></button>)}</div>; }
 export function Loading() { useLocale(); return <div className="loading" role="status"><LoaderCircle className="spin" size={22}/>{tr(" Cargando datos del club\u2026")}</div>; }
 export function Heading({ eyebrow, title, description, action }: {
     eyebrow: string;

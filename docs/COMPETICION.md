@@ -13,3 +13,5 @@ Calendario muestra victorias en verde y derrotas en rojo. No permite saltar part
 El último de la regular de Honor desciende y el campeón de playoffs de Élite asciende. Véase [Temporadas](TEMPORADAS-CONTRATOS.md).
 
 Copa del Rey: veinte clubes de ambas divisiones, seis grupos de tres y dos exentos. Cada equipo de grupo juega una vez en casa y otra fuera; pasan los seis líderes. Cuartos, semifinales y final son a partido único. En 2026/27 se usan los grupos y fechas de la [FER](https://ferugby.es/definidos-los-grupos-de-la-ntt-data-copa-de-s-m-el-rey-2026-27/); después, sorteo reproducible y el fin de semana más cercano. Los campeones de Honor y Copa acceden a cuartos de la siguiente edición; un doblete concede la otra plaza al subcampeón de Copa. Cada temporada genera primero la Copa y después la Liga, distribuyendo las jornadas entre fines de semana libres.
+
+La consulta de competición envía un resumen de cada partido con fechas, resultados, campo, puntos de clasificación y acceso al encuentro. Los detalles internos de simulación permanecen guardados y no se repiten en el calendario, para mantener una respuesta pequeña durante toda la temporada.

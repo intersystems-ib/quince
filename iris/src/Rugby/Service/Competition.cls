@@ -231,7 +231,7 @@ ClassMethod View(id As %String) As %DynamicObject
     if ##class(Rugby.Service.Store).Get("Competition",id).%Get("type")="cup" quit ##class(Rugby.Service.Cup).View(id)
     set comp=##class(Rugby.Service.Store).Get("Competition",id),fixtures=..Fixtures(id),regular=[],quarters=[],semis=[],final="",finished=0
     for i=0:1:fixtures.%Size()-1 {
-        set f=fixtures.%Get(i)
+        set f=##class(Rugby.Service.MatchStatistics).Compact(fixtures.%Get(i),0)
         if f.stage="regular" { do regular.%Push(f) if f.status="finished" set finished=finished+1 }
         if f.stage="quarterfinal" do quarters.%Push(f)
         if f.stage="semifinal" do semis.%Push(f)

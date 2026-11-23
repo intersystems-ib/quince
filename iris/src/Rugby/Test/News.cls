@@ -45,5 +45,29 @@ ClassMethod Run()
     do ..Assert(again.%ToJSON()=before,"Recovery does not erase or duplicate injury news")
     set %RugbyQuery={"limit":1,"offset":1},page=##class(Rugby.Service.News).Recent()
     do ..Assert((page.total=news.total)&&(page.items.%Size()=1)&&(page.fromDate="2026-11-01")&&(page.toDate="2026-11-07"),"Pagination retains the exact date window and total")
+    do ..LeagueScope()
 }
+ClassMethod LeagueScope()
+{
+    set %RugbyQuery={"limit":500}
+    for division=417,1401,1402 {
+        set clubs=##class(Rugby.Service.Store).All("Club","competitionId",division),club=clubs.%Get(0),lineup=##class(Rugby.Service.Store).Get("Lineup",club.id_"-default"),p=##class(Rugby.Service.Store).Get("Player",lineup.slots.%Get(0).playerId)
+        set club.day=0,club.date="2026-11-07",injury={"id":("scope-"_division),"clubId":(club.id),"startedDay":0,"name":"Esguince","grade":1,"weeks":1},p.injury=injury,p.injuryHistory=[],p.retirementAnnouncedDate="2026-11-07",p.retirementClubId=club.id,p.retirementDate="2027-06-30"
+        do ##class(Rugby.Service.Store).Put("Club",club),##class(Rugby.Service.Store).Put("Player",p)
+        do ##class(Rugby.Service.Store).Put("PlayerContract",{"id":("scope-"_division),"kind":"signing","clubId":(club.id),"playerId":(p.id),"day":0})
+        do ##class(Rugby.Service.Store).Put("StaffContract",{"id":("scope-"_division),"kind":"hire","clubId":(club.id),"employeeName":"Scope Coach","role":"head","day":0})
+        do ##class(Rugby.Service.Store).Put("FinancialOffice",{"id":(club.id),"clubId":(club.id),"hiredOn":"2026-11-07","director":{"id":"scope-finance","name":"Scope Finance"}})
+        set %RugbyManagedClub="c1",news=##class(Rugby.Service.News).Recent()
+        for j=0:1:news.items.%Size()-1 { do ..Assert(news.items.%Get(j).clubId'=club.id,"Other divisions do not appear in Honor news") }
+        set %RugbyManagedClub=club.id,news=##class(Rugby.Service.News).Recent(),found={}
+        for j=0:1:news.items.%Size()-1 {
+            set item=news.items.%Get(j),owner=##class(Rugby.Service.Store).Get("Club",item.clubId)
+            do ..Assert(owner.competitionId=division,"Every news item belongs to the managed club's league")
+            do found.%Set(item.type,1)
+        }
+        for kind="injury","retirement","playerSigning","staffSigning" { do ..Assert(found.%IsDefined(kind),"Each league retains its own news categories") }
+        set %RugbyManagedClub="c1"
+    }
+}
+
 }

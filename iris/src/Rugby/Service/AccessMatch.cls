@@ -42,7 +42,7 @@ ClassMethod View(comp As %DynamicObject)
 {
     if '##class(Rugby.Service.Leagues).French(comp.divisionId) quit
     set f=..Find(comp.year),comp.accessDate=..Date(comp.year),comp.accessEnabled=('$data(^RugbyWorld(##class(Rugby.Service.Store).Game(),"seasonClosures",comp.year)))||$isobject(f)
-    if $isobject(f) set f.scorers=##class(Rugby.Service.MatchStatistics).Scorers(f.id)
+    if $isobject(f) set f=##class(Rugby.Service.MatchStatistics).Compact(f)
     do comp.%Set("accessMatch",$select($isobject(f):f,1:""))
 }
 }

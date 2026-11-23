@@ -25,7 +25,7 @@ Create an account and a game, then choose a division and club. The season starts
 
 Live matches support pause, speed controls, substitutions and tactical changes, with automatic pauses at half-time and for your team's injuries. Competition separates standings, fixtures and player statistics into tabs. Wages are paid at month-end; the finance director negotiates September income.
 
-Your club displays injuries, player and staff signings, and retirement announcements from all clubs over the last seven in-game days. The language selector remembers your choice without reloading the game.
+Your club displays injuries, player and staff signings, and retirement announcements from clubs in your league over the last seven in-game days. The language selector remembers your choice without reloading the game.
 
 [Automatic selection](docs/en/PLANTILLAS-REALES.md) chooses starters and a balanced bench. AI teams substitute injured or tired players and [adapt tactics](docs/en/TACTICAS.md) to score, time and energy. **Result** plays each half in one step, with half-time changes; **Watch** retains live play.
 

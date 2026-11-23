@@ -109,7 +109,7 @@ ClassMethod Scorers(fixtureId As %String) As %DynamicObject
 ClassMethod Compact(f As %DynamicObject, includeScorers As %Boolean = 1) As %DynamicObject
 {
     set d={}
-    for field="id","clubId","homeId","awayId","day","date","status","stage","round","slot","groupId","competitionType","competitionKey","divisionId","homeScore","awayScore","homeTries","awayTries","homeShootout","awayShootout","winnerId","matchId" { if f.%IsDefined(field) do d.%Set(field,f.%Get(field)) }
+    for field="id","clubId","homeId","awayId","day","date","status","stage","round","slot","groupId","competitionType","competitionKey","divisionId","homeScore","awayScore","homeTries","awayTries","homeShootout","awayShootout","winnerId","matchId","season","homeRank","awayRank","venue","classification","preparationLineupId","attendance" { if f.%IsDefined(field) do d.%Set(field,f.%Get(field)) }
     if includeScorers set d.scorers=..Scorers(f.id)
     quit d
 }
