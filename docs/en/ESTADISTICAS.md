@@ -13,3 +13,5 @@ Categories cover attack, defence, kicking, set pieces, discipline and participat
 `Rugby.Analytics.PlayerMatch` stores metrics and keys in columns, uniquely keyed by the original record, without duplicating JSON documents. SQL aggregates by game, competition and player. Initial migration is automatic and idempotent; new match projections update in the same transaction. Deleting a game also deletes its analytical projection.
 
 [IRIS columnar storage](https://docs.intersystems.com/irislatest/csp/docbook/DocBook.UI.Page.cls?KEY=GOBJ_storageglobals#GOBJ_storageglobals_columnar).
+
+League and participating clubs are checked against the source fixture and competition; friendlies do not enter league rankings. Historical membership is retained after promotion, relegation or player transfers.

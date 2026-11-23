@@ -1,6 +1,6 @@
 Class Rugby.Service.CompetitionStatistics Extends %RegisteredObject
 {
-Parameter VERSION = "1";
+Parameter VERSION = "2";
 ClassMethod Catalog() As %DynamicArray
 {
     quit [{"id":"points","label":"Puntos","category":"attack","column":"Points"},{"id":"tries","label":"Ensayos","category":"attack","column":"Tries"},{"id":"metres","label":"Metros ganados","category":"attack","column":"Metres"},{"id":"carries","label":"Carreras con balón","category":"attack","column":"Carries"},{"id":"passes","label":"Pases","category":"attack","column":"Passes"},{"id":"actions","label":"Acciones","category":"attack","column":"Actions"},{"id":"tackles","label":"Placajes","category":"defense","column":"Tackles"},{"id":"turnovers","label":"Recuperaciones","category":"defense","column":"Turnovers"},{"id":"conversions","label":"Transformaciones","category":"kicking","column":"Conversions"},{"id":"conversionAttempts","label":"Transformaciones intentadas","category":"kicking","column":"ConversionAttempts"},{"id":"penaltyGoals","label":"Penalties anotados","category":"kicking","column":"PenaltyGoals"},{"id":"penaltyAttempts","label":"Penalties intentados","category":"kicking","column":"PenaltyAttempts"},{"id":"drops","label":"Drops","category":"kicking","column":"Drops"},{"id":"dropAttempts","label":"Drops intentados","category":"kicking","column":"DropAttempts"},{"id":"kicks","label":"Patadas","category":"kicking","column":"Kicks"},{"id":"scrums","label":"Melés disputadas","category":"setPieces","column":"Scrums"},{"id":"lineouts","label":"Touches disputadas","category":"setPieces","column":"Lineouts"},{"id":"knockOns","label":"Más avants","category":"discipline","column":"KnockOns"},{"id":"infringements","label":"Más infracciones","category":"discipline","column":"Infringements"},{"id":"yellowCards","label":"Más amarillas","category":"discipline","column":"YellowCards"},{"id":"redCards","label":"Más rojas","category":"discipline","column":"RedCards"},{"id":"playedSeconds","label":"Minutos jugados","category":"participation","column":"PlayedSeconds"},{"id":"appearances","label":"Partidos jugados","category":"participation","column":"Appearances"}]
@@ -9,9 +9,13 @@ ClassMethod Project(key As %String, d As %DynamicObject)
 {
     set game=$piece(key,"|",1),fixture=##class(Rugby.Service.Store).Get("Fixture",d.fixtureId,0)
     if '$isobject(fixture) quit
-    set competition=d.%Get("competitionKey",fixture.%Get("competitionKey")),finished=d.%Get("matchFinished",fixture.status="finished")
-    if (competition="")||('finished) quit
+    // The fixture owns competition membership, including after promotion or transfers.
+    set competition=fixture.%Get("competitionKey"),finished=d.%Get("matchFinished",fixture.status="finished")
     set o=##class(Rugby.Analytics.PlayerMatch).RecordKeyIndexOpen(key)
+    if (competition="")||('finished)||((d.clubId'=fixture.homeId)&&(d.clubId'=fixture.awayId)) {
+        if $isobject(o) { set sc=o.%DeleteId(o.%Id()) if $system.Status.IsError(sc) throw ##class(%Exception.StatusException).CreateFromStatus(sc) }
+        quit
+    }
     if '$isobject(o) set o=##class(Rugby.Analytics.PlayerMatch).%New(),o.RecordKey=key
     set o.GameId=game,o.CompetitionId=competition,o.PlayerId=d.playerId,o.ClubId=d.clubId,o.PlayerName=d.playerName,o.GameDay=d.day,o.IncompleteRecord='d.%Get("complete",0),catalog=..Catalog()
     for i=0:1:catalog.%Size()-1 {
@@ -28,7 +32,11 @@ ClassMethod Initialize()
     lock +^RugbyWrite:30
     if '$test do ##class(Rugby.Service.Store).Fail(409,"BUSY","Preparando estadísticas.")
     set oldGame=##class(Rugby.Service.Store).Game(),oldClub=##class(Rugby.Service.Store).ManagedClub()
+    set level=$tlevel
     try {
+        tstart
+        set sc=##class(Rugby.Analytics.PlayerMatch).%DeleteExtent()
+        if $system.Status.IsError(sc) throw ##class(%Exception.StatusException).CreateFromStatus(sc)
         set q=##class(%SQL.Statement).%New(),sc=q.%Prepare("SELECT ID,Payload FROM Rugby_Model.PlayerMatchStats")
         if $system.Status.IsError(sc) throw ##class(%Exception.StatusException).CreateFromStatus(sc)
         set rows=q.%Execute()
@@ -37,7 +45,9 @@ ClassMethod Initialize()
             do ..Project(key,d)
         }
         set ^RugbySchema("competitionStatisticsVersion")=..#VERSION
+        tcommit
     } catch ex {
+        if $tlevel>level trollback 1
         set %RugbyGame=oldGame,%RugbyManagedClub=oldClub
         lock -^RugbyWrite
         throw ex
@@ -52,9 +62,18 @@ ClassMethod RemoveGame(game As %String)
     set rows=q.%Execute(game)
     if rows.%SQLCODE<0 do ##class(Rugby.Service.Store).Fail(500,"STATISTICS","No se pudieron eliminar las estadísticas.")
 }
-ClassMethod Identity(pid As %String, competition As %String) As %DynamicObject
+ClassMethod ClubFilter(competition As %DynamicObject) As %String
 {
-    set q=##class(%SQL.Statement).%New(),sc=q.%Prepare("SELECT TOP 1 ClubId,PlayerName FROM Rugby_Analytics.PlayerMatch WHERE GameId = ? AND CompetitionId = ? AND PlayerId = ? AND PlayedSeconds > 0 ORDER BY GameDay DESC,ID DESC")
+    set teams=competition.%Get("teamIds"),filter=""
+    if '$isobject(teams) quit " AND 1 = 0"
+    for i=0:1:teams.%Size()-1 {
+        set filter=filter_$select(i:",",1:"")_"'"_$replace(teams.%Get(i),"'","''")_"'"
+    }
+    quit $select(filter="":" AND 1 = 0",1:" AND %EXACT(ClubId) IN ("_filter_")")
+}
+ClassMethod Identity(pid As %String, competition As %String, clubFilter As %String) As %DynamicObject
+{
+    set q=##class(%SQL.Statement).%New(),sc=q.%Prepare("SELECT TOP 1 ClubId,PlayerName FROM Rugby_Analytics.PlayerMatch WHERE GameId = ? AND CompetitionId = ? AND PlayerId = ? AND PlayedSeconds > 0"_clubFilter_" ORDER BY GameDay DESC,ID DESC")
     if $system.Status.IsError(sc) throw ##class(%Exception.StatusException).CreateFromStatus(sc)
     set rows=q.%Execute(##class(Rugby.Service.Store).Game(),competition,pid),result={"playerId":(pid),"name":(pid),"clubId":"","clubName":""}
     if rows.%Next() {
@@ -67,9 +86,9 @@ ClassMethod Identity(pid As %String, competition As %String) As %DynamicObject
 }
 ClassMethod Top(id As %String) As %DynamicObject
 {
-    set competition=##class(Rugby.Service.Store).Get("Competition",id),catalog=..Catalog(),sql="SELECT %EXACT(PlayerId) AS PlayerId,COUNT(*) AS Games,SUM(IncompleteRecord) AS Partials",items=[],identities={},partial=0,players=0
+    set competition=##class(Rugby.Service.Store).Get("Competition",id),catalog=..Catalog(),sql="SELECT %EXACT(PlayerId) AS PlayerId,COUNT(*) AS Games,SUM(IncompleteRecord) AS Partials",items=[],identities={},partial=0,players=0,clubFilter=..ClubFilter(competition)
     for i=0:1:catalog.%Size()-1 { set metric=catalog.%Get(i) if metric.id'="appearances" set sql=sql_",SUM("_metric.column_") AS S"_i }
-    set sql=sql_" FROM Rugby_Analytics.PlayerMatch WHERE GameId = ? AND CompetitionId = ? AND PlayedSeconds > 0 GROUP BY %EXACT(PlayerId)"
+    set sql=sql_" FROM Rugby_Analytics.PlayerMatch WHERE GameId = ? AND CompetitionId = ? AND PlayedSeconds > 0"_clubFilter_" GROUP BY %EXACT(PlayerId)"
     set q=##class(%SQL.Statement).%New(),sc=q.%Prepare(sql)
     if $system.Status.IsError(sc) throw ##class(%Exception.StatusException).CreateFromStatus(sc)
     set rows=q.%Execute(##class(Rugby.Service.Store).Game(),id)
@@ -89,7 +108,7 @@ ClassMethod Top(id As %String) As %DynamicObject
             set pid=""
             for {
                 set pid=$order(ranked(i,score,pid)) quit:pid=""  quit:leaders.%Size()>=10
-                if 'identities.%IsDefined(pid) do identities.%Set(pid,..Identity(pid,id))
+                if 'identities.%IsDefined(pid) do identities.%Set(pid,..Identity(pid,id,clubFilter))
                 set entry=##class(%DynamicObject).%FromJSON(identities.%Get(pid).%ToJSON()),entry.rank=leaders.%Size()+1,entry.value=-score,entry.appearances=ranked(i,score,pid)
                 do leaders.%Push(entry)
             }

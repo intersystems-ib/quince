@@ -13,3 +13,5 @@ Catégories : attaque, défense, jeu au pied, phases statiques, discipline et pa
 `Rugby.Analytics.PlayerMatch` stocke métriques et clés en colonnes, avec une clé unique par enregistrement d'origine, sans dupliquer les documents JSON. SQL agrège par partie, compétition et joueur. La migration initiale est automatique et idempotente ; les nouveaux matchs actualisent leur projection dans la même transaction. La suppression d'une partie supprime aussi sa projection analytique.
 
 [Stockage en colonnes IRIS](https://docs.intersystems.com/irislatest/csp/docbook/DocBook.UI.Page.cls?KEY=GOBJ_storageglobals#GOBJ_storageglobals_columnar).
+
+La ligue et les clubs participants sont vérifiés selon le match et la compétition d’origine ; les amicaux ne figurent pas dans les classements de ligue. L’appartenance historique est conservée après promotion, relégation ou transfert.

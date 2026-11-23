@@ -28,13 +28,36 @@ ClassMethod Run()
     set snapshot.playedSeconds=0,snapshot.playerId=f.awayId_"-p2",snapshot.stats.tries=999,e=##class(Rugby.Service.MatchStatistics).Entry(snapshot,final)
     do ##class(Rugby.Service.Store).Put("PlayerMatchStats",e)
     do ..Assert(##class(Rugby.Service.CompetitionStatistics).Top(comp).players=12,"Unused substitutes are not ranked as match participants")
+    // Incorrect denormalized keys must never leak between any of the four leagues.
+    for division=417,1401,1402 {
+        set otherComp="league-"_division_"-2026",opponents=##class(Rugby.Service.Competition).Fixtures(otherComp),foreign=##class(%DynamicObject).%FromJSON(opponents.%Get(0).%ToJSON())
+        set foreign.id="leaderboard-isolation-"_division,foreign.status="finished"
+        do ##class(Rugby.Service.Store).Put("Fixture",foreign)
+        set lineup=##class(Rugby.Service.Store).Get("Lineup",foreign.homeId_"-default"),p=##class(Rugby.Service.Store).Get("Player",lineup.slots.%Get(0).playerId)
+        set player={"playerId":(p.id),"name":(p.name),"side":"home","position":(p.position),"playedSeconds":4800,"stats":{"tries":500,"points":2500},"statsVersion":"1.0.0"},entry=##class(Rugby.Service.MatchStatistics).Entry(player,foreign),entry.competitionKey=comp
+        do ##class(Rugby.Service.Store).Put("PlayerMatchStats",entry)
+        do ..Assert(##class(Rugby.Service.CompetitionStatistics).Top(comp).metrics.%Get(1).leaders.%Get(0).value=15,"A wrong record key cannot move foreign league statistics into Honor")
+        set isolated=##class(Rugby.Service.CompetitionStatistics).Top(otherComp)
+        do ..Assert((isolated.players=1)&&(isolated.metrics.%Get(1).leaders.%Get(0).playerId=p.id),"Statistics follow their source fixture in each league")
+    }
+    set friendly=##class(%DynamicObject).%FromJSON(foreign.%ToJSON()),friendly.id="leaderboard-friendly",friendly.competitionKey="",friendly.stage="friendly"
+    do ##class(Rugby.Service.Store).Put("Fixture",friendly)
+    set entry=##class(Rugby.Service.MatchStatistics).Entry(player,friendly),entry.competitionKey=comp
+    do ##class(Rugby.Service.Store).Put("PlayerMatchStats",entry)
+    do ..Assert(##class(Rugby.Service.CompetitionStatistics).Top(comp).metrics.%Get(1).leaders.%Get(0).value=15,"A friendly never enters a league through a stale statistics key")
+    // Simulate a stale analytical row already deployed with the wrong competition.
+    set row=##class(Rugby.Analytics.PlayerMatch).RecordKeyIndexOpen("template|leaderboard-isolation-1402-"_p.id),row.CompetitionId=comp,sc=row.%Save()
+    do ..Assert('$system.Status.IsError(sc),"Corrupted projection test row saved")
+    do ..Assert(##class(Rugby.Service.CompetitionStatistics).Top(comp).metrics.%Get(1).leaders.%Get(0).value=15,"Foreign participating clubs are excluded even before projection repair")
     set before=##class(Rugby.Service.CompetitionStatistics).Top(comp).%ToJSON()
     do ##class(Rugby.Service.CompetitionStatistics).RemoveGame("template")
     kill ^RugbySchema("competitionStatisticsVersion")
     do ##class(Rugby.Service.CompetitionStatistics).Initialize()
     do ..Assert(##class(Rugby.Service.CompetitionStatistics).Top(comp).%ToJSON()=before,"Migration rebuilds existing statistics without modifying match history")
+    set repaired=##class(Rugby.Service.CompetitionStatistics).Top("league-1402-2026")
+    do ..Assert((repaired.players=1)&&(repaired.metrics.%Get(1).leaders.%Get(0).value=500),"Migration restores a mislabelled French performance to its original league")
     set %RugbyGame="statistics-other"
-    do ##class(Rugby.Service.Store).Put("Competition",{"id":"league-416-2026","season":"2026/2027"})
+    do ##class(Rugby.Service.Store).Put("Competition",{"id":"league-416-2026","season":"2026/2027","teamIds":["c1","c2"]})
     do ..Assert(##class(Rugby.Service.CompetitionStatistics).Top(comp).players=0,"A different save never sees another save's statistics")
     set %RugbyGame="template"
     do ##class(Rugby.Service.CompetitionStatistics).RemoveGame("template")

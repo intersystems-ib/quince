@@ -13,3 +13,5 @@ Las métricas se consultan por ataque, defensa, juego al pie, formaciones, disci
 `Rugby.Analytics.PlayerMatch` almacena las métricas y sus claves en columnas, con clave única por registro original. No duplica los documentos JSON. Las consultas SQL agrupan por partida, competición y jugador. La migración inicial es automática e idempotente; los partidos nuevos actualizan su proyección en la misma transacción. Al eliminar una partida se elimina también su proyección analítica.
 
 [Almacenamiento columnar de IRIS](https://docs.intersystems.com/irislatest/csp/docbook/DocBook.UI.Page.cls?KEY=GOBJ_storageglobals#GOBJ_storageglobals_columnar).
+
+La liga y los clubes participantes se verifican contra el partido y la competición de origen; los amistosos no entran en los rankings de liga. La pertenencia histórica no cambia al ascender, descender o traspasar jugadores.
