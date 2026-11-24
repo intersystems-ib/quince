@@ -26,7 +26,11 @@ export function Heading({ eyebrow, title, description, action }: {
 }) { useLocale(); return <div className="page-heading"><div><div className="eyebrow">{localize(eyebrow)}</div><h1>{localize(title)}</h1>{localize(description && <p>{localize(description)}</p>)}</div>{localize(action)}</div>; }
 export function Energy({ value }: {
     value: number;
-}) { useLocale(); const energy = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : 0; return <span className="energy"><span className="energy-track"><i style={{ width: `${energy}%`, background: `hsl(${energy * 1.2} 72% 42%)` }}/></span><b>{localize(Math.round(energy))}<small>{tr("%")}</small></b></span>; }
+}) {
+    useLocale();
+    const energy = Number.isFinite(value) ? Math.min(100, Math.max(0, value)) : 0;
+    return <span className="energy" style={{ '--energy-value-color': `hsl(${energy * 1.2} 72% 26%)` } as React.CSSProperties}><span className="energy-track"><i style={{ width: `${energy}%`, background: `hsl(${energy * 1.2} 72% 42%)` }}/></span><b>{localize(Math.round(energy))}<small>{tr("%")}</small></b></span>;
+}
 export function TrendArrow({ trend }: {
     trend: 'growth' | 'decline' | 'stable';
 }) { useLocale(); const label = { growth: 'Mejora prevista', decline: 'Declive previsto', stable: 'Sin variación prevista' }[trend]; return <span className={`trend-arrow trend-${trend}`} role="img" aria-label={tr(label)} title={tr(label)}>{localize(({ growth: '↑', decline: '↓', stable: '→' })[trend])}</span>; }

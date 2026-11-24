@@ -279,3 +279,6 @@
 .competition-access{margin-top:28px;max-width:560px}.competition-access>.muted{font-size:12px;margin-bottom:16px}.competition-table tr.access-place>td{background:#fbf0dc}
 
 .error>span{min-width:0}.error code{overflow-wrap:anywhere}
+
+.energy-track{min-width:0}.energy b{flex-shrink:0;white-space:nowrap;font-variant-numeric:tabular-nums}
+@media(max-width:650px){.energy.energy{display:inline-flex;width:auto;min-width:0;max-width:100%;flex:0 0 auto;gap:0;color:var(--energy-value-color)}.energy .energy-track{display:none}.energy.energy b{color:var(--energy-value-color);font-size:12px;font-weight:650;line-height:1.2;min-width:0}.energy.energy small{display:inline;font-size:.7em;margin-left:2px}}

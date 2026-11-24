@@ -128,7 +128,7 @@ ClassMethod Initialize() As %DynamicObject
         }
         set candidates=[]
         for tier=1:1:3 {
-            set quality=$select(tier=1:35,tier=2:65,1:90),h=..Hash("director-"_c.id_"-"_tier),name=$piece("Laura,Daniel,Elena,Marcos,Clara,Andrés",",",1+(h#6))_" "_$piece("Soler,Navarro,Ortega,Rivas,Molina,Vidal",",",1+((h\6)#6))
+            set quality=$select(tier=1:35,tier=2:65,1:90),h=..Hash("director-"_c.id_"-"_tier),name=##class(Rugby.Service.PlayerNames).Spanish(h,1)
             if ##class(Rugby.Service.Leagues).French(c.competitionId) set name=##class(Rugby.Service.PlayerNames).French(h)
             set candidate={"marketCountry":(##class(Rugby.Service.Leagues).Country(c)),"id":(c.id_"-finance-"_tier),"name":(name),"quality":(quality),"weeklyWage":(20000+(quality*500))}
             if ##class(Rugby.Service.Leagues).French(c.competitionId) set candidate.monthlyWage=##class(Rugby.Service.MonthlyPayroll).BaseDirector(quality,c.id),candidate.weeklyWage=##class(Rugby.Service.MonthlyPayroll).Weekly(candidate.monthlyWage)

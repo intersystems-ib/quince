@@ -9,7 +9,7 @@ ClassMethod Run(only As %String = "")
     lock +^RugbyWrite:15
     if '$test { write "TESTS FAILED: busy",! quit }
     set failures=0
-    for name="MatchResultMode","ClubRevenue","Inbox","RenewalPayroll","CompetitionStatistics","CompetitionPayload","PlayerSales","StorageMaintenance","YouthIntake","AdvancePerformance","DayOptimization","TicketPricing","PeriodEnd","FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","AdaptiveTactics","Quality","Finance","Payroll","PlayerNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
+    for name="MatchResultMode","ClubRevenue","Inbox","RenewalPayroll","CompetitionStatistics","CompetitionPayload","PlayerSales","StorageMaintenance","YouthIntake","AdvancePerformance","DayOptimization","TicketPricing","PeriodEnd","FundingReduction","SeasonCalendar","PenaltyPriority","OpponentPreparation","SalaryBudget","Admin","Catalog","Lineups","Management","Development","AttributeProgress","Academy","Competition","Cup","Movement","Commands","BatchSubstitutions","Engine","Speed","Recovery","Strength","Concurrency","Trends","Clock","Sessions","CalendarRules","Interop","Rivals","Transfers","RealPlayers","Discipline","Bonus","Kits","Promotion","Performance","News","MatchStatistics","Morale","Seasons","InitialContracts","Tactics","AdaptiveTactics","Quality","Finance","Payroll","PlayerNames","FrenchGeneratedNames","SpanishGeneratedNames","StaffNames","StaffMarket","FinanceRevision","Injuries","GameDeletion","Availability","MonthlyPayroll","EmployeePayroll","TrainingCosts","MatchPauses","Venues","InjuryFrequency","TransferPool","ForeignMarket","TransferAuction","ContractTerms","StaffPay","FinancialPlanning","TalentScale","FriendlyRequests","WeeklyTraining" {
         if (only'="")&&(name'=only) continue
         try {
             if (name'="Concurrency")&&(name'="AdvancePerformance") tstart
@@ -386,6 +386,8 @@ ClassMethod Promotion()
 ClassMethod Quality() { do ##class(Rugby.Test.Quality).Run() }
 ClassMethod Finance() { do ##class(Rugby.Test.Finance).Run() }
 ClassMethod Payroll() { do ##class(Rugby.Test.Payroll).Run() }
+ClassMethod SpanishGeneratedNames() { do ##class(Rugby.Test.SpanishGeneratedNames).Run() }
+ClassMethod FrenchGeneratedNames() { do ##class(Rugby.Test.FrenchGeneratedNames).Run() }
 ClassMethod PlayerNames() { do ##class(Rugby.Test.PlayerNames).Run() }
 ClassMethod StaffMarket() { do ##class(Rugby.Test.StaffMarket).Run() }
 ClassMethod StaffNames() { do ##class(Rugby.Test.StaffNames).Run() }

@@ -33,6 +33,8 @@ Method Execute(pRequest As Rugby.Interop.Message.Request, Output pResponse As Ru
             set grants=##class(Rugby.Service.PublicGrants).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.publicGrantDistribution=grants,pResponse.DetailsJSON=details.%ToJSON()
             set reduction=##class(Rugby.Service.FundingReduction).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.fundingReduction=reduction,pResponse.DetailsJSON=details.%ToJSON()
             set frenchFunding=##class(Rugby.Service.FrenchFunding).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.frenchFunding=frenchFunding,pResponse.DetailsJSON=details.%ToJSON()
+            set generatedNames=##class(Rugby.Service.FrenchGeneratedNames).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.frenchGeneratedNames=generatedNames,pResponse.DetailsJSON=details.%ToJSON()
+            set spanishNames=##class(Rugby.Service.SpanishGeneratedNames).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.spanishGeneratedNames=spanishNames,pResponse.DetailsJSON=details.%ToJSON()
             do ##class(Rugby.Service.Admin).Apply(),##class(Rugby.Service.CompetitionStatistics).Initialize()
             set community=##class(Rugby.Service.ClubRevenue).InitializeAll()
             set academyTerms=##class(Rugby.Service.FrenchAcademyTerms).InitializeAll(),frenchBalance=##class(Rugby.Service.FrenchFinanceBalance).InitializeAll(),details=##class(%DynamicObject).%FromJSON(pResponse.DetailsJSON),details.frenchBudgetBalance=frenchBalance,details.frenchAcademyTerms=academyTerms,pResponse.DetailsJSON=details.%ToJSON()

@@ -10,7 +10,7 @@ ClassMethod Generate(id As %String, force As %Boolean = 0, country As %String = 
     for i=0:1:free.%Size()-1 { set p=free.%Get(i) if (p.id'=id)&&(p.role=role)&&(p.%Get("marketCountry","ES")=country) do given.%Set($piece(p.name," ",1),1) }
     set attempt=0
     for {
-        set seed=##class(Rugby.Service.Rivals).Hash("staff-"_id_"-"_attempt,17341),name=$select(country="FR":##class(Rugby.Service.PlayerNames).French(seed),1:##class(Rugby.Service.PlayerNames).Spanish(seed)),owner=$get(^RugbyWorld(game,"staffNameOwner",name))
+        set seed=##class(Rugby.Service.Rivals).Hash("staff-"_id_"-"_attempt,17341),name=$select(country="FR":##class(Rugby.Service.PlayerNames).French(seed),1:##class(Rugby.Service.PlayerNames).Spanish(seed,1)),owner=$get(^RugbyWorld(game,"staffNameOwner",name))
         quit:((owner="")||(owner=id))&&((given.%Size()>=32)||('given.%IsDefined($piece(name," ",1))))
         set attempt=attempt+1
     }
