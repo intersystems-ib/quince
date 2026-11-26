@@ -13,3 +13,5 @@ Límites por temporada: dos fichajes ordinarios, dos promociones y hasta seis re
 El usuario recibe como máximo una invitación de amistoso al mes, para un fin de semana libre de ambos clubes. Se acepta o rechaza desde Calendario; no se concierta sin respuesta.
 
 La ejecución diaria y sus efectos económicos quedan en la auditoría de interoperabilidad. Reintentar una acción no repite sesiones, fichajes o cobros.
+
+Al cerrar la temporada, los rivales sólo incorporan refuerzos si pueden asumir su salario. Si falta margen para completar el equipo, recurren a canteranos disponibles con contrato vigente, conservando salario y vencimiento. La cobertura no amplía el límite salarial ni duplica contratos al reintentarse.

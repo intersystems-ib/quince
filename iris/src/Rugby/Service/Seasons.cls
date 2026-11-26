@@ -88,11 +88,14 @@ ClassMethod Depart(p As %DynamicObject, year As %Integer, retired As %Boolean)
 }
 ClassMethod Acquire(c As %DynamicObject, pos As %Integer, year As %Integer, serial As %Integer) As %DynamicObject
 {
-    set pool=##class(Rugby.Service.TransferPool).Players(),best="",score=-1,roster=##class(Rugby.Service.Store).All("Player","clubId",c.id),seniors=0
+    set best="",score=-1,roster=##class(Rugby.Service.Store).All("Player","clubId",c.id),seniors=0
     for i=0:1:roster.%Size()-1 { if roster.%Get(i).category="senior" set seniors=seniors+1 }
     set remaining=$select(seniors<23:23-seniors,1:1),room=##class(Rugby.Service.Payroll).WeeklyCap(c.id)-##class(Rugby.Service.Payroll).Used(c.id),offerBudget=(room/remaining)\100*100
+    if ##class(Rugby.Service.Payroll).Active()&&(offerBudget<=0) quit ""
+    set pool=##class(Rugby.Service.TransferPool).Players()
     for i=0:1:pool.%Size()-1 {
         set p=pool.%Get(i)
+        if p.clubId'="" continue
         if ('p.available)||p.%Get("retirementAnnounced",0)||(p.%Get("contractStatus")="retired") continue
         if p.%Get("releasedDay",c.day-1)>=c.day continue
         if (pos>0)&&(p.position'=pos) continue
@@ -103,11 +106,16 @@ ClassMethod Acquire(c As %DynamicObject, pos As %Integer, year As %Integer, seri
         if value>score set best=p,score=value,bestWage=asking
     }
     if '$isobject(best) {
-        set p=##class(Rugby.Seed.Academy).Create(c,$select(pos:pos,1:4),9000+serial),p.id="season-agent-"_year_"-"_c.id_"-"_serial,p.clubId="",p.category="senior",p.age=21,p.birthDay=c.day-(21*365),p.weeklyWage=$select(##class(Rugby.Service.Payroll).Active():$select(offerBudget<##class(Rugby.Service.Payroll).Reference(p,c.id):offerBudget,1:##class(Rugby.Service.Payroll).Reference(p,c.id)),1:45000),p.signingFee=0,best=p,bestWage=p.weeklyWage
+        set p=##class(Rugby.Seed.Academy).Create(c,$select(pos:pos,1:4),9000+serial),p.id="season-agent-"_year_"-"_c.id_"-"_serial,p.clubId="",p.category="senior",p.age=21,p.birthDay=c.day-(21*365),p.weeklyWage=$select(##class(Rugby.Service.Payroll).Active():##class(Rugby.Service.Payroll).Reference(p,c.id),1:45000),p.signingFee=0
+        if ##class(Rugby.Service.Payroll).Active()&&(p.weeklyWage>offerBudget) quit ""
+        set best=p,bestWage=p.weeklyWage
     }
     set fee=best.%Get("signingFee",0)
     set best.clubId=c.id,best.category="senior",best.weeklyWage=bestWage,best.signedDay=c.day
-    if ##class(Rugby.Service.Payroll).Active() set best.weeklyWage=$select(##class(Rugby.Service.Payroll).CanPay(c.id,best.id,best.weeklyWage):best.weeklyWage,1:##class(Rugby.Service.Payroll).Reference(best,c.id))
+    // Never replace a budgeted wage with a higher reference wage when funds run out.
+    if best.weeklyWage<=0 quit ""
+    if ##class(Rugby.Service.Payroll).Active()&&('##class(Rugby.Service.Payroll).CanPay(c.id,best.id,best.weeklyWage)) quit ""
+    if (fee>0)&&(##class(Rugby.Service.SalaryBudget).Percent(c.id)>0)&&('##class(Rugby.Service.SalaryBudget).Affordable(c.id,best.id,best.weeklyWage,fee)) quit ""
     do ##class(Rugby.Service.Payroll).Check(c.id,best.id,best.weeklyWage)
     set best.contractYears=##class(Rugby.Service.ContractTerms).Preferred((c.day-best.birthDay)\365,best.id)
     do ..Contract(best,year+best.contractYears-1),##class(Rugby.Service.Store).Put("Player",best)
@@ -117,15 +125,44 @@ ClassMethod Acquire(c As %DynamicObject, pos As %Integer, year As %Integer, seri
     set pool=##class(Rugby.Service.TransferPool).Refresh(c.day)
     quit contract
 }
+ClassMethod PromoteCover(c As %DynamicObject, pos As %Integer, year As %Integer, serial As %Integer) As %DynamicObject
+{
+    set players=##class(Rugby.Service.Store).All("Player","clubId",c.id),best="",score=-1
+    for i=0:1:players.%Size()-1 {
+        set p=players.%Get(i)
+        if (p.category'="academy")||('p.available)||p.%Get("retirementAnnounced",0)||p.%Get("retired",0) continue
+        if $zdateh(p.contractEndDate,3)<$zdateh(c.date,3) continue
+        if (pos>0)&&((p.position<=8)'=(pos<=8)) continue
+        set value=##class(Rugby.Service.Development).Average(p)
+        if pos>0 set value=value+$select(p.position=pos:1000000,##class(Rugby.Service.AutomaticLineup).Covers(p,[(pos)]):500000,1:0)
+        if value>score set best=p,score=value
+    }
+    if '$isobject(best) quit ""
+    // First-team cover keeps the existing youth contract and adds no payroll cost.
+    set best.category="senior",best.promotedDay=c.day,best.promotionSource="seasonCoverage"
+    do ##class(Rugby.Service.Store).Put("Player",best)
+    set contract={"id":("season-cover-"_year_"-"_c.id_"-"_serial),"clubId":(c.id),"playerId":(best.id),"kind":"promotion","source":"seasonCoverage","day":(c.day),"weeklyWage":(best.weeklyWage),"monthlyWage":(##class(Rugby.Service.MonthlyPayroll).Value(best)),"contractEndDate":(best.contractEndDate),"contractYears":(best.%Get("contractYears",1)),"fee":0}
+    do ##class(Rugby.Service.Store).Put("PlayerContract",contract)
+    quit contract
+}
 ClassMethod Replenish(c As %DynamicObject, year As %Integer) As %DynamicArray
 {
     set players=##class(Rugby.Service.Store).All("Player","clubId",c.id),counts={},total=0,changes=[],serial=0
-    for i=0:1:players.%Size()-1 { set p=players.%Get(i) if (p.category="senior") { do counts.%Set(p.position,counts.%Get(p.position,0)+1) set total=total+1 } }
+    for i=0:1:players.%Size()-1 { set p=players.%Get(i) if p.category="senior" { do counts.%Set(p.position,counts.%Get(p.position,0)+1) set total=total+1 } }
     for pos=1:1:15 {
         set needed=$select(pos<=3:2,1:1)-counts.%Get(pos,0)
-        for j=1:1:needed { set serial=serial+1,total=total+1 do changes.%Push(..Acquire(c,pos,year,serial)) }
+        for j=1:1:needed {
+            quit:total>=23
+            set serial=serial+1,contract=..Acquire(c,pos,year,serial)
+            if '$isobject(contract) set contract=..PromoteCover(c,pos,year,serial)
+            if $isobject(contract) { set total=total+1 do changes.%Push(contract) }
+        }
     }
-    for j=total:1:22 { set serial=serial+1 do changes.%Push(..Acquire(c,0,year,serial)) }
+    for j=total:1:22 {
+        set serial=serial+1,contract=..Acquire(c,0,year,serial)
+        if '$isobject(contract) set contract=..PromoteCover(c,0,year,serial)
+        if $isobject(contract) do changes.%Push(contract)
+    }
     do ##class(Rugby.Service.Rivals).Lineup(c)
     quit changes
 }

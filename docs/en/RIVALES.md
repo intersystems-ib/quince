@@ -13,3 +13,5 @@ Season limits are two ordinary signings, two promotions and up to six medical re
 The user receives at most one friendly invitation per month, for a weekend free for both clubs. Calendar allows acceptance or rejection; there is no automatic acceptance.
 
 Daily processing and financial effects appear in interoperability audit. Retrying an action does not repeat sessions, signings or payments.
+
+At season closure, AI clubs recruit only when the salary is affordable. If they lack room to complete the squad, available academy players provide cover under their existing wages and expiry dates. This does not raise the wage cap or duplicate contracts on retries.

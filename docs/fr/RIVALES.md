@@ -13,3 +13,5 @@ Limites par saison : deux recrutements ordinaires, deux promotions et jusqu'à s
 L'utilisateur reçoit au maximum une invitation à un amical par mois, sur un week-end libre pour les deux clubs. Calendrier permet d'accepter ou de refuser ; l'acceptation n'est jamais automatique.
 
 Le traitement quotidien et ses effets financiers figurent dans l'audit d'interopérabilité. Réessayer ne répète ni séance, ni recrutement, ni paiement.
+
+À la clôture de saison, les clubs automatiques ne recrutent que si le salaire est abordable. Sans marge pour compléter l’effectif, ils font appel aux jeunes disponibles sous contrat, en conservant salaire et échéance. Cette couverture ne relève pas le plafond salarial et ne crée pas de doublons lors des réessais.

@@ -1,18 +1,24 @@
 Class Rugby.Test.SalaryBudget Extends %RegisteredObject
 {
 ClassMethod Assert(ok As %Boolean, message As %String) { do ##class(Rugby.Test.Suite).Assert(ok,message) }
+ClassMethod Fingerprint(kind As %String) As %String
+{
+    set rows=##class(Rugby.Service.Store).All(kind),hash=""
+    for i=0:1:rows.%Size()-1 { set hash=$system.Encryption.SHAHash(256,hash_rows.%Get(i).%ToJSON()) }
+    quit ##class(Rugby.Service.Auth).Encode(hash)
+}
 ClassMethod Run()
 {
     set club=##class(Rugby.Service.Store).ManagedClub(),c=##class(Rugby.Service.Store).Get("Club",club),s=##class(Rugby.Service.Finance).Season(c),o=##class(Rugby.Service.Finance).Office(club)
     set o.director=o.candidates.%Get(2),s.grantsComplete=1,s.grants=[{"id":"budget-grant","name":"Organismo público local","amount":120000000,"status":"instalments"}]
     do o.%Remove("salaryBudget"),##class(Rugby.Service.Store).Put("FinancialOffice",o),##class(Rugby.Service.Store).Put("FinancialSeason",s)
-    set base=##class(Rugby.Service.Payroll).AnnualCap(club),initial=##class(Rugby.Service.SalaryBudget).Calculate(club),cash=c.balance,players=##class(Rugby.Service.Store).All("Player").%ToJSON(),ledger=##class(Rugby.Service.Store).All("FinancialMovement").%ToJSON()
+    set base=##class(Rugby.Service.Payroll).AnnualCap(club),initial=##class(Rugby.Service.SalaryBudget).Calculate(club),cash=c.balance,players=..Fingerprint("Player"),ledger=..Fingerprint("FinancialMovement")
     do ..Assert((initial.percent=0)&&(initial.surplusAtBaseLimit>0),"No change to existing caps until configured, with finite income-backed capacity")
     set b={"version":(o.version),"percent":90},saved=##class(Rugby.Service.SalaryBudget).Save(club,b,"salary-flex-90"),retry=##class(Rugby.Service.SalaryBudget).Save(club,b,"salary-flex-90"),plan=saved.salaryBudget
     do ..Assert((retry.office.version=saved.office.version)&&(plan.annualLimit>base),"Adjustment is persisted and idempotent")
     do ..Assert(plan.surplusAtLimit>=plan.minimumReserve,"Full use leaves ten percent of the additional surplus")
     do ..Assert(##class(Rugby.Service.Payroll).AnnualCap(club)=plan.annualLimit,"Signings use the configured annual ceiling")
-    do ..Assert((##class(Rugby.Service.Store).Get("Club",club).balance=cash)&&(##class(Rugby.Service.Store).All("Player").%ToJSON()=players)&&(##class(Rugby.Service.Store).All("FinancialMovement").%ToJSON()=ledger),"Allocating a budget neither spends cash nor changes wages or income")
+    do ..Assert((##class(Rugby.Service.Store).Get("Club",club).balance=cash)&&(..Fingerprint("Player")=players)&&(..Fingerprint("FinancialMovement")=ledger),"Allocating a budget neither spends cash nor changes wages or income")
     set cap=##class(Rugby.Service.Payroll).WeeklyCap(club),oldCap=(base\5200)*100,p=##class(Rugby.Service.Store).Get("Player",club_"-p1"),used=##class(Rugby.Service.Payroll).Used(club,p.id),caught=0
     do ##class(Rugby.Service.Payroll).Check(club,p.id,cap-used)
     try { do ##class(Rugby.Service.Payroll).Check(club,p.id,cap-used+100) } catch ex { set caught=ex.Location="PAYROLL_LIMIT" }
